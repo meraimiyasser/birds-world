@@ -1,232 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birds World – Bird Species, Diet, Care &amp; Health Guide</title>
-<meta name="description" content="A complete bird guide: species, real photos, what they eat, care tips, health, proteins and nutrition for canaries, parrots, finches, pigeons, poultry and more.">
-<link rel="canonical" href="https://meraimiyasser.github.io/birds-world/">
-<meta property="og:title" content="Birds World – Bird Care &amp; Feeding Guide">
-<meta property="og:description" content="Species, diet, care tips, health and nutrition for pet and wild birds.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://meraimiyasser.github.io/birds-world/">
-
-<!-- Favicon / شعار الموقع في المتصفح -->
-<link rel="icon" href="https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=128&q=80">
-
+<title>Birds World – A Complete Bird Guide</title>
+<meta name="description" content="A complete bird guide: species, diet, care tips, health and nutrition, with an AI assistant for bird questions.">
 <style>
-:root{--bg:#f6f8f3;--card:#fff;--tx:#1d2b22;--mut:#5d6b62;--ac:#2e7d4f;--ac2:#e4f1e8;--bd:#dfe7dc}
-@media (prefers-color-scheme:dark){:root{--bg:#121a15;--card:#1b261f;--tx:#e8f0ea;--mut:#9fb0a4;--ac:#5fc287;--ac2:#22352a;--bd:#2c3d32}}
+:root{--bg:#f6f8f4;--card:#fff;--text:#1f2a1f;--muted:#5d6b5d;--accent:#2f7d4f;--line:#e3e8e0;--warn:#fff4e0;--warnt:#7a4b00}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.6}
-header{padding:28px 16px 18px;text-align:center;background:var(--ac2)}
-h1{margin:0 0 6px;font-size:1.7rem}header p{margin:0;color:var(--mut)}
-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--bd);z-index:5}
-nav a{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:20px;text-decoration:none;font-size:0.95rem;transition:all 0.2s ease}
-nav a:hover{background:var(--ac2);color:var(--ac);border-color:var(--ac)}
-main{max-width:900px;margin:0 auto;padding:16px}
-h2{margin:26px 0 10px;scroll-margin-top:70px}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-
-/* تصميم بطاقة الطائر مع الصور الحقيقية */
-.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;position:relative;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,0.03);transition:transform 0.2s ease}
+html{color-scheme:light}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:var(--accent)}
+.top{padding:28px 16px 12px;text-align:center}
+.top a.logo{font-size:1.9rem;font-weight:700;text-decoration:none;color:var(--text)}
+.top p{margin:4px 0 0;color:var(--muted)}
+.search{max-width:520px;margin:16px auto 0;display:block;width:calc(100% - 32px);padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);font-size:1rem}
+.grid{max-width:1100px;margin:24px auto;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:transform .15s}
 .card:hover{transform:translateY(-3px)}
-.card-img{width:100%;height:160px;object-fit:cover;border-radius:10px;margin-bottom:10px}
-.card h3{margin:0 0 6px;display:flex;justify-content:space-between;align-items:center;color:var(--ac)}
-.card p{margin:4px 0;font-size:.93rem}.card b{color:var(--ac)}
-.like-btn{background:none;border:none;cursor:pointer;font-size:1.2rem;transition:transform 0.2s}
-.like-btn:hover{transform:scale(1.2)}
-
-.note{background:var(--ac2);border-radius:12px;padding:12px;margin:14px 0;font-size:.92rem}
-li{margin:6px 0}
-input{width:100%;padding:11px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;margin-bottom:12px}
-footer{text-align:center;color:var(--mut);font-size:.8rem;padding:20px 16px}
-
-/* AI Chat Box Styles */
-.ai-box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,0.04)}
-.ai-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.online-badge{width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block}
-.chat-window{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);margin-bottom:12px}
-.msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:0.92rem;line-height:1.4}
-.msg.user{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:2px}
-.msg.bot{align-self:flex-start;background:var(--card);border:1px solid var(--bd);color:var(--tx);border-bottom-left-radius:2px}
-.chat-input-row{display:flex;gap:8px}
-.chat-input-row input{margin-bottom:0;flex:1}
-.chat-btn{background:var(--ac);color:#fff;border:none;padding:0 18px;border-radius:12px;cursor:pointer;font-weight:bold;font-size:0.95rem;transition:opacity 0.2s}
-.chat-btn:hover{opacity:0.9}
-.suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.sug-chip{font-size:0.8rem;padding:4px 10px;background:var(--ac2);color:var(--ac);border-radius:12px;cursor:pointer;border:1px solid var(--bd)}
-.sug-chip:hover{opacity:0.8}
+.photo{aspect-ratio:4/3;background:var(--line);position:relative;overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s}
+.photo img.loaded{opacity:1}
+.ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem}
+.cb{padding:14px 16px 16px}
+.cb h2{margin:0;font-size:1.15rem}
+.sci{margin:2px 0 8px;color:var(--muted);font-style:italic;font-size:.9rem}
+.more{color:var(--accent);font-weight:600;font-size:.9rem}
+/* detail page */
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+.back{display:inline-block;margin-bottom:12px;text-decoration:none;font-weight:600}
+.hero{border-radius:18px;overflow:hidden;background:var(--line);aspect-ratio:16/10;position:relative}
+.hero img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s}
+.hero img.loaded{opacity:1}
+h1{margin:18px 0 0;font-size:2rem}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.fact small{display:block;color:var(--muted)}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:14px 0}
+.sec h3{margin:0 0 6px;color:var(--accent)}
+.sec ul{margin:6px 0 0;padding-left:20px}
+.warn{background:var(--warn);color:var(--warnt);border-radius:12px;padding:12px 16px;font-size:.9rem;margin:14px 0}
+.credit{font-size:.78rem;color:var(--muted)}
+.nav{display:flex;justify-content:space-between;gap:10px;margin:22px 0}
+.nav a{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-decoration:none;font-weight:600}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 16px 40px}
 </style>
 </head>
 <body>
-<header>
-  <h1>🐦 Birds World</h1>
-  <p>Your advanced guide to birds: real species photos, expert care tips, health, and live AI assistant</p>
-</header>
-<nav>
-  <a href="#birds">Birds Species</a>
-  <a href="#ai-assistant">🤖 AI Assistant</a>
-  <a href="#care">Basic Care</a>
-  <a href="#health">Health &amp; Nutrition</a>
-</nav>
-<main>
 
-<h2 id="birds">Bird Species &amp; Real Photos</h2>
-<input id="s" type="search" placeholder="Search birds (e.g. canary, parrot, goldfinch)..." aria-label="Search birds">
-<div class="grid" id="grid"></div>
-
-<h2 id="ai-assistant">🤖 Ask AI Assistant</h2>
-<div class="ai-box">
-  <div class="ai-header">
-    <span class="online-badge"></span>
-    <p style="margin:0; font-size:0.9rem; color:var(--mut);">Ask any question about bird care, feeding, breeding, or health, and the AI assistant will help you instantly!</p>
-  </div>
-  <div class="chat-window" id="chatWindow">
-    <div class="msg bot">👋 Hello! I am your Bird Expert AI. Ask me anything about your bird!</div>
-  </div>
-  <div class="chat-input-row">
-    <input type="text" id="aiInput" placeholder="Type your question here (e.g. What do canaries eat?)...">
-    <button class="chat-btn" id="sendBtn">Send</button>
-  </div>
-  <div class="suggestions">
-    <span class="sug-chip" onclick="askPreset('What can I feed my canary?')">🐤 Canary diet</span>
-    <span class="sug-chip" onclick="askPreset('How to deal with molting?')">🪶 Molting tips</span>
-    <span class="sug-chip" onclick="askPreset('Is avocado toxic to parrots?')">⚠️ Toxic foods</span>
-    <span class="sug-chip" onclick="askPreset('How often should I bath my bird?')">🛁 Bathing frequency</span>
-  </div>
+<div class="top">
+  <a class="logo" href="#/">🐦 Birds World</a>
+  <p>Species, diet, care tips, health and nutrition</p>
 </div>
-
-<h2 id="care">Basic Care for All Birds</h2>
-<div class="card"><ul>
-<li><b>Cage:</b> large enough to spread wings and make short flights; away from drafts, the kitchen and smoke.</li>
-<li><b>Hygiene:</b> clean the cage floor daily, wash food and water dishes daily, disinfect the cage weekly.</li>
-<li><b>Water:</b> always clean and fresh, with a bath two to three times a week.</li>
-<li><b>Light and sleep:</b> 10–12 hours of dark, quiet sleep and indirect daylight.</li>
-<li><b>Temperature:</b> avoid extreme heat and sudden cold; keep it stable.</li>
-<li><b>Interaction:</b> social birds such as parrots need daily time, toys and enrichment.</li>
-<li><b>Safety:</b> avoid burnt non-stick (PTFE) cookware, perfumes and cleaning sprays; their fumes are toxic to birds.</li>
-</ul></div>
-<div class="note">⚠️ Never feed birds: avocado, chocolate, caffeine, alcohol, large amounts of onion or garlic, or apple seeds and fruit pits.</div>
-
-<h2 id="health">Health &amp; Nutrition</h2>
-<div class="card"><h3>🥚 Proteins and Supplements</h3><ul>
-<li><b>Protein sources:</b> boiled egg (with crushed shell for calcium), mealworms and dried crickets for insect-eaters, cooked legumes and sprouted seed mixes.</li>
-<li><b>Calcium:</b> cuttlebone and mineral blocks, especially important for laying females.</li>
-<li><b>Vitamins:</b> vitamin A (carrots, sweet potato, leafy greens), vitamin D3 (unfiltered sunlight), and water-soluble vitamins under veterinary guidance.</li>
-<li><b>During molting:</b> extra protein and amino acids (such as methionine) support feather regrowth.</li>
-<li><b>Grit:</b> small stones help some birds, like pigeons and chickens, grind grain.</li>
-</ul></div>
-<div class="card" style="margin-top:12px"><h3>💊 Common Illnesses and Treatments</h3><ul>
-<li><b>Diarrhea and gut infections:</b> treated by cause (bacterial or parasitic), usually with antibiotics or anticoccidials prescribed by a vet.</li>
-<li><b>Internal parasites:</b> dewormers (such as ivermectin or fenbendazole, depending on species) at vet-set doses.</li>
-<li><b>Mites and lice:</b> bird-safe sprays or drops, plus a deep clean of the cage.</li>
-<li><b>Fungal disease (e.g. aspergillosis):</b> antifungals by prescription; prevent with good ventilation and clean food.</li>
-<li><b>Vitamin deficiency:</b> corrected with a varied diet and suitable supplements.</li>
-</ul></div>
-<div class="note">🩺 <b>Important:</b> this is general information only. Never give any medicine or antibiotic without advice from an avian vet; a wrong dose can kill a small bird. See a vet at once for fluffed feathers, lethargy, loss of appetite, labored breathing or abnormal droppings.</div>
-</main>
-<footer>General information only; it does not replace a veterinarian.</footer>
+<div id="app"></div>
+<footer>Photos and summaries from Wikipedia / Wikimedia Commons under their respective licenses.</footer>
 
 <script>
-// مصفوفة الطيور المحدثة (الكناري يظهر صورتك الخاصة مباشرة عبر canary.webp)
-const B=[
-["Canary", "Canary seed mix, rapeseed, niger seed, leafy greens, and egg food.", "Roomy cage, bath dish, good ventilation, no drafts. Famous for its song.", "canary.webp"],
-["Budgerigar (Budgie)", "Millet, oat mix, fresh vegetables, fruit, and little boiled egg.", "Social bird; needs toys, interaction, and proper perches.", "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=500&q=80"],
-["Cockatiel", "Mixed seeds, pellets, vegetables, fruit, and light protein.", "Loves whistling, attention, and daily out-of-cage time.", "https://images.unsplash.com/photo-1555169062-01347abf4f39?auto=format&fit=crop&w=500&q=80"],
-["Lovebird", "Seeds, fruit, vegetables, and high-quality pellets.", "Kept in pairs; needs nesting spots and protection from high heat.", "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=500&q=80"],
-["African Grey Parrot", "Pellets, vegetables, fruit, nuts, and calcium sources.", "Extremely intelligent; requires constant mental stimulation.", "https://images.unsplash.com/photo-1522926193637-af3c40a3e5d0?auto=format&fit=crop&w=500&q=80"],
-["Large Parrots (Macaw/Cockatoo)", "Pellets, nuts, fruit, vegetables, and varied seeds.", "Long-lived; requires a large cage and expert daily care.", "https://images.unsplash.com/photo-1569683795645-b62e50fbf103?auto=format&fit=crop&w=500&q=80"],
-["Goldfinch", "Niger seeds, rapeseed, thistle seeds, and small oily grains.", "Active singer; prefers calm environments and small seed feeders.", "https://images.unsplash.com/photo-1579306193806-ea12a6f3bb10?auto=format&fit=crop&w=500&q=80"],
-["Zebra Finch", "Millet, small grains, greens, and protein during breeding.", "Lives happily in small groups inside roomy horizontal cages.", "https://images.unsplash.com/photo-1606567595334-d39972c85dbe?auto=format&fit=crop&w=500&q=80"],
-["Nightingale", "Fruit, vegetables, insects, and specialized softbill food.", "Active songbird; requires high cleanliness and spacious housing.", "https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=500&q=80"],
-["Northern Cardinal", "Sunflower seeds, wild berries, and grains.", "Stunning bright red bird; ideal for garden feeders and open spaces.", "https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=500&q=80"],
-["Hummingbird", "Natural flower nectar, sugar water solution, and small insects.", "Ultra-fast wingbeats; attracted to specialized nectar feeders.", "https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=500&q=80"],
-["Pigeon", "Wheat, corn, peas, barley, grit, and fresh water.", "Requires a clean, dry loft and regular health checkups.", "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=500&q=80"],
-["Chicken", "Balanced poultry feed, grains, greens, and calcium shells.", "Needs a safe coop and a dust bath area for parasite control.", "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=500&q=80"],
-["Ducks and Geese", "Waterfowl feed, grains, leafy greens, and aquatic insects.", "Need clean water for swimming and regular enclosure cleaning.", "https://images.unsplash.com/photo-1550853024-fae8cd484752?auto=format&fit=crop&w=500&q=80"],
-["Peacock", "Grains, seeds, vegetables, insects, and balanced feed.", "Requires wide open space, high roosts, and cold protection.", "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80"],
-["Flamingo", "Small crustaceans, algae, and carotene-rich specialized feed.", "Requires a shallow pool environment; best kept in flocks.", "https://images.unsplash.com/photo-1497206365907-f5e630693df0?auto=format&fit=crop&w=500&q=80"],
-["Owl", "Rodents, insects, and small animals depending on species.", "Nocturnal raptor; requires permits and specialist veterinary care.", "https://images.unsplash.com/photo-1543598060-144793ab755f?auto=format&fit=crop&w=500&q=80"],
-["Falcons and Birds of Prey", "Fresh meat (quail, pigeon, and small rodents).", "Requires expert training, daily attention, and specialized care.", "https://images.unsplash.com/photo-1611689342806-0863700ce1e4?auto=format&fit=crop&w=500&q=80"],
-["Wild Birds and Sparrows", "Seeds, wild insects, fruit, and natural nectar.", "Best observed in nature; provide garden feeders and clean water.", "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?auto=format&fit=crop&w=500&q=80"]
-];
-
-const g=document.getElementById("grid");
-
-function draw(f){
-  g.textContent="";
-  B.filter(b=>(b[0]+b[1]+b[2]).toLowerCase().includes(f)).forEach(([n,fd,c,imgUrl])=>{
-    const d=document.createElement("div");d.className="card";
-    
-    const img=document.createElement("img");
-    img.className="card-img";
-    img.src=imgUrl;
-    img.alt=n;
-    
-    const h3=document.createElement("h3");
-    h3.textContent=n;
-    const likeBtn=document.createElement("button");
-    likeBtn.className="like-btn";
-    likeBtn.innerHTML="🤍";
-    likeBtn.onclick=()=>{
-      likeBtn.innerHTML = likeBtn.innerHTML === "🤍" ? "❤️" : "🤍";
-    };
-    h3.appendChild(likeBtn);
-
-    const t=(k,x,cl)=>{const y=document.createElement(k);y.textContent=x;if(cl)y.className=cl;return y};
-    const p=(l,x)=>{const q=document.createElement("p");q.append(t("b",l),document.createTextNode(x));return q};
-    
-    d.append(img,h3,p("Diet: ",fd),p("Care: ",c));
-    g.append(d);
-  });
-  if(!g.children.length)g.textContent="No birds found. Try another name.";
-}
-
-draw("");
-document.getElementById("s").addEventListener("input",e=>draw(e.target.value.trim().toLowerCase()));
-
-// AI Assistant Logic
-const chatWin = document.getElementById('chatWindow');
-const aiInp = document.getElementById('aiInput');
-const sendBtn = document.getElementById('sendBtn');
-
-function addMsg(txt, isUser){
-  const d = document.createElement('div');
-  d.className = 'msg ' + (isUser ? 'user' : 'bot');
-  d.textContent = txt;
-  chatWin.appendChild(d);
-  chatWin.scrollTop = chatWin.scrollHeight;
-}
-
-function generateResponse(query){
-  const q = query.toLowerCase();
-  if(q.includes('canary') || q.includes('كناري')) return "🐤 Canaries love canary seed mix, niger seeds, leafy greens, and egg food during breeding. Keep them away from cold drafts!";
-  if(q.includes('avocado') || q.includes('chocolate') || q.includes('toxic') || q.includes('سام')) return "⚠️ Never give birds avocado, chocolate, caffeine, alcohol, onion, garlic, or fruit seeds! They are toxic.";
-  if(q.includes('molt') || q.includes('تبديل') || q.includes('طرح')) return "🪶 During molting, birds need extra protein (like boiled egg) and calcium to rebuild strong, healthy feathers.";
-  if(q.includes('bath') || q.includes('استحمام') || q.includes('مااء')) return "🛁 Offer clean water for bathing 2 to 3 times a week. It helps keep their feathers clean and skin healthy.";
-  if(q.includes('sick') || q.includes('مريض') || q.includes('علاج')) return "🩺 If your bird shows signs of illness (fluffed feathers, loss of appetite, lethargy), please consult an avian vet immediately!";
-  if(q.includes('hello') || q.includes('hi') || q.includes('مرحبا')) return "👋 Hello! How can I help you with your birds today?";
-  return "🐦 For best results: ensure clean daily water, balanced seed/pellet mix, fresh greens, 10-12 hours of sleep, and an avian vet checkup when needed!";
-}
-
-function handleSend(){
-  const val = aiInp.value.trim();
-  if(!val) return;
-  addMsg(val, true);
-  aiInp.value = '';
-  setTimeout(()=>{
-    addMsg(generateResponse(val), false);
-  }, 400);
-}
-
-sendBtn.addEventListener('click', handleSend);
-aiInp.addEventListener('keypress', e => { if(e.key === 'Enter') handleSend(); });
-
-function askPreset(txt){
-  aiInp.value = txt;
-  handleSend();
-}
-</script>
-</body>
-</html>
+/* ============ 1) YOUR DATA: add birds here ============
+   id    = short unique name used in the page link
+   wiki  = exact English Wikipedia article title (photo + summary come from it)  */
+const BIRDS = [
+{ id:"budgerigar", name:"Budgerigar (Budgie)",
