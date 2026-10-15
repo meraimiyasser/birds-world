@@ -1,991 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="description"
-          content="Discover the fascinating world of birds, explore different species, and learn about their habitats and behaviors.">
-
-    <title>Birds World | Discover the Beauty of Birds</title>
-
-    <style>
-        :root {
-            --green: #234e36;
-            --green-light: #3e7653;
-            --lime: #d5e8b5;
-            --cream: #f7f7f0;
-            --white: #ffffff;
-            --text: #26352b;
-            --muted: #6b776e;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: var(--cream);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        button,
-        input {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-        .container {
-            width: min(1150px, 90%);
-            margin: auto;
-        }
-
-        /* Navigation */
-
-        header {
-            background: rgba(247, 247, 240, 0.96);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid #e5e9df;
-        }
-
-        nav {
-            min-height: 76px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--green);
-        }
-
-        .logo span {
-            color: var(--green-light);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-            list-style: none;
-        }
-
-        .nav-links a:hover {
-            color: var(--green-light);
-        }
-
-        .menu-button {
-            display: none;
-            border: 0;
-            background: transparent;
-            color: var(--green);
-            font-size: 1.8rem;
-        }
-
-        /* Hero */
-
-        .hero {
-            min-height: 510px;
-            display: flex;
-            align-items: center;
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(15, 40, 25, 0.88),
-                    rgba(15, 40, 25, 0.25)
-                ),
-                url("https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=1800&q=85")
-                center 45% / cover;
-            color: white;
-        }
-
-        .hero-content {
-            max-width: 660px;
-            padding: 75px 0;
-        }
-
-        .eyebrow {
-            color: var(--lime);
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            font-weight: bold;
-            letter-spacing: 3px;
-            margin-bottom: 18px;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.7rem);
-            line-height: 1.08;
-            margin-bottom: 22px;
-        }
-
-        .hero p {
-            max-width: 560px;
-            color: #f0f4ee;
-            font-size: 1.08rem;
-            margin-bottom: 30px;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 13px 25px;
-            border-radius: 8px;
-            font-weight: bold;
-            border: 0;
-            transition: 0.2s;
-        }
-
-        .button-primary {
-            background: var(--lime);
-            color: var(--green);
-        }
-
-        .button-primary:hover {
-            background: white;
-            transform: translateY(-2px);
-        }
-
-        /* General sections */
-
-        section {
-            padding: 80px 0;
-        }
-
-        .section-heading {
-            text-align: center;
-            max-width: 650px;
-            margin: 0 auto 38px;
-        }
-
-        .section-heading h2 {
-            font-size: clamp(1.8rem, 4vw, 2.6rem);
-            color: var(--green);
-            margin-bottom: 10px;
-        }
-
-        .section-heading p {
-            color: var(--muted);
-        }
-
-        /* Search */
-
-        .search-area {
-            background: white;
-            padding: 25px;
-            border-radius: 14px;
-            margin-top: -35px;
-            position: relative;
-            box-shadow: 0 12px 35px rgba(30, 60, 40, 0.09);
-        }
-
-        .search-area label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .search-row {
-            display: flex;
-            gap: 12px;
-        }
-
-        .search-row input {
-            flex: 1;
-            min-width: 0;
-            padding: 13px 15px;
-            border: 1px solid #d8e0d5;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .search-row input:focus {
-            border-color: var(--green-light);
-        }
-
-        .search-row button {
-            padding: 12px 22px;
-            border: 0;
-            border-radius: 8px;
-            background: var(--green);
-            color: white;
-        }
-
-        /* Categories */
-
-        .categories {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 35px;
-        }
-
-        .category-button {
-            padding: 10px 19px;
-            border-radius: 30px;
-            border: 1px solid #dce4d8;
-            background: white;
-            color: var(--green);
-        }
-
-        .category-button.active,
-        .category-button:hover {
-            background: var(--green);
-            color: white;
-            border-color: var(--green);
-        }
-
-        /* Bird cards */
-
-        .birds-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 25px;
-        }
-
-        .bird-card {
-            background: white;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(30, 60, 40, 0.06);
-            transition: transform 0.25s, box-shadow 0.25s;
-        }
-
-        .bird-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 28px rgba(30, 60, 40, 0.12);
-        }
-
-        .bird-card img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            display: block;
-            background: #e5eadf;
-        }
-
-        .bird-info {
-            padding: 22px;
-        }
-
-        .bird-tag {
-            display: inline-block;
-            background: #edf4e6;
-            color: var(--green);
-            border-radius: 20px;
-            padding: 4px 11px;
-            font-size: 0.78rem;
-            margin-bottom: 10px;
-        }
-
-        .bird-info h3 {
-            color: var(--green);
-            font-size: 1.3rem;
-        }
-
-        .scientific-name {
-            color: var(--muted);
-            font-style: italic;
-            font-size: 0.9rem;
-            margin: 3px 0 12px;
-        }
-
-        .bird-info p {
-            color: var(--muted);
-            font-size: 0.95rem;
-        }
-
-        .details-button {
-            margin-top: 18px;
-            background: transparent;
-            border: 0;
-            color: var(--green-light);
-            font-weight: bold;
-            padding: 5px 0;
-        }
-
-        .details-button:hover {
-            text-decoration: underline;
-        }
-
-        .no-results {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            color: var(--muted);
-        }
-
-        /* Fact section */
-
-        .fact-section {
-            background: var(--green);
-            color: white;
-        }
-
-        .fact-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: center;
-            gap: 45px;
-        }
-
-        .fact-content img {
-            width: 100%;
-            height: 330px;
-            object-fit: cover;
-            border-radius: 14px;
-        }
-
-        .fact-content h2 {
-            font-size: 2.2rem;
-            margin-bottom: 18px;
-        }
-
-        .fact-content p {
-            color: #e1eade;
-            margin-bottom: 20px;
-        }
-
-        /* About */
-
-        .about-content {
-            max-width: 760px;
-            text-align: center;
-            margin: auto;
-        }
-
-        .about-content h2 {
-            font-size: 2.2rem;
-            color: var(--green);
-            margin-bottom: 18px;
-        }
-
-        .about-content p {
-            color: var(--muted);
-        }
-
-        /* Footer */
-
-        footer {
-            background: #173724;
-            color: white;
-            padding: 35px 0;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .footer-content p {
-            color: #d0ddd1;
-            font-size: 0.9rem;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-links a:hover {
-            color: var(--lime);
-        }
-
-        /* Details dialog */
-
-        dialog {
-            width: min(500px, 90%);
-            margin: auto;
-            border: 0;
-            border-radius: 14px;
-            padding: 30px;
-            color: var(--text);
-            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.3);
-        }
-
-        dialog::backdrop {
-            background: rgba(10, 25, 15, 0.65);
-        }
-
-        dialog h2 {
-            color: var(--green);
-            margin-bottom: 12px;
-        }
-
-        dialog p {
-            margin-bottom: 15px;
-        }
-
-        .close-button {
-            background: var(--green);
-            color: white;
-            border: 0;
-            border-radius: 7px;
-            padding: 10px 18px;
-            margin-top: 10px;
-        }
-
-        /* Responsive design */
-
-        @media (max-width: 800px) {
-            .birds-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .fact-content {
-                grid-template-columns: 1fr;
-            }
-
-            .fact-content img {
-                height: 280px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .menu-button {
-                display: block;
-            }
-
-            nav {
-                flex-wrap: wrap;
-                padding: 15px 0;
-            }
-
-            .nav-links {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-                padding: 10px 0;
-            }
-
-            .nav-links.open {
-                display: flex;
-            }
-
-            .hero {
-                min-height: 450px;
-            }
-
-            .hero h1 {
-                font-size: 2.6rem;
-            }
-
-            .birds-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .search-row {
-                flex-direction: column;
-            }
-
-            .search-row button {
-                width: 100%;
-            }
-
-            section {
-                padding: 60px 0;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Birds World – Ultimate Guide, Real Photos &amp; AI Assistant</title>
+<meta name="description" content="A complete advanced bird guide: species, real photos, diet, care tips, health, and interactive AI assistant.">
+<link rel="canonical" href="https://meraimiyasser.github.io/birds-world/">
+<!-- Favicon / شعار الموقع في المتصفح -->
+<link rel="icon" href="https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=128&q=80">
+<style>
+:root{--bg:#f6f8f3;--card:#fff;--tx:#1d2b22;--mut:#5d6b62;--ac:#2e7d4f;--ac2:#e4f1e8;--bd:#dfe7dc}
+@media (prefers-color-scheme:dark){:root{--bg:#121a15;--card:#1b261f;--tx:#e8f0ea;--mut:#9fb0a4;--ac:#5fc287;--ac2:#22352a;--bd:#2c3d32}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.6}
+header{padding:28px 16px 18px;text-align:center;background:var(--ac2)}
+h1{margin:0 0 6px;font-size:1.8rem}header p{margin:0;color:var(--mut)}
+nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--bd);z-index:5}
+nav a{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:20px;text-decoration:none;font-size:0.95rem;transition:all 0.2s ease}
+nav a:hover{background:var(--ac2);color:var(--ac);border-color:var(--ac)}
+main{max-width:900px;margin:0 auto;padding:16px}
+h2{margin:26px 0 10px;scroll-margin-top:70px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+
+/* تصميم بطاقة الطائر مع الصور الحقيقية */
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;position:relative;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,0.03);transition:transform 0.2s ease}
+.card:hover{transform:translateY(-3px)}
+.card-img{width:100%;height:160px;object-fit:cover;border-radius:10px;margin-bottom:10px}
+.card h3{margin:0 0 6px;display:flex;justify-content:space-between;align-items:center;color:var(--ac)}
+.card p{margin:4px 0;font-size:.93rem}.card b{color:var(--ac)}
+.like-btn{background:none;border:none;cursor:pointer;font-size:1.2rem;transition:transform 0.2s}
+.like-btn:hover{transform:scale(1.2)}
+
+.note{background:var(--ac2);border-radius:12px;padding:12px;margin:14px 0;font-size:.92rem}
+li{margin:6px 0}
+input{width:100%;padding:11px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;margin-bottom:12px}
+footer{text-align:center;color:var(--mut);font-size:.8rem;padding:20px 16px}
+
+/* AI Chat Box Styles */
+.ai-box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,0.04)}
+.ai-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.online-badge{width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block}
+.chat-window{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);margin-bottom:12px}
+.msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:0.92rem;line-height:1.4}
+.msg.user{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:2px}
+.msg.bot{align-self:flex-start;background:var(--card);border:1px solid var(--bd);color:var(--tx);border-bottom-left-radius:2px}
+.chat-input-row{display:flex;gap:8px}
+.chat-input-row input{margin-bottom:0;flex:1}
+.chat-btn{background:var(--ac);color:#fff;border:none;padding:0 18px;border-radius:12px;cursor:pointer;font-weight:bold;font-size:0.95rem;transition:opacity 0.2s}
+.chat-btn:hover{opacity:0.9}
+.suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.sug-chip{font-size:0.8rem;padding:4px 10px;background:var(--ac2);color:var(--ac);border-radius:12px;cursor:pointer;border:1px solid var(--bd)}
+.sug-chip:hover{opacity:0.8}
+</style>
 </head>
-
 <body>
-
 <header>
-    <nav class="container">
-        <a href="#" class="logo">Birds<span>World.</span></a>
-
-        <button
-            class="menu-button"
-            id="menuButton"
-            aria-label="Open navigation menu"
-            aria-expanded="false">
-            ☰
-        </button>
-
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#birds">Bird Species</a></li>
-            <li><a href="#facts">Bird Facts</a></li>
-            <li><a href="#about">About</a></li>
-        </ul>
-    </nav>
+  <h1>🐦 Birds World</h1>
+  <p>Your advanced guide to birds: real species photos, expert care tips, health, and live AI assistant</p>
 </header>
-
+<nav>
+  <a href="#birds">Birds Species</a>
+  <a href="#ai-assistant">🤖 AI Assistant</a>
+  <a href="#care">Basic Care</a>
+  <a href="#health">Health &amp; Nutrition</a>
+</nav>
 <main>
 
-    <section class="hero" id="home">
-        <div class="container">
-            <div class="hero-content">
-                <p class="eyebrow">Explore • Discover • Protect</p>
+<h2 id="birds">Bird Species &amp; Real Photos</h2>
+<input id="s" type="search" placeholder="Search birds (e.g. canary, parrot, goldfinch, cardinal)..." aria-label="Search birds">
+<div class="grid" id="grid"></div>
 
-                <h1>Discover the Wonderful World of Birds</h1>
+<h2 id="ai-assistant">🤖 Ask AI Assistant</h2>
+<div class="ai-box">
+  <div class="ai-header">
+    <span class="online-badge"></span>
+    <p style="margin:0; font-size:0.9rem; color:var(--mut);">Ask any question about bird care, feeding, breeding, or health, and the AI assistant will help you instantly!</p>
+  </div>
+  <div class="chat-window" id="chatWindow">
+    <div class="msg bot">👋 Hello! I am your Bird Expert AI. Ask me anything about your bird!</div>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="aiInput" placeholder="Type your question here (e.g. What do canaries eat?)...">
+    <button class="chat-btn" id="sendBtn">Send</button>
+  </div>
+  <div class="suggestions">
+    <span class="sug-chip" onclick="askPreset('What can I feed my canary?')">🐤 Canary diet</span>
+    <span class="sug-chip" onclick="askPreset('How to deal with molting?')">🪶 Molting tips</span>
+    <span class="sug-chip" onclick="askPreset('Is avocado toxic to parrots?')">⚠️ Toxic foods</span>
+    <span class="sug-chip" onclick="askPreset('How often should I bath my bird?')">🛁 Bathing frequency</span>
+  </div>
+</div>
 
-                <p>
-                    Explore beautiful bird species, discover their natural
-                    habitats, and learn fascinating facts about the birds
-                    that share our planet.
-                </p>
+<h2 id="care">Basic Care for All Birds</h2>
+<div class="card"><ul>
+<li><b>Cage:</b> large enough to spread wings and make short flights; away from drafts, the kitchen and smoke.</li>
+<li><b>Hygiene:</b> clean the cage floor daily, wash food and water dishes daily, disinfect the cage weekly.</li>
+<li><b>Water:</b> always clean and fresh, with a bath two to three times a week.</li>
+<li><b>Light and sleep:</b> 10–12 hours of dark, quiet sleep and indirect daylight.</li>
+<li><b>Temperature:</b> avoid extreme heat and sudden cold; keep it stable.</li>
+<li><b>Interaction:</b> social birds such as parrots need daily time, toys and enrichment.</li>
+<li><b>Safety:</b> avoid burnt non-stick (PTFE) cookware, perfumes and cleaning sprays; their fumes are toxic to birds.</li>
+</ul></div>
+<div class="note">⚠️ Never feed birds: avocado, chocolate, caffeine, alcohol, large amounts of onion or garlic, or apple seeds and fruit pits.</div>
 
-                <a href="#birds" class="button button-primary">
-                    Explore Bird Species →
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <div class="container">
-        <div class="search-area">
-            <label for="birdSearch">Find your favorite bird</label>
-
-            <div class="search-row">
-                <input
-                    type="search"
-                    id="birdSearch"
-                    placeholder="Search by bird name..."
-                    autocomplete="off">
-
-                <button type="button" id="searchButton">
-                    Search
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <section id="birds">
-        <div class="container">
-
-            <div class="section-heading">
-                <h2>Discover Bird Species</h2>
-                <p>
-                    Meet some fascinating birds and learn more about
-                    their characteristics and natural habitats.
-                </p>
-            </div>
-
-            <div class="categories" id="categories">
-                <button class="category-button active"
-                        data-category="All">All Birds</button>
-
-                <button class="category-button"
-                        data-category="Songbirds">Songbirds</button>
-
-                <button class="category-button"
-                        data-category="Birds of Prey">Birds of Prey</button>
-
-                <button class="category-button"
-                        data-category="Parrots">Parrots</button>
-
-                <button class="category-button"
-                        data-category="Water Birds">Water Birds</button>
-            </div>
-
-            <div class="birds-grid" id="birdsGrid">
-
-                <article class="bird-card"
-                         data-name="European Goldfinch"
-                         data-category="Songbirds"
-                         data-scientific="Carduelis carduelis"
-                         data-habitat="Open woodlands, gardens and grasslands"
-                         data-diet="Mainly seeds, especially thistle seeds"
-                         data-description="The European goldfinch is a colorful finch recognized by its red face, black-and-white head markings, and bright yellow wing bar.">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=700&q=80"
-                        alt="Colorful bird perched on a branch"
-                        loading="lazy"
-                        width="700"
-                        height="450">
-
-                    <div class="bird-info">
-                        <span class="bird-tag">Songbirds</span>
-                        <h3>European Goldfinch</h3>
-                        <p class="scientific-name">Carduelis carduelis</p>
-                        <p>
-                            A colorful finch known for its striking
-                            markings and melodious song.
-                        </p>
-                        <button class="details-button">
-                            Discover More →
-                        </button>
-                    </div>
-                </article>
-
-                <article class="bird-card"
-                         data-name="Peregrine Falcon"
-                         data-category="Birds of Prey"
-                         data-scientific="Falco peregrinus"
-                         data-habitat="Cliffs, mountains and urban environments"
-                         data-diet="Primarily other birds"
-                         data-description="The peregrine falcon is a powerful bird of prey renowned for its spectacular high-speed hunting dives.">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1452570053594-1b985d6ea890?auto=format&fit=crop&w=700&q=80"
-                        alt="Wild bird photographed in its natural environment"
-                        loading="lazy"
-                        width="700"
-                        height="450">
-
-                    <div class="bird-info">
-                        <span class="bird-tag">Birds of Prey</span>
-                        <h3>Peregrine Falcon</h3>
-                        <p class="scientific-name">Falco peregrinus</p>
-                        <p>
-                            A remarkable predator famous for its
-                            extraordinary speed during hunting dives.
-                        </p>
-                        <button class="details-button">
-                            Discover More →
-                        </button>
-                    </div>
-                </article>
-
-                <article class="bird-card"
-                         data-name="Scarlet Macaw"
-                         data-category="Parrots"
-                         data-scientific="Ara macao"
-                         data-habitat="Tropical forests of Central and South America"
-                         data-diet="Fruits, nuts and seeds"
-                         data-description="The scarlet macaw is a large, vividly colored parrot native to tropical regions of the Americas.">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=700&q=80"
-                        alt="Colorful tropical bird"
-                        loading="lazy"
-                        width="700"
-                        height="450">
-
-                    <div class="bird-info">
-                        <span class="bird-tag">Parrots</span>
-                        <h3>Scarlet Macaw</h3>
-                        <p class="scientific-name">Ara macao</p>
-                        <p>
-                            A brilliant tropical parrot with vibrant
-                            plumage and a powerful curved beak.
-                        </p>
-                        <button class="details-button">
-                            Discover More →
-                        </button>
-                    </div>
-                </article>
-
-                <article class="bird-card"
-                         data-name="Common Kingfisher"
-                         data-category="Water Birds"
-                         data-scientific="Alcedo atthis"
-                         data-habitat="Streams, rivers, lakes and wetlands"
-                         data-diet="Small fish and aquatic animals"
-                         data-description="The common kingfisher is a small, brightly colored bird that hunts near clear water.">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1497206365907-f5e630693df0?auto=format&fit=crop&w=700&q=80"
-                        alt="Bird in a natural setting"
-                        loading="lazy"
-                        width="700"
-                        height="450">
-
-                    <div class="bird-info">
-                        <span class="bird-tag">Water Birds</span>
-                        <h3>Common Kingfisher</h3>
-                        <p class="scientific-name">Alcedo atthis</p>
-                        <p>
-                            A small, striking bird that dives into water
-                            to catch its prey.
-                        </p>
-                        <button class="details-button">
-                            Discover More →
-                        </button>
-                    </div>
-                </article>
-
-                <article class="bird-card"
-                         data-name="Barn Owl"
-                         data-category="Birds of Prey"
-                         data-scientific="Tyto alba"
-                         data-habitat="Grasslands, farmland and open countryside"
-                         data-diet="Small mammals, especially rodents"
-                         data-description="The barn owl is recognized by its pale plumage, heart-shaped facial disc and remarkable hearing.">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1579019163248-e7761241dfe6?auto=format&fit=crop&w=700&q=80"
-                        alt="Owl photographed in nature"
-                        loading="lazy"
-                        width="700"
-                        height="450">
-
-                    <div class="bird-info">
-                        <span class="bird-tag">Birds of Prey</span>
-                        <h3>Barn Owl</h3>
-                        <p class="scientific-name">Tyto alba</p>
-                        <p>
-                            A nocturnal hunter with excellent hearing
-                            and silent flight.
-                        </p>
-                        <button class="details-button">
-                            Discover More →
-                        </button>
-                    </div>
-                </article>
-
-                <article class="bird-card"
-                         data-name="Atlantic Puffin"
-                         data-category="Water Birds"
-                         data-scientific="Fratercula arctica"
-                         data-habitat="North Atlantic coasts and offshore islands"
-                         data-diet="Small fish and marine invertebrates"
-                         data-description="The Atlantic puffin is a seabird known for its colorful breeding-season bill and excellent underwater swimming.">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=700&q=80"
-                        alt="Wildlife and nature photography"
-                        loading="lazy"
-                        width="700"
-                        height="450">
-
-                    <div class="bird-info">
-                        <span class="bird-tag">Water Birds</span>
-                        <h3>Atlantic Puffin</h3>
-                        <p class="scientific-name">Fratercula arctica</p>
-                        <p>
-                            A seabird with a colorful bill that spends
-                            much of its life at sea.
-                        </p>
-                        <button class="details-button">
-                            Discover More →
-                        </button>
-                    </div>
-                </article>
-
-            </div>
-
-            <p class="no-results" id="noResults">
-                No birds found. Try another name or category.
-            </p>
-
-        </div>
-    </section>
-
-    <section class="fact-section" id="facts">
-        <div class="container fact-content">
-
-            <div>
-                <p class="eyebrow">Did You Know?</p>
-
-                <h2>Birds Are Extraordinary Creatures</h2>
-
-                <p>
-                    Birds live in almost every environment on Earth.
-                    They play important ecological roles, including
-                    pollination, seed dispersal and insect control.
-                </p>
-
-                <p>
-                    Observing birds can help us appreciate biodiversity
-                    and understand why protecting natural habitats matters.
-                </p>
-
-                <a href="#about" class="button button-primary">
-                    Learn More
-                </a>
-            </div>
-
-            <img
-                src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?auto=format&fit=crop&w=900&q=80"
-                alt="Wildlife in a natural habitat"
-                loading="lazy"
-                width="900"
-                height="600">
-
-        </div>
-    </section>
-
-    <section id="about">
-        <div class="container about-content">
-            <h2>About Birds World</h2>
-
-            <p>
-                Birds World is a project dedicated to exploring
-                the diversity, beauty and fascinating behavior
-                of birds. Our goal is to make learning about bird
-                species and their habitats accessible and enjoyable.
-            </p>
-        </div>
-    </section>
-
+<h2 id="health">Health &amp; Nutrition</h2>
+<div class="card"><h3>🥚 Proteins and Supplements</h3><ul>
+<li><b>Protein sources:</b> boiled egg (with crushed shell for calcium), mealworms and dried crickets for insect-eaters, cooked legumes and sprouted seed mixes.</li>
+<li><b>Calcium:</b> cuttlebone and mineral blocks, especially important for laying females.</li>
+<li><b>Vitamins:</b> vitamin A (carrots, sweet potato, leafy greens), vitamin D3 (unfiltered sunlight), and water-soluble vitamins under veterinary guidance.</li>
+<li><b>During molting:</b> extra protein and amino acids (such as methionine) support feather regrowth.</li>
+<li><b>Grit:</b> small stones help some birds, like pigeons and chickens, grind grain.</li>
+</ul></div>
+<div class="card" style="margin-top:12px"><h3>💊 Common Illnesses and Treatments</h3><ul>
+<li><b>Diarrhea and gut infections:</b> treated by cause (bacterial or parasitic), usually with antibiotics or anticoccidials prescribed by a vet.</li>
+<li><b>Internal parasites:</b> dewormers (such as ivermectin or fenbendazole, depending on species) at vet-set doses.</li>
+<li><b>Mites and lice:</b> bird-safe sprays or drops, plus a deep clean of the cage.</li>
+<li><b>Fungal disease (e.g. aspergillosis):</b> antifungals by prescription; prevent with good ventilation and clean food.</li>
+<li><b>Vitamin deficiency:</b> corrected with a varied diet and suitable supplements.</li>
+</ul></div>
+<div class="note">🩺 <b>Important:</b> this is general information only. Never give any medicine or antibiotic without advice from an avian vet; a wrong dose can kill a small bird. See a vet at once for fluffed feathers, lethargy, loss of appetite, labored breathing or abnormal droppings.</div>
 </main>
-
-<footer>
-    <div class="container footer-content">
-
-        <div>
-            <a href="#" class="logo" style="color:white">
-                Birds<span>World.</span>
-            </a>
-
-            <p>Explore nature. Discover birds. Protect biodiversity.</p>
-        </div>
-
-        <div class="footer-links">
-            <a href="#home">Home</a>
-            <a href="#birds">Birds</a>
-            <a href="#about">About</a>
-        </div>
-
-        <p>© <span id="year"></span> Birds World</p>
-
-    </div>
-</footer>
-
-<dialog id="birdDialog">
-    <h2 id="dialogName"></h2>
-    <p id="dialogScientific"></p>
-    <p><strong>Habitat:</strong> <span id="dialogHabitat"></span></p>
-    <p><strong>Diet:</strong> <span id="dialogDiet"></span></p>
-    <p id="dialogDescription"></p>
-
-    <button class="close-button" id="closeDialog">
-        Close
-    </button>
-</dialog>
+<footer>General information only; it does not replace a veterinarian.</footer>
 
 <script>
-    const searchInput = document.getElementById("birdSearch");
-    const searchButton = document.getElementById("searchButton");
-    const categoryButtons = document.querySelectorAll(".category-button");
-    const birdCards = document.querySelectorAll(".bird-card");
-    const noResults = document.getElementById("noResults");
+// مصفوفة الطيور المحدثة بدقة مع روابط الصور الحقيقية المخصصة لكل طائر
+const B=[
+["Canary", "Canary seed mix, rapeseed, niger seed, leafy greens, and egg food.", "Roomy cage, bath dish, good ventilation, no drafts. Famous for its song.", "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=500&q=80"],
+["Budgerigar (Budgie)", "Millet, oat mix, fresh vegetables, fruit, and little boiled egg.", "Social bird; needs toys, interaction, and proper perches.", "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=500&q=80"],
+["Cockatiel", "Mixed seeds, pellets, vegetables, fruit, and light protein.", "Loves whistling, attention, and daily out-of-cage time.", "https://images.unsplash.com/photo-1555169062-01347abf4f39?auto=format&fit=crop&w=500&q=80"],
+["Lovebird", "Seeds, fruit, vegetables, and high-quality pellets.", "Kept in pairs; needs nesting spots and protection from high heat.", "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=500&q=80"],
+["African Grey Parrot", "Pellets, vegetables, fruit, nuts, and calcium sources.", "Extremely intelligent; requires constant mental stimulation.", "https://images.unsplash.com/photo-1522926193637-af3c40a3e5d0?auto=format&fit=crop&w=500&q=80"],
+["Large Parrots (Macaw/Cockatoo)", "Pellets, nuts, fruit, vegetables, and varied seeds.", "Long-lived; requires a large cage and expert daily care.", "https://images.unsplash.com/photo-1569683795645-b62e50fbf103?auto=format&fit=crop&w=500&q=80"],
+["Goldfinch", "Niger seeds, rapeseed, thistle seeds, and small oily grains.", "Active singer; prefers calm environments and small seed feeders.", "https://images.unsplash.com/photo-1579306193806-ea12a6f3bb10?auto=format&fit=crop&w=500&q=80"],
+["Zebra Finch", "Millet, small grains, greens, and protein during breeding.", "Lives happily in small groups inside roomy horizontal cages.", "https://images.unsplash.com/photo-1606567595334-d39972c85dbe?auto=format&fit=crop&w=500&q=80"],
+["Nightingale", "Fruit, vegetables, insects, and specialized softbill food.", "Active songbird; requires high cleanliness and spacious housing.", "https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=500&q=80"],
+["Northern Cardinal", "Sunflower seeds, wild berries, and grains.", "Stunning bright red bird; ideal for garden feeders and open spaces.", "https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=500&q=80"],
+["Hummingbird", "Natural flower nectar, sugar water solution, and small insects.", "Ultra-fast wingbeats; attracted to specialized nectar feeders.", "https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=500&q=80"],
+["Pigeon", "Wheat, corn, peas, barley, grit, and fresh water.", "Requires a clean, dry loft and regular health checkups.", "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=500&q=80"],
+["Chicken", "Balanced poultry feed, grains, greens, and calcium shells.", "Needs a safe coop and a dust bath area for parasite control.", "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=500&q=80"],
+["Ducks and Geese", "Waterfowl feed, grains, leafy greens, and aquatic insects.", "Need clean water for swimming and regular enclosure cleaning.", "https://images.unsplash.com/photo-1550853024-fae8cd484752?auto=format&fit=crop&w=500&q=80"],
+["Peacock", "Grains, seeds, vegetables, insects, and balanced feed.", "Requires wide open space, high roosts, and cold protection.", "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80"],
+["Flamingo", "Small crustaceans, algae, and carotene-rich specialized feed.", "Requires a shallow pool environment; best kept in flocks.", "https://images.unsplash.com/photo-1497206365907-f5e630693df0?auto=format&fit=crop&w=500&q=80"],
+["Owl", "Rodents, insects, and small animals depending on species.", "Nocturnal raptor; requires permits and specialist veterinary care.", "https://images.unsplash.com/photo-1543598060-144793ab755f?auto=format&fit=crop&w=500&q=80"],
+["Falcons and Birds of Prey", "Fresh meat (quail, pigeon, and small rodents).", "Requires expert training, daily attention, and specialized care.", "https://images.unsplash.com/photo-1611689342806-0863700ce1e4?auto=format&fit=crop&w=500&q=80"],
+["Wild Birds and Sparrows", "Seeds, wild insects, fruit, and natural nectar.", "Best observed in nature; provide garden feeders and clean water.", "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?auto=format&fit=crop&w=500&q=80"]
+];
 
-    let activeCategory = "All";
+const g=document.getElementById("grid");
 
-    function filterBirds() {
-        const query = searchInput.value.trim().toLowerCase();
-        let visibleCount = 0;
+function draw(f){
+  g.textContent="";
+  B.filter(b=>(b[0]+b[1]+b[2]).toLowerCase().includes(f)).forEach(([n,fd,c,imgUrl])=>{
+    const d=document.createElement("div");d.className="card";
+    
+    // إنشاء وصم الصورة الحقيقية
+    const img=document.createElement("img");
+    img.className="card-img";
+    img.src=imgUrl;
+    img.alt=n;
+    
+    // رأس البطاقة مع زر الإعجاب التفاعلي
+    const h3=document.createElement("h3");
+    h3.textContent=n;
+    const likeBtn=document.createElement("button");
+    likeBtn.className="like-btn";
+    likeBtn.innerHTML="🤍";
+    likeBtn.onclick=()=>{
+      likeBtn.innerHTML = likeBtn.innerHTML === "🤍" ? "❤️" : "🤍";
+    };
+    h3.appendChild(likeBtn);
 
-        birdCards.forEach(card => {
-            const name = card.dataset.name.toLowerCase();
-            const scientific = card.dataset.scientific.toLowerCase();
-            const category = card.dataset.category;
+    const t=(k,x,cl)=>{const y=document.createElement(k);y.textContent=x;if(cl)y.className=cl;return y};
+    const p=(l,x)=>{const q=document.createElement("p");q.append(t("b",l),document.createTextNode(x));return q};
+    
+    d.append(img,h3,p("Diet: ",fd),p("Care: ",c));
+    g.append(d);
+  });
+  if(!g.children.length)g.textContent="No birds found. Try another name.";
+}
 
-            const matchesSearch =
-                name.includes(query) || scientific.includes(query);
+draw("");
+document.getElementById("s").addEventListener("input",e=>draw(e.target.value.trim().toLowerCase()));
 
-            const matchesCategory =
-                activeCategory === "All" || category === activeCategory;
+// AI Assistant Logic
+const chatWin = document.getElementById('chatWindow');
+const aiInp = document.getElementById('aiInput');
+const sendBtn = document.getElementById('sendBtn');
 
-            const visible = matchesSearch && matchesCategory;
+function addMsg(txt, isUser){
+  const d = document.createElement('div');
+  d.className = 'msg ' + (isUser ? 'user' : 'bot');
+  d.textContent = txt;
+  chatWin.appendChild(d);
+  chatWin.scrollTop = chatWin.scrollHeight;
+}
 
-            card.style.display = visible ? "" : "none";
+function generateResponse(query){
+  const q = query.toLowerCase();
+  if(q.includes('canary') || q.includes('كناري')) return "🐤 Canaries love canary seed mix, niger seeds, leafy greens, and egg food during breeding. Keep them away from cold drafts!";
+  if(q.includes('avocado') || q.includes('chocolate') || q.includes('toxic') || q.includes('سام')) return "⚠️ Never give birds avocado, chocolate, caffeine, alcohol, onion, garlic, or fruit seeds! They are toxic.";
+  if(q.includes('molt') || q.includes('تبديل') || q.includes('طرح')) return "🪶 During molting, birds need extra protein (like boiled egg) and calcium to rebuild strong, healthy feathers.";
+  if(q.includes('bath') || q.includes('استحمام') || q.includes('مااء')) return "🛁 Offer clean water for bathing 2 to 3 times a week. It helps keep their feathers clean and skin healthy.";
+  if(q.includes('sick') || q.includes('مريض') || q.includes('علاج')) return "🩺 If your bird shows signs of illness (fluffed feathers, loss of appetite, lethargy), please consult an avian vet immediately!";
+  if(q.includes('hello') || q.includes('hi') || q.includes('مرحبا')) return "👋 Hello! How can I help you with your birds today?";
+  return "🐦 For best results: ensure clean daily water, balanced seed/pellet mix, fresh greens, 10-12 hours of sleep, and an avian vet checkup when needed!";
+}
 
-            if (visible) {
-                visibleCount++;
-            }
-        });
+function handleSend(){
+  const val = aiInp.value.trim();
+  if(!val) return;
+  addMsg(val, true);
+  aiInp.value = '';
+  setTimeout(()=>{
+    addMsg(generateResponse(val), false);
+  }, 400);
+}
 
-        noResults.style.display =
-            visibleCount === 0 ? "block" : "none";
-    }
+sendBtn.addEventListener('click', handleSend);
+aiInp.addEventListener('keypress', e => { if(e.key === 'Enter') handleSend(); });
 
-    searchInput.addEventListener("input", filterBirds);
-    searchButton.addEventListener("click", filterBirds);
-
-    categoryButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            activeCategory = button.dataset.category;
-
-            categoryButtons.forEach(item => {
-                item.classList.remove("active");
-            });
-
-            button.classList.add("active");
-            filterBirds();
-        });
-    });
-
-    // Bird details dialog
-    const birdDialog = document.getElementById("birdDialog");
-
-    birdCards.forEach(card => {
-        card.querySelector(".details-button").addEventListener(
-            "click",
-            () => {
-                document.getElementById("dialogName").textContent =
-                    card.dataset.name;
-
-                document.getElementById("dialogScientific").textContent =
-                    card.dataset.scientific;
-
-                document.getElementById("dialogHabitat").textContent =
-                    card.dataset.habitat;
-
-                document.getElementById("dialogDiet").textContent =
-                    card.dataset.diet;
-
-                document.getElementById("dialogDescription").textContent =
-                    card.dataset.description;
-
-                birdDialog.showModal();
-            }
-        );
-    });
-
-    document.getElementById("closeDialog").addEventListener(
-        "click",
-        () => birdDialog.close()
-    );
-
-    // Mobile navigation
-    const menuButton = document.getElementById("menuButton");
-    const navLinks = document.getElementById("navLinks");
-
-    menuButton.addEventListener("click", () => {
-        const isOpen = navLinks.classList.toggle("open");
-
-        menuButton.setAttribute("aria-expanded", String(isOpen));
-        menuButton.textContent = isOpen ? "✕" : "☰";
-    });
-
-    navLinks.querySelectorAll("a").forEach(link => {
-        link.addEventListener("click", () => {
-            navLinks.classList.remove("open");
-            menuButton.setAttribute("aria-expanded", "false");
-            menuButton.textContent = "☰";
-        });
-    });
-
-    document.getElementById("year").textContent =
-        new Date().getFullYear();
+function askPreset(txt){
+  aiInp.value = txt;
+  handleSend();
+}
 </script>
-
 </body>
 </html>
