@@ -3,275 +3,92 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birds World – Real Bird Photos, Care Guide & AI Assistant</title>
-<meta name="description" content="Birds World is an advanced bird guide with real species photos from Wikimedia, diet and care tips, health information, and an interactive AI assistant.">
-<meta name="author" content="Meraimi Yasser">
-<link rel="canonical" href="https://meraimiyasser.github.io/birds-world/">
-<meta property="og:title" content="Birds World – Real Bird Photos, Care Guide & AI Assistant">
-<meta property="og:description" content="Explore real bird photos, species information, care tips, nutrition, health advice, and ask the Bird Expert AI.">
-<meta property="og:url" content="https://meraimiyasser.github.io/birds-world/">
-<meta property="og:type" content="website">
-<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Aldabra_Drongo_Dicrurus_aldabranus.jpg/120px-Aldabra_Drongo_Dicrurus_aldabranus.jpg">
-
+<title>Birds World – Real Bird Photos & Care Guide</title>
+<meta name="description" content="Birds World: real bird photos, species guide, care tips, nutrition, health advice, and AI assistant.">
 <style>
 :root{
-  --bg:#f6f8f3; --card:#fff; --tx:#1d2b22; --mut:#5d6b62;
-  --ac:#2e7d4f; --ac-dark:#23603d; --ac2:#e4f1e8; --bd:#dfe7dc;
-  --shadow:0 8px 22px rgba(29,43,34,.08);
+  --bg:#f6f8f3;--card:#fff;--tx:#1d2b22;--mut:#5d6b62;
+  --ac:#2e7d4f;--ac2:#e4f1e8;--bd:#dfe7dc;
 }
 html[data-theme="dark"]{
-  --bg:#111913; --card:#1b261f; --tx:#e8f0ea; --mut:#9fb0a4;
-  --ac:#5fc287; --ac-dark:#3ea86e; --ac2:#22352a; --bd:#2c3d32;
-  --shadow:0 10px 26px rgba(0,0,0,.32);
+  --bg:#111913;--card:#1b261f;--tx:#e8f0ea;--mut:#9fb0a4;
+  --ac:#5fc287;--ac2:#22352a;--bd:#2c3d32;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;background:var(--bg);color:var(--tx);
-  font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.65;
-  transition:background .25s,color .25s;
-}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,Arial,sans-serif;line-height:1.6}
 img{max-width:100%;display:block}
-a{color:inherit}
-
-header{
-  padding:36px 16px 24px;text-align:center;
-  background:linear-gradient(135deg,var(--ac2),transparent);
-  border-bottom:1px solid var(--bd);
-}
-h1{margin:0 0 8px;font-size:clamp(1.8rem,4vw,2.5rem)}
-header p{margin:0 auto;color:var(--mut);max-width:680px}
-
-.topbar{
-  position:sticky;top:0;z-index:30;
-  background:color-mix(in srgb,var(--bg) 90%,transparent);
-  backdrop-filter:blur(10px);border-bottom:1px solid var(--bd);
-}
-.nav-inner{
-  max-width:1050px;margin:auto;padding:10px 14px;
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-}
-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-nav a{
-  border:1px solid var(--bd);background:var(--card);color:var(--tx);
-  padding:8px 14px;border-radius:20px;text-decoration:none;
-  font-size:.93rem;font-weight:600;transition:.2s;
-}
-nav a:hover{background:var(--ac2);color:var(--ac);border-color:var(--ac)}
-.controls{display:flex;gap:8px}
-.icon-btn{
-  width:40px;height:40px;border-radius:12px;cursor:pointer;
-  border:1px solid var(--bd);background:var(--card);color:var(--tx);
-  font-size:1.05rem;transition:.2s;
-}
-.icon-btn:hover{border-color:var(--ac);color:var(--ac)}
-#menuBtn{display:none}
-
-main{max-width:1050px;margin:auto;padding:20px 16px 45px}
-h2{margin:36px 0 10px;font-size:clamp(1.4rem,3vw,1.9rem);scroll-margin-top:85px}
-.section-desc{color:var(--mut);margin:-5px 0 18px}
-
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
-input,textarea{
-  width:100%;padding:11px 13px;border-radius:12px;
-  border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;
-}
-input:focus,textarea:focus{
-  outline:3px solid color-mix(in srgb,var(--ac) 30%,transparent);
-  border-color:var(--ac);
-}
-#search{max-width:370px}
+header{padding:30px 16px;text-align:center;background:var(--ac2)}
+h1{margin:0 0 6px}
+header p{margin:0;color:var(--mut)}
+nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--bd);z-index:10}
+nav a{border:1px solid var(--bd);background:var(--card);padding:8px 14px;border-radius:20px;text-decoration:none;font-weight:600}
+nav a:hover{background:var(--ac2);color:var(--ac)}
+main{max-width:1050px;margin:auto;padding:18px 16px 40px}
+h2{margin:30px 0 12px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+input{padding:11px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;width:100%;max-width:340px}
 .filters{display:flex;gap:7px;flex-wrap:wrap}
-.filter{
-  border:1px solid var(--bd);background:var(--card);color:var(--mut);
-  padding:7px 13px;border-radius:20px;cursor:pointer;font-weight:600;
-  font-size:.85rem;transition:.2s;
-}
-.filter:hover,.filter.active{background:var(--ac);border-color:var(--ac);color:#fff}
-
-.grid{display:grid;gap:15px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
-.card{
-  background:var(--card);border:1px solid var(--bd);border-radius:18px;
-  overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);
-  transition:transform .2s,border-color .2s;
-}
-.card:hover{transform:translateY(-5px);border-color:var(--ac)}
-.card-img{
-  position:relative;height:190px;background:var(--ac2);
-}
-.card-img img{
-  width:100%;height:100%;object-fit:cover;transition:transform .35s;
-}
-.card:hover .card-img img{transform:scale(1.05)}
-.img-loading{
-  position:absolute;inset:0;display:grid;place-items:center;
-  color:var(--mut);font-size:.9rem;
-}
-.card-body{padding:14px 16px 18px}
-.badge{
-  display:inline-block;background:var(--ac2);color:var(--ac);
-  font-size:.75rem;font-weight:700;padding:3px 10px;
-  border-radius:20px;margin-bottom:8px;
-}
+button{font:inherit;cursor:pointer}
+.filter{border:1px solid var(--bd);background:var(--card);color:var(--mut);padding:7px 13px;border-radius:20px;font-weight:600}
+.filter.active{background:var(--ac);border-color:var(--ac);color:#fff}
+.grid{display:grid;gap:15px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+.card img{width:100%;height:190px;object-fit:cover;background:var(--ac2)}
+.card-body{padding:14px}
+.badge{display:inline-block;background:var(--ac2);color:var(--ac);font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px}
 .card h3{margin:0 0 6px;color:var(--ac)}
 .card p{margin:5px 0;font-size:.92rem}
 .card b{color:var(--ac)}
-.source{
-  margin-top:10px;font-size:.76rem;color:var(--mut);
-}
-.source a{color:var(--ac);font-weight:600}
-
-.note{
-  background:var(--ac2);border-inline-start:4px solid var(--ac);
-  border-radius:12px;padding:13px 15px;margin:16px 0;font-size:.93rem;
-}
+.note{background:var(--ac2);border-left:4px solid var(--ac);padding:13px;border-radius:10px;margin:16px 0}
 .note.danger{background:#fdecec;border-color:#c0392b;color:#7d1d13}
-html[data-theme="dark"] .note.danger{background:#3a1d1a;border-color:#e07060;color:#ffd9d2}
-ul{padding-inline-start:20px}
-li{margin:7px 0}
-
-.empty{
-  text-align:center;color:var(--mut);padding:28px;
-  border:1px dashed var(--bd);border-radius:14px;display:none;
-}
-
-.ai-box{
-  background:var(--card);border:1px solid var(--bd);border-radius:18px;
-  padding:16px;box-shadow:var(--shadow);
-}
-.chat-window{
-  height:330px;overflow-y:auto;display:flex;flex-direction:column;
-  gap:10px;padding:12px;border:1px solid var(--bd);border-radius:14px;
-  background:var(--bg);margin-bottom:12px;
-}
-.msg{
-  max-width:85%;padding:10px 14px;border-radius:16px;
-  font-size:.93rem;line-height:1.5;white-space:pre-line;
-}
-.msg.user{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:4px}
-.msg.bot{align-self:flex-start;background:var(--card);border:1px solid var(--bd);border-bottom-left-radius:4px}
-.typing{opacity:.65;font-style:italic}
-.chat-input-row{display:flex;gap:8px}
-.chat-input-row input{margin:0;flex:1}
-.chat-btn{
-  background:var(--ac);color:#fff;border:none;padding:0 20px;
-  border-radius:12px;cursor:pointer;font-weight:700;transition:.2s;
-}
-.chat-btn:hover{background:var(--ac-dark)}
-.suggestions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
-.sug-chip{
-  font-size:.8rem;padding:5px 11px;background:var(--ac2);color:var(--ac);
-  border-radius:14px;cursor:pointer;border:1px solid var(--bd);transition:.2s;
-}
-.sug-chip:hover{opacity:.8}
-
-footer{
-  text-align:center;color:var(--mut);font-size:.82rem;
-  padding:22px 16px;border-top:1px solid var(--bd);background:var(--card);
-}
-#toTop{
-  position:fixed;inset-inline-start:18px;bottom:18px;z-index:40;
-  width:46px;height:46px;border-radius:50%;border:none;
-  background:var(--ac);color:#fff;font-size:1.15rem;cursor:pointer;
-  opacity:0;visibility:hidden;transition:.25s;
-}
-#toTop.visible{opacity:1;visibility:visible}
-
-@media(max-width:720px){
-  #menuBtn{display:grid;place-items:center}
-  nav{
-    position:fixed;inset:66px 4% auto;flex-direction:column;
-    background:var(--card);border:1px solid var(--bd);border-radius:16px;
-    padding:10px;box-shadow:var(--shadow);display:none;
-  }
-  nav.open{display:flex}
-  nav a{text-align:center}
-  .chat-window{height:280px}
-}
+footer{text-align:center;color:var(--mut);padding:20px;border-top:1px solid var(--bd);background:var(--card)}
+#themeBtn{position:fixed;top:70px;left:14px;z-index:20;width:42px;height:42px;border-radius:12px;border:1px solid var(--bd);background:var(--card);font-size:1.1rem}
 </style>
 </head>
 
 <body>
 
+<button id="themeBtn" aria-label="Toggle dark mode">🌙</button>
+
 <header>
   <h1>🐦 Birds World</h1>
-  <p>Explore real bird photos, reliable species information, expert care tips, nutrition, health guidance, and an interactive AI assistant.</p>
+  <p>Real bird photos, species information, care tips, nutrition, and health guidance.</p>
 </header>
 
-<div class="topbar">
-  <div class="nav-inner">
-    <button class="icon-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
-
-    <nav id="mainNav" aria-label="Main navigation">
-      <a href="#birds">Bird Species</a>
-      <a href="#ai-assistant">🤖 AI Assistant</a>
-      <a href="#care">Basic Care</a>
-      <a href="#health">Health & Nutrition</a>
-      <a href="#safety">Safety</a>
-    </nav>
-
-    <div class="controls">
-      <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode">🌙</button>
-    </div>
-  </div>
-</div>
+<nav>
+  <a href="#birds">Bird Species</a>
+  <a href="#care">Basic Care</a>
+  <a href="#health">Health & Nutrition</a>
+  <a href="#safety">Safety</a>
+</nav>
 
 <main>
 
 <h2 id="birds">Bird Species & Real Photos</h2>
-<p class="section-desc">
-  Photos are loaded automatically from Wikipedia/Wikimedia for each bird species. Search or filter by category.
-</p>
 
 <div class="toolbar">
-  <input id="search" type="search" placeholder="Search birds: canary, parrot, goldfinch..." aria-label="Search birds">
-  <div class="filters" role="group" aria-label="Filter birds">
+  <input id="search" type="search" placeholder="Search birds: canary, budgie, cockatiel...">
+  <div class="filters">
     <button class="filter active" data-filter="all">All</button>
     <button class="filter" data-filter="pet">Pet Birds</button>
     <button class="filter" data-filter="song">Songbirds</button>
-    <button class="filter" data-filter="poultry">Poultry & Farm Birds</button>
-    <button class="filter" data-filter="wild">Wild & Birds of Prey</button>
+    <button class="filter" data-filter="poultry">Poultry</button>
+    <button class="filter" data-filter="wild">Wild Birds</button>
   </div>
 </div>
 
-<div class="grid" id="grid" aria-live="polite"></div>
-<div class="empty" id="empty">No birds found. Try another name or category.</div>
-
-<h2 id="ai-assistant">🤖 Ask AI Assistant</h2>
-<div class="ai-box">
-  <p style="margin-top:0;font-size:.9rem;color:var(--mut)">
-    Ask about bird care, feeding, breeding, behavior, or health. This assistant gives general guidance and does not replace an avian veterinarian.
-  </p>
-
-  <div class="chat-window" id="chatWindow" aria-live="polite">
-    <div class="msg bot">👋 Hello! I am your Bird Expert AI. Ask me anything about your bird.</div>
-  </div>
-
-  <div class="chat-input-row">
-    <input type="text" id="aiInput" placeholder="Type your question: What do canaries eat?" aria-label="Ask the AI assistant">
-    <button class="chat-btn" id="sendBtn">Send</button>
-  </div>
-
-  <div class="suggestions">
-    <button class="sug-chip" data-q="What can I feed my canary?">🐤 Canary diet</button>
-    <button class="sug-chip" data-q="How do I care for a bird during molting?">🪶 Molting tips</button>
-    <button class="sug-chip" data-q="Which foods are toxic to birds?">⚠️ Toxic foods</button>
-    <button class="sug-chip" data-q="How often should I bathe my bird?">🛁 Bathing frequency</button>
-    <button class="sug-chip" data-q="What are signs that my bird is sick?">🩺 Signs of illness</button>
-  </div>
-</div>
+<div class="grid" id="grid"></div>
 
 <h2 id="care">Basic Care for All Birds</h2>
 <div class="card">
   <div class="card-body">
     <ul>
       <li><b>Cage:</b> large enough for wing stretching and short flights; away from drafts, kitchens, and smoke.</li>
-      <li><b>Hygiene:</b> clean the cage floor daily, wash food and water dishes daily, disinfect weekly.</li>
+      <li><b>Hygiene:</b> clean the cage floor daily and wash food and water dishes daily.</li>
       <li><b>Water:</b> fresh drinking water daily; bathing water 2–3 times weekly.</li>
       <li><b>Sleep:</b> 10–12 hours of dark, quiet sleep.</li>
       <li><b>Temperature:</b> avoid extreme heat, cold drafts, and sudden changes.</li>
-      <li><b>Interaction:</b> parrots and social birds need daily attention, toys, and enrichment.</li>
-      <li><b>Air safety:</b> avoid overheated non-stick cookware, perfume sprays, aerosols, smoke, and strong cleaning chemicals.</li>
+      <li><b>Safety:</b> avoid overheated non-stick cookware, perfumes, aerosols, smoke, and strong cleaning fumes.</li>
     </ul>
   </div>
 </div>
@@ -279,387 +96,27 @@ footer{
 <h2 id="health">Health & Nutrition</h2>
 <div class="card">
   <div class="card-body">
-    <h3>🥚 Proteins and Supplements</h3>
     <ul>
-      <li><b>Protein:</b> boiled egg, mealworms or crickets for insect-eaters, cooked legumes, and sprouted seeds.</li>
+      <li><b>Protein:</b> boiled egg, mealworms for insect-eating birds, cooked legumes, and sprouted seeds.</li>
       <li><b>Calcium:</b> cuttlebone and mineral blocks, especially for laying females.</li>
-      <li><b>Vitamins:</b> vitamin A from carrots and leafy greens; vitamin D3 from safe sunlight; supplements only with veterinary advice.</li>
-      <li><b>Molting:</b> provide extra protein and amino acids to support feather regrowth.</li>
-    </ul>
-
-    <h3>💊 Common Illnesses</h3>
-    <ul>
-      <li><b>Diarrhea and infections:</b> treatment depends on the cause and may require a veterinarian.</li>
-      <li><b>Parasites:</b> dewormers and doses must be prescribed by an avian vet.</li>
-      <li><b>Mites and lice:</b> use bird-safe treatment and deep-clean the cage.</li>
-      <li><b>Fungal disease:</b> requires veterinary diagnosis and prescription treatment.</li>
+      <li><b>Vitamins:</b> vitamin A from carrots and leafy greens; vitamin D3 from safe sunlight.</li>
+      <li><b>Molting:</b> provide extra protein and calcium to support feather regrowth.</li>
+      <li><b>Illness:</b> never give medicines without an avian veterinarian’s advice.</li>
     </ul>
   </div>
 </div>
 
 <div class="note danger">
-  🩺 <b>Important:</b> This website gives general educational information only. Never give antibiotics, dewormers, or human medicines without an avian veterinarian. Seek urgent help for fluffed feathers, lethargy, appetite loss, breathing difficulty, or abnormal droppings.
+  🩺 <b>Important:</b> Seek urgent veterinary help for fluffed feathers, lethargy, loss of appetite, breathing difficulty, or abnormal droppings.
 </div>
 
-<h2 id="safety">⚠️ Foods and Habits to Avoid</h2>
+<h2 id="safety">⚠️ Foods to Avoid</h2>
 <div class="note danger">
-  <b>Never feed birds:</b> avocado, chocolate, caffeine, alcohol, salty foods, large amounts of onion or garlic, apple seeds, fruit pits, moldy food, or unknown wild plants. Avocado contains persin, while chocolate and caffeine can seriously affect the nervous system and heart.
+  <b>Never feed birds:</b> avocado, chocolate, caffeine, alcohol, salty foods, onion, garlic, apple seeds, fruit pits, or moldy food.
 </div>
 
 </main>
 
 <footer>
-  Bird photos are loaded from Wikipedia/Wikimedia and belong to their respective authors and licenses.<br>
-  Birds World — General information only; it does not replace a veterinarian.<br>
-  Created by <strong>Meraimi Yasser</strong> · © <span id="year"></span>
-</footer>
+  Photos from Wikimedia Commons; rights belong to their respective authors and licen
 
-<button id="toTop" aria-label="Back to top">↑</button>
-
-<script>
-const BIRDS = [
-  {name:"Canary", wiki:"Domestic_canary", category:"song", categoryLabel:"Songbird",
-   diet:"Canary seed mix, rapeseed, niger seed, leafy greens, and egg food during breeding.",
-   care:"Roomy cage, bath dish, good ventilation, and no cold drafts. Famous for its song."},
-
-  {name:"Budgerigar", wiki:"Budgerigar", category:"pet", categoryLabel:"Pet Bird",
-   diet:"Seed or pellet mix, fresh vegetables, fruit, and occasional boiled egg.",
-   care:"Social bird; needs toys, daily interaction, and a beak-conditioning perch."},
-
-  {name:"Cockatiel", wiki:"Cockatiel", category:"pet", categoryLabel:"Pet Bird",
-   diet:"Pellets, mixed seeds, vegetables, fruit, and light protein.",
-   care:"Loves whistling and attention; needs a large cage and daily out-of-cage time."},
-
-  {name:"Lovebird", wiki:"Lovebird", category:"pet", categoryLabel:"Pet Bird",
-   diet:"Seeds, fruit, vegetables, and high-quality pellets.",
-   care:"Often kept in pairs; needs enrichment and protection from high heat."},
-
-  {name:"African grey parrot", wiki:"African_grey_parrot", category:"pet", categoryLabel:"Pet Bird",
-   diet:"Pellets, vegetables, fruit, limited nuts, and calcium sources.",
-   care:"Highly intelligent; needs mental stimulation to prevent feather plucking."},
-
-  {name:"Macaw", wiki:"Macaw", category:"pet", categoryLabel:"Pet Bird",
-   diet:"Pellets, nuts, fruit, vegetables, and varied seeds.",
-   care:"Large, long-lived parrots requiring expert care and daily interaction."},
-
-  {name:"Cockatoo", wiki:"Cockatoo", category:"pet", categoryLabel:"Pet Bird",
-   diet:"Pellets, vegetables, fruit, seeds, and occasional nuts.",
-   care:"Very social and noisy; needs a large cage, toys, and long-term commitment."},
-
-  {name:"European goldfinch", wiki:"European_goldfinch", category:"song", categoryLabel:"Songbird",
-   diet:"Niger seed, rapeseed, thistle seed, and small oily seeds.",
-   care:"Active singer; enjoys a roomy cage and small seeds."},
-
-  {name:"Zebra finch", wiki:"Zebra_finch", category:"song", categoryLabel:"Songbird",
-   diet:"Millet, small grains, greens, cuttlebone, and breeding protein.",
-   care:"Best kept in pairs or small groups in a long cage."},
-
-  {name:"Common nightingale", wiki:"Common_nightingale", category:"song", categoryLabel:"Songbird",
-   diet:"Fruit, vegetables, insects, and softbill food mix.",
-   care:"Active bird; needs space, cleanliness, and a calm environment."},
-
-  {name:"Rock dove", wiki:"Rock_dove", category:"poultry", categoryLabel:"Farm Bird",
-   diet:"Wheat, corn, peas, barley, grit, minerals, and clean water.",
-   care:"Needs a clean dry loft and regular health monitoring."},
-
-  {name:"Chicken", wiki:"Chicken", category:"poultry", categoryLabel:"Farm Bird",
-   diet:"Layer feed, grains, greens, and calcium sources.",
-   care:"Needs a safe dry coop, space to roam, and a dust bath."},
-
-  {name:"Domestic duck", wiki:"Domestic_duck", category:"poultry", categoryLabel:"Farm Bird",
-   diet:"Waterfowl feed, grains, greens, and insects.",
-   care:"Needs clean water for bathing and dabbling; keep the area clean."},
-
-  {name:"Goose", wiki:"Goose", category:"poultry", categoryLabel:"Farm Bird",
-   diet:"Grass, grains, waterfowl feed, and leafy greens.",
-   care:"Needs outdoor space, clean water, and protection from predators."},
-
-  {name:"Indian peafowl", wiki:"Indian_peafowl", category:"poultry", categoryLabel:"Farm Bird",
-   diet:"Grains, seeds, vegetables, insects, and poultry feed.",
-   care:"Needs wide space, a high roost, and protection from severe cold."},
-
-  {name:"Common quail", wiki:"Common_quail", category:"poultry", categoryLabel:"Farm Bird",
-   diet:"High-protein quail feed and small grains.",
-   care:"Fast-growing birds; need warmth and should not be overcrowded."},
-
-  {name:"Turkey", wiki:"Turkey", category:"poultry", categoryLabel:"Farm Bird",
-   diet:"High-protein turkey feed, grains, and leafy greens.",
-   care:"Needs a wide dry coop and preventive veterinary care."},
-
-  {name:"Common ostrich", wiki:"Common_ostrich", category:"wild", categoryLabel:"Wild Bird",
-   diet:"Plants, alfalfa, vegetables, and grit.",
-   care:"Needs very large areas, strong fencing, and expert handling."},
-
-  {name:"Barn owl", wiki:"Barn_owl", category:"wild", categoryLabel:"Bird of Prey",
-   diet:"Rodents, insects, and small birds depending on availability.",
-   care:"Nocturnal; keeping owls requires legal permission and specialist care."},
-
-  {name:"Peregrine falcon", wiki:"Peregrine_falcon", category:"wild", categoryLabel:"Bird of Prey",
-   diet:"Birds and small animals; captive birds need a specialist carnivore diet.",
-   care:"Requires expert handling, training, and specialist veterinary care."},
-
-  {name:"Greater flamingo", wiki:"Greater_flamingo", category:"wild", categoryLabel:"Wild Bird",
-   diet:"Small crustaceans, algae, and carotene-rich feed.",
-   care:"Needs shallow water and a flock; best cared for by specialists."},
-
-  {name:"House sparrow", wiki:"House_sparrow", category:"wild", categoryLabel:"Wild Bird",
-   diet:"Seeds, insects, fruit, and human food scraps in urban areas.",
-   care:"Better observed than kept; provide garden water and food without trapping them."}
-];
-
-const grid = document.getElementById("grid");
-const emptyBox = document.getElementById("empty");
-const searchInput = document.getElementById("search");
-const filterButtons = document.querySelectorAll(".filter");
-
-let activeFilter = "all";
-let searchTerm = "";
-const imageCache = {};
-
-async function getBirdImage(wikiTitle){
-  if(imageCache[wikiTitle]) return imageCache[wikiTitle];
-
-  try{
-    const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiTitle)}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    const image =
-      data?.originalimage?.source ||
-      data?.thumbnail?.source ||
-      "";
-
-    imageCache[wikiTitle] = image;
-    return image;
-  }catch(error){
-    imageCache[wikiTitle] = "";
-    return "";
-  }
-}
-
-function birdCard(bird){
-  return `
-    <article class="card" data-name="${bird.name.toLowerCase()}">
-      <div class="card-img">
-        <div class="img-loading">Loading real photo…</div>
-      </div>
-      <div class="card-body">
-        <span class="badge">${bird.categoryLabel}</span>
-        <h3>${bird.name}</h3>
-        <p><b>Diet:</b> ${bird.diet}</p>
-        <p><b>Care:</b> ${bird.care}</p>
-        <p class="source">
-          Photo & info:
-          <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(bird.wiki)}"
-             target="_blank" rel="noopener">Wikipedia</a>
-        </p>
-      </div>
-    </article>
-  `;
-}
-
-async function loadImages(){
-  const cards = [...grid.querySelectorAll(".card")];
-
-  for(const card of cards){
-    const bird = BIRDS.find(b => b.name.toLowerCase() === card.dataset.name);
-    if(!bird) continue;
-
-    const image = await getBirdImage(bird.wiki);
-    const imageBox = card.querySelector(".card-img");
-
-    if(image){
-      imageBox.innerHTML = `
-        <img src="${image}" alt="${bird.name}" loading="lazy">
-      `;
-    }else{
-      imageBox.innerHTML = `
-        <div class="img-loading">🐦 Photo unavailable</div>
-      `;
-    }
-  }
-}
-
-function renderBirds(){
-  const results = BIRDS.filter(bird=>{
-    const matchFilter = activeFilter === "all" || bird.category === activeFilter;
-    const text = `${bird.name} ${bird.categoryLabel} ${bird.diet} ${bird.care}`.toLowerCase();
-    return matchFilter && text.includes(searchTerm);
-  });
-
-  grid.innerHTML = results.map(birdCard).join("");
-  emptyBox.style.display = results.length ? "none" : "block";
-  loadImages();
-}
-
-let searchTimer;
-searchInput.addEventListener("input", e=>{
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(()=>{
-    searchTerm = e.target.value.trim().toLowerCase();
-    renderBirds();
-  },200);
-});
-
-filterButtons.forEach(button=>{
-  button.addEventListener("click",()=>{
-    filterButtons.forEach(b=>b.classList.remove("active"));
-    button.classList.add("active");
-    activeFilter = button.dataset.filter;
-    renderBirds();
-  });
-});
-
-/* Image lightbox */
-document.addEventListener("click",e=>{
-  if(e.target.tagName !== "IMG" || !e.target.closest(".card-img")) return;
-
-  const overlay = document.createElement("div");
-  overlay.style.cssText = `
-    position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;
-    display:grid;place-items:center;cursor:zoom-out;padding:18px;
-  `;
-  const img = document.createElement("img");
-  img.src = e.target.src;
-  img.alt = e.target.alt;
-  img.style.cssText = "max-width:94%;max-height:90%;border-radius:16px;";
-  overlay.append(img);
-  document.body.append(overlay);
-
-  overlay.addEventListener("click",()=>overlay.remove());
-  document.addEventListener("keydown",function esc(ev){
-    if(ev.key==="Escape"){
-      overlay.remove();
-      document.removeEventListener("keydown",esc);
-    }
-  });
-});
-
-/* AI Assistant */
-const chatWindow = document.getElementById("chatWindow");
-const aiInput = document.getElementById("aiInput");
-const sendBtn = document.getElementById("sendBtn");
-
-function addMessage(text,type){
-  const div = document.createElement("div");
-  div.className = `msg ${type}`;
-  div.textContent = text;
-  chatWindow.append(div);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-  return div;
-}
-
-function aiAnswer(q){
-  q = q.toLowerCase();
-
-  if(/canary|كناري/.test(q))
-    return "🐤 Canaries need canary seed mix, niger seed, rapeseed, leafy greens, and egg food during breeding. Keep the cage away from cold drafts and offer a shallow bath 2–3 times weekly.";
-
-  if(/budgie|parakeet|بادجي/.test(q))
-    return "🦜 Budgies need balanced seeds or pellets, fresh vegetables, occasional fruit, clean water, toys, and daily interaction. Never give avocado, chocolate, caffeine, alcohol, or salty foods.";
-
-  if(/parrot|ببغاء/.test(q))
-    return "🦜 Parrots need pellets, vegetables, fruit, limited nuts, enrichment toys, and daily attention. Large parrots need a very large cage and a long-term care commitment.";
-
-  if(/avocado|chocolate|caffeine|toxic|poison|سام|أفوكادو|شوكولاتة/.test(q))
-    return "⚠️ Never feed birds avocado, chocolate, caffeine, alcohol, salty foods, onion, garlic, apple seeds, or fruit pits. Avocado contains persin, and chocolate and caffeine can affect the heart and nervous system. Contact an avian vet immediately if your bird ate any of these.";
-
-  if(/molt|moulting|molting|تبديل|طرح|ريش/.test(q))
-    return "🪶 During molting, provide extra protein such as boiled egg, maintain calcium sources like cuttlebone, reduce stress, and keep the cage clean. Never pull broken feathers forcefully.";
-
-  if(/bath|bathe|استحمام|حمام/.test(q))
-    return "🛁 Offer clean shallow bathing water 2–3 times weekly. Some birds prefer a gentle mist spray. Let the bird dry naturally in a warm, draft-free place.";
-
-  if(/sick|ill|disease|مريض|مرض|علاج/.test(q))
-    return "🩺 Warning signs: fluffed feathers, lethargy, appetite loss, labored breathing, sitting at the cage bottom, discharge, or abnormal droppings. Contact an avian veterinarian urgently. Do not give medicines without professional advice.";
-
-  if(/egg|breed|breeding|تفريخ|تكاثر/.test(q))
-    return "🥚 For breeding, provide a quiet stress-free environment, a suitable nest, calcium such as cuttlebone, extra protein, and clean water. Avoid excessive breeding because it can exhaust the female.";
-
-  if(/cage|قفص/.test(q))
-    return "🏠 Choose the largest practical cage, wide enough for wing stretching and short flights. Place it away from kitchens, drafts, harsh sun, smoke, and aerosol fumes.";
-
-  if(/water|مااء|ماء/.test(q))
-    return "💧 Change drinking water daily and wash the dispenser. Offer bathing water separately 2–3 times weekly.";
-
-  if(/hello|hi|hey|مرحبا|سلام/.test(q))
-    return "👋 Hello! Ask me about feeding, cage setup, molting, bathing, breeding, or signs of illness in birds.";
-
-  return "🐦 General rule: fresh water daily, balanced diet, clean cage, 10–12 hours of quiet sleep, safe temperature, daily enrichment, and an avian vet visit when something seems wrong.";
-}
-
-function sendMessage(){
-  const value = aiInput.value.trim();
-  if(!value) return;
-
-  addMessage(value,"user");
-  aiInput.value = "";
-
-  const typing = addMessage("Bird Expert AI is typing...","bot typing");
-
-  setTimeout(()=>{
-    typing.remove();
-    addMessage(aiAnswer(value),"bot");
-  },500);
-}
-
-sendBtn.addEventListener("click",sendMessage);
-aiInput.addEventListener("keydown",e=>{
-  if(e.key==="Enter") sendMessage();
-});
-
-document.querySelectorAll(".sug-chip").forEach(chip=>{
-  chip.addEventListener("click",()=>{
-    aiInput.value = chip.dataset.q;
-    sendMessage();
-  });
-});
-
-/* Theme */
-const themeBtn = document.getElementById("themeBtn");
-const savedTheme = localStorage.getItem("birdsTheme");
-
-if(savedTheme){
-  document.documentElement.dataset.theme = savedTheme;
-  themeBtn.textContent = savedTheme === "dark" ? "☀️" : "🌙";
-}else if(window.matchMedia("(prefers-color-scheme: dark)").matches){
-  document.documentElement.dataset.theme = "dark";
-  themeBtn.textContent = "☀️";
-}
-
-themeBtn.addEventListener("click",()=>{
-  const dark = document.documentElement.dataset.theme === "dark";
-  document.documentElement.dataset.theme = dark ? "light" : "dark";
-  themeBtn.textContent = dark ? "🌙" : "☀️";
-  localStorage.setItem("birdsTheme", dark ? "light" : "dark");
-});
-
-/* Mobile menu */
-const menuBtn = document.getElementById("menuBtn");
-const mainNav = document.getElementById("mainNav");
-
-menuBtn.addEventListener("click",()=>{
-  const open = mainNav.classList.toggle("open");
-  menuBtn.setAttribute("aria-expanded",open);
-});
-
-mainNav.addEventListener("click",e=>{
-  if(e.target.tagName==="A"){
-    mainNav.classList.remove("open");
-    menuBtn.setAttribute("aria-expanded","false");
-  }
-});
-
-/* Back to top */
-const toTop = document.getElementById("toTop");
-window.addEventListener("scroll",()=>{
-  toTop.classList.toggle("visible",window.scrollY>350);
-});
-toTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
-
-document.getElementById("year").textContent = new Date().getFullYear();
-renderBirds();
-</script>
-
-</body>
-</html>
