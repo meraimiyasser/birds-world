@@ -18,7 +18,8 @@ body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-
 header{padding:28px 16px 18px;text-align:center;background:var(--ac2)}
 h1{margin:0 0 6px;font-size:1.7rem}header p{margin:0;color:var(--mut)}
 nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--bd);z-index:5}
-nav a{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:20px;text-decoration:none}
+nav a{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:20px;text-decoration:none;font-size:0.95rem;transition:all 0.2s ease}
+nav a:hover{background:var(--ac2);color:var(--ac);border-color:var(--ac)}
 main{max-width:900px;margin:0 auto;padding:16px}
 h2{margin:26px 0 10px;scroll-margin-top:70px}
 .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
@@ -28,15 +29,52 @@ h2{margin:26px 0 10px;scroll-margin-top:70px}
 li{margin:6px 0}
 input{width:100%;padding:11px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;margin-bottom:12px}
 footer{text-align:center;color:var(--mut);font-size:.8rem;padding:20px 16px}
+
+/* AI Chat Box Styles */
+.ai-box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,0.03)}
+.chat-window{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);margin-bottom:12px}
+.msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:0.92rem;line-height:1.4}
+.msg.user{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:2px}
+.msg.bot{align-self:flex-start;background:var(--card);border:1px solid var(--bd);color:var(--tx);border-bottom-left-radius:2px}
+.chat-input-row{display:flex;gap:8px}
+.chat-input-row input{margin-bottom:0;flex:1}
+.chat-btn{background:var(--ac);color:#fff;border:none;padding:0 18px;border-radius:12px;cursor:pointer;font-weight:bold;font-size:0.95rem;transition:opacity 0.2s}
+.chat-btn:hover{opacity:0.9}
+.suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.sug-chip{font-size:0.8rem;padding:4px 10px;background:var(--ac2);color:var(--ac);border-radius:12px;cursor:pointer;border:1px solid var(--bd)}
+.sug-chip:hover{opacity:0.8}
 </style>
 </head>
 <body>
 <header><h1>🐦 Birds World</h1><p>Your guide to birds: what they eat, how to care for them, and how to keep them healthy</p></header>
-<nav><a href="#birds">Birds</a><a href="#care">Care</a><a href="#health">Health &amp; Nutrition</a></nav>
+<nav>
+  <a href="#birds">Birds</a>
+  <a href="#care">Care</a>
+  <a href="#health">Health &amp; Nutrition</a>
+  <a href="#ai-assistant" style="font-weight:bold; color:var(--ac);">🤖 Ask AI</a>
+</nav>
 <main>
 <h2 id="birds">Bird Species</h2>
 <input id="s" type="search" placeholder="Search birds (e.g. parrot, canary, duck)..." aria-label="Search birds">
 <div class="grid" id="grid"></div>
+
+<h2 id="ai-assistant">🤖 Ask AI Assistant</h2>
+<div class="ai-box">
+  <p style="margin-top:0; font-size:0.9rem; color:var(--mut);">Ask any question about bird care, feeding, breeding, or health, and the AI assistant will help you!</p>
+  <div class="chat-window" id="chatWindow">
+    <div class="msg bot">👋 Hello! I am your Bird Expert AI. Ask me anything about your bird!</div>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="aiInput" placeholder="Type your question here (e.g. What do canaries eat?)...">
+    <button class="chat-btn" id="sendBtn">Send</button>
+  </div>
+  <div class="suggestions">
+    <span class="sug-chip" onclick="askPreset('What can I feed my canary?')">🐤 Canary diet</span>
+    <span class="sug-chip" onclick="askPreset('How to deal with molting?')">🪶 Molting tips</span>
+    <span class="sug-chip" onclick="askPreset('Is avocado toxic to parrots?')">⚠️ Toxic foods</span>
+    <span class="sug-chip" onclick="askPreset('How often should I bath my bird?')">🛁 Bathing frequency</span>
+  </div>
+</div>
 
 <h2 id="care">Basic Care for All Birds</h2>
 <div class="card"><ul>
@@ -68,6 +106,7 @@ footer{text-align:center;color:var(--mut);font-size:.8rem;padding:20px 16px}
 <div class="note">🩺 <b>Important:</b> this is general information only. Never give any medicine or antibiotic without advice from an avian vet; a wrong dose can kill a small bird. See a vet at once for fluffed feathers, lethargy, loss of appetite, labored breathing or abnormal droppings.</div>
 </main>
 <footer>General information only; it does not replace a veterinarian.</footer>
+
 <script>
 const B=[
 ["🐤","Canary","Canary seed mix, rapeseed and niger seed, leafy greens, and egg food in breeding season.","Roomy cage, bath dish, good ventilation, no drafts. Known for its song."],
@@ -100,6 +139,48 @@ d.append(t("div",e,"e"),t("h3",n),p("Diet: ",fd),p("Care: ",c));g.append(d)});
 if(!g.children.length)g.textContent="No birds found. Try another name."}
 draw("");
 document.getElementById("s").addEventListener("input",e=>draw(e.target.value.trim().toLowerCase()));
+
+// AI Assistant Logic
+const chatWin = document.getElementById('chatWindow');
+const aiInp = document.getElementById('aiInput');
+const sendBtn = document.getElementById('sendBtn');
+
+function addMsg(txt, isUser){
+  const d = document.createElement('div');
+  d.className = 'msg ' + (isUser ? 'user' : 'bot');
+  d.textContent = txt;
+  chatWin.appendChild(d);
+  chatWin.scrollTop = chatWin.scrollHeight;
+}
+
+function generateResponse(query){
+  const q = query.toLowerCase();
+  if(q.includes('canary') || q.includes('كناري')) return "🐤 Canaries love canary seed mix, niger seeds, leafy greens, and egg food during breeding. Keep them away from cold drafts!";
+  if(q.includes('avocado') || q.includes('chocolate') || q.includes('toxic') || q.includes('سام')) return "⚠️ Never give birds avocado, chocolate, caffeine, alcohol, onion, garlic, or fruit seeds! They are toxic.";
+  if(q.includes('molt') || q.includes('تبديل') || q.includes('طرح')) return "🪶 During molting, birds need extra protein (like boiled egg) and calcium to rebuild strong, healthy feathers.";
+  if(q.includes('bath') || q.includes('استحمام') || q.includes('مااء')) return "🛁 Offer clean water for bathing 2 to 3 times a week. It helps keep their feathers clean and skin healthy.";
+  if(q.includes('sick') || q.includes('مريض') || q.includes('علاج')) return "🩺 If your bird shows signs of illness (fluffed feathers, loss of appetite, lethargy), please consult an avian vet immediately!";
+  if(q.includes('hello') || q.includes('hi') || q.includes('مرحبا')) return "👋 Hello! How can I help you with your birds today?";
+  return "🐦 For best results: ensure clean daily water, balanced seed/pellet mix, fresh greens, 10-12 hours of sleep, and an avian vet checkup when needed!";
+}
+
+function handleSend(){
+  const val = aiInp.value.trim();
+  if(!val) return;
+  addMsg(val, true);
+  aiInp.value = '';
+  setTimeout(()=>{
+    addMsg(generateResponse(val), false);
+  }, 400);
+}
+
+sendBtn.addEventListener('click', handleSend);
+aiInp.addEventListener('keypress', e => { if(e.key === 'Enter') handleSend(); });
+
+function askPreset(txt){
+  aiInp.value = txt;
+  handleSend();
+}
 </script>
 </body>
 </html>
