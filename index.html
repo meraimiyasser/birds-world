@@ -3,18 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birds World – Ultimate Guide, Real Photos &amp; AI Assistant</title>
-<meta name="description" content="A complete advanced bird guide: species, real photos, diet, care tips, health, and interactive AI assistant.">
+<title>Birds World – Bird Species, Diet, Care &amp; Health Guide</title>
+<meta name="description" content="A complete bird guide: species, real photos, what they eat, care tips, health, proteins and nutrition for canaries, parrots, finches, pigeons, poultry and more.">
 <link rel="canonical" href="https://meraimiyasser.github.io/birds-world/">
+<meta property="og:title" content="Birds World – Bird Care &amp; Feeding Guide">
+<meta property="og:description" content="Species, diet, care tips, health and nutrition for pet and wild birds.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://meraimiyasser.github.io/birds-world/">
+
 <!-- Favicon / شعار الموقع في المتصفح -->
 <link rel="icon" href="https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=128&q=80">
+
 <style>
 :root{--bg:#f6f8f3;--card:#fff;--tx:#1d2b22;--mut:#5d6b62;--ac:#2e7d4f;--ac2:#e4f1e8;--bd:#dfe7dc}
 @media (prefers-color-scheme:dark){:root{--bg:#121a15;--card:#1b261f;--tx:#e8f0ea;--mut:#9fb0a4;--ac:#5fc287;--ac2:#22352a;--bd:#2c3d32}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.6}
 header{padding:28px 16px 18px;text-align:center;background:var(--ac2)}
-h1{margin:0 0 6px;font-size:1.8rem}header p{margin:0;color:var(--mut)}
+h1{margin:0 0 6px;font-size:1.7rem}header p{margin:0;color:var(--mut)}
 nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--bd);z-index:5}
 nav a{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:20px;text-decoration:none;font-size:0.95rem;transition:all 0.2s ease}
 nav a:hover{background:var(--ac2);color:var(--ac);border-color:var(--ac)}
@@ -67,7 +73,7 @@ footer{text-align:center;color:var(--mut);font-size:.8rem;padding:20px 16px}
 <main>
 
 <h2 id="birds">Bird Species &amp; Real Photos</h2>
-<input id="s" type="search" placeholder="Search birds (e.g. canary, parrot, goldfinch, cardinal)..." aria-label="Search birds">
+<input id="s" type="search" placeholder="Search birds (e.g. canary, parrot, goldfinch)..." aria-label="Search birds">
 <div class="grid" id="grid"></div>
 
 <h2 id="ai-assistant">🤖 Ask AI Assistant</h2>
@@ -123,9 +129,9 @@ footer{text-align:center;color:var(--mut);font-size:.8rem;padding:20px 16px}
 <footer>General information only; it does not replace a veterinarian.</footer>
 
 <script>
-// مصفوفة الطيور المحدثة بدقة مع روابط الصور الحقيقية المخصصة لكل طائر
+// مصفوفة الطيور المحدثة (الكناري يظهر صورتك الخاصة مباشرة عبر canary.webp)
 const B=[
-["Canary", "Canary seed mix, rapeseed, niger seed, leafy greens, and egg food.", "Roomy cage, bath dish, good ventilation, no drafts. Famous for its song.", "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=500&q=80"],
+["Canary", "Canary seed mix, rapeseed, niger seed, leafy greens, and egg food.", "Roomy cage, bath dish, good ventilation, no drafts. Famous for its song.", "canary.webp"],
 ["Budgerigar (Budgie)", "Millet, oat mix, fresh vegetables, fruit, and little boiled egg.", "Social bird; needs toys, interaction, and proper perches.", "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=500&q=80"],
 ["Cockatiel", "Mixed seeds, pellets, vegetables, fruit, and light protein.", "Loves whistling, attention, and daily out-of-cage time.", "https://images.unsplash.com/photo-1555169062-01347abf4f39?auto=format&fit=crop&w=500&q=80"],
 ["Lovebird", "Seeds, fruit, vegetables, and high-quality pellets.", "Kept in pairs; needs nesting spots and protection from high heat.", "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=500&q=80"],
@@ -153,13 +159,11 @@ function draw(f){
   B.filter(b=>(b[0]+b[1]+b[2]).toLowerCase().includes(f)).forEach(([n,fd,c,imgUrl])=>{
     const d=document.createElement("div");d.className="card";
     
-    // إنشاء وصم الصورة الحقيقية
     const img=document.createElement("img");
     img.className="card-img";
     img.src=imgUrl;
     img.alt=n;
     
-    // رأس البطاقة مع زر الإعجاب التفاعلي
     const h3=document.createElement("h3");
     h3.textContent=n;
     const likeBtn=document.createElement("button");
