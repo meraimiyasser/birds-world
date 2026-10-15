@@ -1,122 +1,245 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birds World – Real Bird Photos & Care Guide</title>
-<meta name="description" content="Birds World: real bird photos, species guide, care tips, nutrition, health advice, and AI assistant.">
+<title>عالم الطيور المتطور – دليل الطيور، الرعاية، ومساعد الذكاء الاصطناعي</title>
+<meta name="description" content="الدليل الشامل للطيور: الأنواع، الصور الحقيقية، التغذية، الرعاية، والصحة مع مساعد ذكي للإجابة عن أسئلتك.">
+<link rel="canonical" href="https://meraimiyasser.github.io/birds-world/">
+<!-- أيقونة المتصفح -->
+<link rel="icon" href="https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=128&q=80">
 <style>
-:root{
-  --bg:#f6f8f3;--card:#fff;--tx:#1d2b22;--mut:#5d6b62;
-  --ac:#2e7d4f;--ac2:#e4f1e8;--bd:#dfe7dc;
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --tx: #0f172a;
+  --mut: #64748b;
+  --ac: #10b981;
+  --ac-hover: #059669;
+  --ac2: #ecfdf5;
+  --bd: #e2e8f0;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
-html[data-theme="dark"]{
-  --bg:#111913;--card:#1b261f;--tx:#e8f0ea;--mut:#9fb0a4;
-  --ac:#5fc287;--ac2:#22352a;--bd:#2c3d32;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --tx: #f8fafc;
+    --mut: #94a3b8;
+    --ac: #34d399;
+    --ac-hover: #10b981;
+    --ac2: #064e3b;
+    --bd: #334155;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  }
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,Arial,sans-serif;line-height:1.6}
-img{max-width:100%;display:block}
-header{padding:30px 16px;text-align:center;background:var(--ac2)}
-h1{margin:0 0 6px}
-header p{margin:0;color:var(--mut)}
-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--bd);z-index:10}
-nav a{border:1px solid var(--bd);background:var(--card);padding:8px 14px;border-radius:20px;text-decoration:none;font-weight:600}
-nav a:hover{background:var(--ac2);color:var(--ac)}
-main{max-width:1050px;margin:auto;padding:18px 16px 40px}
-h2{margin:30px 0 12px}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-input{padding:11px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;width:100%;max-width:340px}
-.filters{display:flex;gap:7px;flex-wrap:wrap}
-button{font:inherit;cursor:pointer}
-.filter{border:1px solid var(--bd);background:var(--card);color:var(--mut);padding:7px 13px;border-radius:20px;font-weight:600}
-.filter.active{background:var(--ac);border-color:var(--ac);color:#fff}
-.grid{display:grid;gap:15px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-.card img{width:100%;height:190px;object-fit:cover;background:var(--ac2)}
-.card-body{padding:14px}
-.badge{display:inline-block;background:var(--ac2);color:var(--ac);font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px}
-.card h3{margin:0 0 6px;color:var(--ac)}
-.card p{margin:5px 0;font-size:.92rem}
-.card b{color:var(--ac)}
-.note{background:var(--ac2);border-left:4px solid var(--ac);padding:13px;border-radius:10px;margin:16px 0}
-.note.danger{background:#fdecec;border-color:#c0392b;color:#7d1d13}
-footer{text-align:center;color:var(--mut);padding:20px;border-top:1px solid var(--bd);background:var(--card)}
-#themeBtn{position:fixed;top:70px;left:14px;z-index:20;width:42px;height:42px;border-radius:12px;border:1px solid var(--bd);background:var(--card);font-size:1.1rem}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--tx); font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif; line-height: 1.7; }
+header { padding: 36px 20px 24px; text-align: center; background: var(--ac2); border-bottom: 1px solid var(--bd); }
+h1 { margin: 0 0 8px; font-size: 2.2rem; color: var(--ac); }
+header p { margin: 0; color: var(--mut); font-size: 1.05rem; }
+
+nav { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; padding: 14px; position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--bd); z-index: 10; backdrop-filter: blur(8px); }
+nav a { border: 1px solid var(--bd); background: var(--card); color: var(--tx); padding: 8px 18px; border-radius: 30px; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: all 0.2s ease; }
+nav a:hover { background: var(--ac2); color: var(--ac); border-color: var(--ac); transform: translateY(-1px); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
+h2 { margin: 36px 0 16px; font-size: 1.6rem; border-right: 4px solid var(--ac); padding-right: 12px; }
+
+.search-box { width: 100%; padding: 14px 18px; border-radius: 14px; border: 1px solid var(--bd); background: var(--card); color: var(--tx); font: inherit; margin-bottom: 20px; box-shadow: var(--shadow); outline: none; transition: border-color 0.2s; }
+.search-box:focus { border-color: var(--ac); }
+
+.grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.card { background: var(--card); border: 1px solid var(--bd); border-radius: 16px; padding: 16px; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow); transition: transform 0.2s; }
+.card:hover { transform: translateY(-3px); }
+.card img { width: 100%; height: 170px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; }
+.card h3 { margin: 0 0 8px; color: var(--ac); font-size: 1.25rem; }
+.card p { margin: 6px 0; font-size: 0.95rem; color: var(--mut); }
+.card b { color: var(--tx); }
+
+.note { background: var(--ac2); border: 1px solid var(--bd); border-radius: 14px; padding: 16px; margin: 20px 0; font-size: 0.95rem; }
+
+/* قسم الذكاء الاصطناعي */
+.ai-box { background: var(--card); border: 1px solid var(--bd); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); }
+.chat-window { max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 14px; border: 1px solid var(--bd); border-radius: 14px; background: var(--bg); margin-bottom: 14px; }
+.msg { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 0.95rem; line-height: 1.5; }
+.msg.user { align-self: flex-start; background: var(--ac); color: #fff; border-bottom-left-radius: 4px; }
+.msg.bot { align-self: flex-end; background: var(--card); border: 1px solid var(--bd); color: var(--tx); border-bottom-right-radius: 4px; box-shadow: var(--shadow); }
+.chat-input-row { display: flex; gap: 10px; }
+.chat-input-row input { margin-bottom: 0; flex: 1; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--bd); background: var(--card); color: var(--tx); font: inherit; outline: none; }
+.chat-btn { background: var(--ac); color: #fff; border: none; padding: 0 22px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.2s; }
+.chat-btn:hover { background: var(--ac-hover); }
+.suggestions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.sug-chip { font-size: 0.85rem; padding: 6px 12px; background: var(--ac2); color: var(--ac); border-radius: 20px; cursor: pointer; border: 1px solid var(--bd); font-weight: 500; transition: opacity 0.2s; }
+.sug-chip:hover { opacity: 0.8; }
+
+footer { text-align: center; color: var(--mut); font-size: 0.85rem; padding: 30px 16px; border-top: 1px solid var(--bd); margin-top: 40px; }
 </style>
 </head>
-
 <body>
 
-<button id="themeBtn" aria-label="Toggle dark mode">🌙</button>
-
 <header>
-  <h1>🐦 Birds World</h1>
-  <p>Real bird photos, species information, care tips, nutrition, and health guidance.</p>
+  <h1>🐦 عالم الطيور المتطور</h1>
+  <p>دليلك الشامل لتربية وعناية الطيور، الصور الحقيقية، ومعلومات التغذية والصحة</p>
 </header>
 
 <nav>
-  <a href="#birds">Bird Species</a>
-  <a href="#care">Basic Care</a>
-  <a href="#health">Health & Nutrition</a>
-  <a href="#safety">Safety</a>
+  <a href="#birds">أنواع الطيور</a>
+  <a href="#ai-assistant">🤖 مساعد الذكاء الاصطناعي</a>
+  <a href="#care">الرعاية الأساسية</a>
+  <a href="#health">الصحة والتغذية</a>
 </nav>
 
 <main>
+  <h2 id="birds">معرض وأنواع الطيور</h2>
+  <input class="search-box" id="s" type="search" placeholder="ابحث عن أي طائر (مثال: كناري، حسون، ببغاء)..." aria-label="بحث الطيور">
+  <div class="grid" id="grid"></div>
 
-<h2 id="birds">Bird Species & Real Photos</h2>
-
-<div class="toolbar">
-  <input id="search" type="search" placeholder="Search birds: canary, budgie, cockatiel...">
-  <div class="filters">
-    <button class="filter active" data-filter="all">All</button>
-    <button class="filter" data-filter="pet">Pet Birds</button>
-    <button class="filter" data-filter="song">Songbirds</button>
-    <button class="filter" data-filter="poultry">Poultry</button>
-    <button class="filter" data-filter="wild">Wild Birds</button>
+  <h2 id="ai-assistant">🤖 اسأل خبير الذكاء الاصطناعي</h2>
+  <div class="ai-box">
+    <p style="margin-top:0; font-size:0.95rem; color:var(--mut);">اطرح أي سؤال حول تغذية طيورك، مواسم القلش (التبديل)، أو طرق الوقاية من الأمراض وسيجيبك المساعد فوراً!</p>
+    <div class="chat-window" id="chatWindow">
+      <div class="msg bot">👋 أهلاً بك! أنا خبير الطيور الذكي. كيف يمكنني مساعدتك في العناية بطيورك اليوم؟</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا (مثال: ماذا أقدم لطائر الكناري؟)...">
+      <button class="chat-btn" id="sendBtn">إرسال</button>
+    </div>
+    <div class="suggestions">
+      <span class="sug-chip" onclick="askPreset('ماذا أقدم لطائر الكناري للأكل؟')">🐤 تغذية الكناري</span>
+      <span class="sug-chip" onclick="askPreset('كيف أتعامل مع فترة غيار الريش؟')">🪶 نصائح غيار الريش</span>
+      <span class="sug-chip" onclick="askPreset('ما هي الأطعمة السامة للطيور؟')">⚠️ أطعمة ممنوعة وسامة</span>
+      <span class="sug-chip" onclick="askPreset('كم مرة يجب استحمام الطيور؟')">🛁 الاستحمام والنظافة</span>
+    </div>
   </div>
-</div>
 
-<div class="grid" id="grid"></div>
-
-<h2 id="care">Basic Care for All Birds</h2>
-<div class="card">
-  <div class="card-body">
+  <h2 id="care">الرعاية الأساسية لجميع الطيور</h2>
+  <div class="card" style="box-shadow:none">
     <ul>
-      <li><b>Cage:</b> large enough for wing stretching and short flights; away from drafts, kitchens, and smoke.</li>
-      <li><b>Hygiene:</b> clean the cage floor daily and wash food and water dishes daily.</li>
-      <li><b>Water:</b> fresh drinking water daily; bathing water 2–3 times weekly.</li>
-      <li><b>Sleep:</b> 10–12 hours of dark, quiet sleep.</li>
-      <li><b>Temperature:</b> avoid extreme heat, cold drafts, and sudden changes.</li>
-      <li><b>Safety:</b> avoid overheated non-stick cookware, perfumes, aerosols, smoke, and strong cleaning fumes.</li>
+      <li><b>القفص:</b> يجب أن يكون واسعاً بما يكفي لفرد الأجنحة والحركة، وبعيداً عن تيارات الهواء البارد والمطبخ.</li>
+      <li><b>النظافة:</b> تنظيف أرضية الققفص يومياً، وغسل مشارب المياه وأواني الأكل بانتظام.</li>
+      <li><b>المياه:</b> توفير مياه نظيفة وعذبة باستمرار، مع حوض استحمام مرتين إلى ثلاث أسبوعياً.</li>
+      <li><b>الإضاءة والنوم:</b> منح الطائر 10 إلى 12 ساعة من النوم الهادئ والمظلم ليلاً.</li>
+      <li><b>الأمان:</b> تجنب تماماً استخدام العطور أو المبيدات بالقرب من الطيور لأن أبخرتها سامة جداً لجهازها التنفسي.</li>
     </ul>
   </div>
-</div>
+  <div class="note">⚠️ <b>تحذير هام:</b> لا تقدم أبداً للطيور الأفوكادو، الشوكولاتة، الكافيين، البصل، الثوم، أو بذور الفواكه لأنها سامة وقاتلة.</div>
 
-<h2 id="health">Health & Nutrition</h2>
-<div class="card">
-  <div class="card-body">
-    <ul>
-      <li><b>Protein:</b> boiled egg, mealworms for insect-eating birds, cooked legumes, and sprouted seeds.</li>
-      <li><b>Calcium:</b> cuttlebone and mineral blocks, especially for laying females.</li>
-      <li><b>Vitamins:</b> vitamin A from carrots and leafy greens; vitamin D3 from safe sunlight.</li>
-      <li><b>Molting:</b> provide extra protein and calcium to support feather regrowth.</li>
-      <li><b>Illness:</b> never give medicines without an avian veterinarian’s advice.</li>
-    </ul>
+  <h2 id="health">الصحة، التغذية والبروتينات</h2>
+  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+    <div class="card">
+      <h3>🥚 البروتينات والمكملات</h3>
+      <p><b>المصادر:</b> البيض المسلوق (مع قشرة مطحونة للكالسيوم)، الديدان المجففة للطيور الحشرية، والحبوب المستبتة المفيدة جداً في مواسم الإنتاج.</p>
+      <p><b>الكالسيوم:</b> عظم الحبار (السبيبة) أساسي ومهم لتكوين العظام والبيض.</p>
+    </div>
+    <div class="card">
+      <h3>💊 الأمراض الشائعة والوقاية</h3>
+      <p><b>الالتهابات المعوية:</b> تظهر على شكل خمول أو إسهال، ويجب علاجها بمراجعة الطبيب البيطري فوراً.</p>
+      <p><b>الفاش والملامس:</b> يتطلب تنظيف القفص برشاشات آمنة ومخصصة للقضاء على الطفيليات الخارجية.</p>
+    </div>
   </div>
-</div>
-
-<div class="note danger">
-  🩺 <b>Important:</b> Seek urgent veterinary help for fluffed feathers, lethargy, loss of appetite, breathing difficulty, or abnormal droppings.
-</div>
-
-<h2 id="safety">⚠️ Foods to Avoid</h2>
-<div class="note danger">
-  <b>Never feed birds:</b> avocado, chocolate, caffeine, alcohol, salty foods, onion, garlic, apple seeds, fruit pits, or moldy food.
-</div>
-
+  <div class="note">🩺 <b>ملاحظة طبية:</b> هذه المعلومات إرشادية فقط؛ لا تقم أبداً بإعطاء أي أدوية أو مضادات حيوية دون استشارة طبيب بيطري مختص.</div>
 </main>
 
-<footer>
-  Photos from Wikimedia Commons; rights belong to their respective authors and licen
+<footer>تم تطوير الموقع بكل حب لعشاق ومربي الطيور • 2026</footer>
 
+<script>
+// قائمة الطيور مع الصور الحقيقية والدقيقة
+const B = [
+  ["الكناري (Canary)", "خلطة بذور الكناري، اللفت، النيجر، الخضار الورقية، والبيض المسلوق في موسم التكاثر.", "قفص واسع، طبق استحمام، تهوية جيدة بدون تيارات هبار، ومعروف بتغريده العذب.", "https://images.unsplash.com/photo-1522858547137-f1d65c1fb6d6?auto=format&fit=crop&w=500&q=80"],
+  ["البادجي (Budgie)", "خلطة الدخن والشوفان، خضار وفواكه طازجة، وقليل من البيض المسلوق.", "طائر اجتماعي، يحب الألعاب والتفاعل ومراقبة الأنشطة حوله.", "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=500&q=80"],
+  ["الكوكاتيل (Cockatiel)", "حبوب متنوعة، بيليه، خضار، فواكه وبروتينات خفيفة.", "يعشق التصفير والانتباه، ويحتاج لقفص كبير ووقت للخروج يومياً.", "https://images.unsplash.com/photo-1555169062-01347abf4f39?auto=format&fit=crop&w=500&q=80"],
+  ["درة الحب (Lovebird)", "بذور، فواكه، خضار وبيليه عالي الجودة.", "يُفضل تربيته في أزواج، ويحتاج إلى مكان هادئ وحماية من الحر الشديد.", "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=500&q=80"],
+  ["الببغاء الرمادي أفريقي (Grey Parrot)", "بيليه، خضار، فواكه، مكسرات بكميات مدروسة، ومصدر كالسيوم.", "ذكاء خارق، يحتاج إلى تحفيز ذهني مستمر وألعاب تفاعلية لئلا يصاب بالملل.", "https://images.unsplash.com/photo-1522926193637-af3c40a3e5d0?auto=format&fit=crop&w=500&q=80"],
+  ["الببغاوات الكبيرة (Macaw & Cockatoo)", "مكسرات، فواكه، بيليه وبذور منوعة.", "تعمر طويلاً، تحتاج لخبرة في التربية ومساحات واسعة جداً.", "https://images.unsplash.com/photo-1569683795645-b62e50fbf103?auto=format&fit=crop&w=500&q=80"],
+  ["طائر الحسون (Goldfinch)", "بذور النيجر واللفت، بذور الشوك، وبعض الحبوب الزيتية الصغيرة.", "مغرد نشيط، يحب الهدوء والقفص الواسع والحبوب ذات الحجم الصغير.", "https://images.unsplash.com/photo-1579306193806-ea12a6f3bb10?auto=format&fit=crop&w=500&q=80"],
+  ["فنش الزيبرا (Zebra Finch)", "دخن، حبوب صغيرة، خضار، وعظم سبيبة مع بروتين وقت التكاثر.", "يعيش في جماعات صغيرة، ويفضل تربيته في أزواج داخل قفص طويل.", "https://images.unsplash.com/photo-1606567595334-d39972c85dbe?auto=format&fit=crop&w=500&q=80"],
+  ["الحمام (Pigeon)", "قمح، ذرة، بسلة وشعير مع الحصى والمكملات المعدنية ومياه نظيفة.", "يحتاج إلى لوفت نظيف وجاف وتلقيح دوري ضد الأمراض الشائعة.", "https://images.unsplash.com/photo-1589244111663-a76cb582ff63?auto=format&fit=crop&w=500&q=80"],
+  ["الدجاج (Chicken)", "علاف متوازن، حبوب، خضار، وقشور بيض مطحونة للكالسيوم.", "يحتاج إلى قفص آمن وحمام ترابي لمكافحة الطفيليات.", "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=500&q=80"],
+  ["البط والإوز (Ducks & Geese)", "علاف مائي، حبوب، خضار ورقية وحشرات.", "يحتاج لمياه للسباحة والتخبط، مع تنظيف دوري لمكان تواجدهما.", "https://images.unsplash.com/photo-1550853024-fae8cd484752?auto=format&fit=crop&w=500&q=80"],
+  ["الطاووس (Peacock)", "حبوب، بذور، خضار وحشرات وعلاف دواجن متوازن.", "يحتاج لمساحة واسعة ومجاثم عالية، وحماية من البرد القارس.", "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80"],
+  ["البجع والفلانغو (Flamingo)", "قشريات صغيرة، طحالب وعلاف خاص غني بالكاروتين للحفاظ على اللون.", "يحتاج إلى مسبح ضحل وبيئة شبيهة بالبحيرات المالحة.", "https://images.unsplash.com/photo-1497206365907-f5e630693df0?auto=format&fit=crop&w=500&q=80"],
+  ["البوم (Owl)", "قوارض صغيرة، حشرات وطيور حسب نوع البوم.", "طائر ليلي، يحتاج لتراخيص قانونية ورعاية بيطرية متخصصة.", "https://images.unsplash.com/photo-1543598060-144793ab755f?auto=format&fit=crop&w=500&q=80"]
+];
+
+const grid = document.getElementById("grid");
+function renderBirds(filterText) {
+  grid.innerHTML = "";
+  const filtered = B.filter(b => (b[0] + b[1] + b[2]).toLowerCase().includes(filterText));
+  
+  if (filtered.length === 0) {
+    grid.innerHTML = "<p style='grid-column: 1/-1; text-align:center; color:var(--mut);'>عذراً، لم يتم العثور على الطائر المطلوب.</p>";
+    return;
+  }
+
+  filtered.forEach(([name, diet, care, imgUrl]) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    
+    const img = document.createElement("img");
+    img.src = imgUrl;
+    img.alt = name;
+    card.appendChild(img);
+
+    const title = document.createElement("h3");
+    title.textContent = name;
+    card.appendChild(title);
+
+    const pDiet = document.createElement("p");
+    pDiet.innerHTML = "<b>التغذية: </b>" + diet;
+    card.appendChild(pDiet);
+
+    const pCare = document.createElement("p");
+    pCare.innerHTML = "<b>الرعاية: </b>" + care;
+    card.appendChild(pCare);
+
+    grid.appendChild(card);
+  });
+}
+
+renderBirds("");
+document.getElementById("s").addEventListener("input", e => renderBirds(e.target.value.trim().toLowerCase()));
+
+// نظام الردود الذكية للمساعد
+const chatWindow = document.getElementById('chatWindow');
+const aiInput = document.getElementById('aiInput');
+const sendBtn = document.getElementById('sendBtn');
+
+function addMessage(text, isUser) {
+  const msg = document.createElement('div');
+  msg.className = 'msg ' + (isUser ? 'user' : 'bot');
+  msg.textContent = text;
+  chatWindow.appendChild(msg);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function getBotResponse(q) {
+  q = q.toLowerCase();
+  if (q.includes('كناري') || q.includes('تغذية')) return "🐤 الكناري يحب خلاطات البذور (النيجر واللفت)، بالإضافة إلى الخضار الورقية كالجرجير، والبيض المسلوق خلال موسم الإنتاج.";
+  if (q.includes('ريش') || q.includes('قلش') || q.includes('تبديل')) return "🪶 فترة غيار الريش تتطلب زيادة نسبة البروتين (مثل البيض المسلوق) والفيتامينات، مع تجنب التيارات الهوائية تماماً لأن المناعة تكون منخفضة.";
+  if (q.includes('سام') || q.includes('أطعمة') || q.includes('ممنوعة')) return "⚠️ أشد الأطعمة سمية للطيور هي: الأفوكادو، الشوكولاتة، الكافيين، البصل والثوم، وبذور التفاح والكمثرى.";
+  if (q.includes('استحمام') || q.includes('نظافة') || q.includes('ماء')) return "🛁 يفضل توفير ماء نظيف وفاتر للاستحمام مرتين أسبوعياً في الأيام الدافئة لمساعدة الطائر على تنظيف ريشه.";
+  if (q.includes('مريض') || q.includes('علاج') || q.includes('خمول')) return "🩺 إذا لاحظت خمولاً، نفشاً للريش، أو صعوبة في التنفس، يرجى عزل الطائر فوراً في مكان دافئ واستشارة طبيب بيطري مختص.";
+  return "🐦 نصيحة عامة لصحة طيورك: حافظ على نظافة المشارب يومياً، وفر إضاءة غير مباشرة، وقدم تنوعاً غذائياً بين البذور والخضار الطازجة!";
+}
+
+function handleChat() {
+  const text = aiInput.value.trim();
+  if (!text) return;
+  addMessage(text, true);
+  aiInput.value = '';
+  setTimeout(() => {
+    addMessage(getBotResponse(text), false);
+  }, 500);
+}
+
+sendBtn.addEventListener('click', handleChat);
+aiInput.addEventListener('keypress', e => { if (e.key === 'Enter') handleChat(); });
+
+function askPreset(txt) {
+  aiInput.value = txt;
+  handleChat();
+}
+</script>
+</body>
+</html>
