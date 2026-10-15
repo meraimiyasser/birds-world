@@ -4,60 +4,264 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Birds World – A Complete Bird Guide</title>
-<meta name="description" content="A complete bird guide: species, diet, care tips, health and nutrition, with an AI assistant for bird questions.">
+<meta name="description" content="A complete bird guide: species, diet, care tips, common diseases and treatment, with an AI assistant for bird questions.">
 <style>
-:root{--bg:#f6f8f4;--card:#fff;--text:#1f2a1f;--muted:#5d6b5d;--accent:#2f7d4f;--line:#e3e8e0;--warn:#fff4e0;--warnt:#7a4b00}
-*{box-sizing:border-box}
-html{color-scheme:light}
+:root{--bg:#f6f8f4;--card:#fff;--text:#1f2a1f;--muted:#5d6b5d;--ac:#2f7d4f;--line:#e3e8e0;--warn:#fff4e0;--wt:#7a4b00;--red:#fdeaea;--rt:#8a1c1c}
+*{box-sizing:border-box}html{color-scheme:light}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-a{color:var(--accent)}
-.top{padding:28px 16px 12px;text-align:center}
-.top a.logo{font-size:1.9rem;font-weight:700;text-decoration:none;color:var(--text)}
+a{color:var(--ac)}button{font:inherit;cursor:pointer}
+.top{padding:26px 16px 8px;text-align:center}
+.logo{font-size:1.9rem;font-weight:700;text-decoration:none;color:var(--text)}
 .top p{margin:4px 0 0;color:var(--muted)}
-.search{max-width:520px;margin:16px auto 0;display:block;width:calc(100% - 32px);padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);font-size:1rem}
-.grid{max-width:1100px;margin:24px auto;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:transform .15s}
-.card:hover{transform:translateY(-3px)}
+.bar{max-width:1100px;margin:0 auto;padding:0 16px}
+.search{display:block;width:100%;max-width:520px;margin:14px auto;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);font-size:1rem}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px}
+.chip{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:20px;padding:6px 12px;font-size:.88rem}
+.chip.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.row{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.9rem}
+.row button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;padding:6px 12px}
+.grid{max-width:1100px;margin:14px auto;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.card>a{text-decoration:none;color:inherit;display:block}
 .photo{aspect-ratio:4/3;background:var(--line);position:relative;overflow:hidden}
-.photo img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s}
-.photo img.loaded{opacity:1}
+.photo img,.hero img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s}
+.photo img.ld,.hero img.ld{opacity:1}
 .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem}
-.cb{padding:14px 16px 16px}
-.cb h2{margin:0;font-size:1.15rem}
-.sci{margin:2px 0 8px;color:var(--muted);font-style:italic;font-size:.9rem}
-.more{color:var(--accent);font-weight:600;font-size:.9rem}
-/* detail page */
+.cb{padding:12px 14px 14px}.cb h2{margin:0;font-size:1.08rem}
+.sci{margin:2px 0 6px;color:var(--muted);font-style:italic;font-size:.88rem}
+.tag{display:inline-block;background:var(--bg);border-radius:10px;padding:2px 8px;font-size:.78rem;color:var(--muted)}
+.fv{position:absolute;top:8px;right:8px;z-index:2;border:0;background:rgba(255,255,255,.9);border-radius:50%;width:34px;height:34px;font-size:1.1rem;color:#d33}
 .wrap{max-width:820px;margin:0 auto;padding:16px}
-.back{display:inline-block;margin-bottom:12px;text-decoration:none;font-weight:600}
+.back{display:inline-block;margin-bottom:10px;text-decoration:none;font-weight:600}
 .hero{border-radius:18px;overflow:hidden;background:var(--line);aspect-ratio:16/10;position:relative}
-.hero img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s}
-.hero img.loaded{opacity:1}
-h1{margin:18px 0 0;font-size:2rem}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0}
-.fact{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.credit{font-size:.76rem;color:var(--muted);margin:4px 0}
+h1{margin:12px 0 0;font-size:1.9rem}
+.acts{display:flex;gap:8px;margin:8px 0}
+.acts button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;padding:6px 12px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
 .fact small{display:block;color:var(--muted)}
-.sec{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:14px 0}
-.sec h3{margin:0 0 6px;color:var(--accent)}
-.sec ul{margin:6px 0 0;padding-left:20px}
-.warn{background:var(--warn);color:var(--warnt);border-radius:12px;padding:12px 16px;font-size:.9rem;margin:14px 0}
-.credit{font-size:.78rem;color:var(--muted)}
-.nav{display:flex;justify-content:space-between;gap:10px;margin:22px 0}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:16px 0 8px;position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:3}
+.tab{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:8px 14px;font-weight:600}
+.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.pn{display:none}.pn.on{display:block}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 18px;margin:10px 0}
+.sec ul{margin:4px 0;padding-left:20px}
+.dz{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0}
+.dz summary{font-weight:700;cursor:pointer;color:var(--ac)}
+.warn{background:var(--warn);color:var(--wt);border-radius:12px;padding:12px 16px;font-size:.9rem;margin:12px 0}
+.urg{background:var(--red);color:var(--rt);border-radius:12px;padding:12px 16px;font-size:.92rem;margin:10px 0}
+.sim{display:flex;gap:8px;flex-wrap:wrap}.sim a{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 12px;text-decoration:none}
+.nav{display:flex;justify-content:space-between;gap:10px;margin:20px 0}
 .nav a{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-decoration:none;font-weight:600}
-footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 16px 40px}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:20px 16px 40px}
 </style>
 </head>
 <body>
-
-<div class="top">
-  <a class="logo" href="#/">🐦 Birds World</a>
-  <p>Species, diet, care tips, health and nutrition</p>
-</div>
+<div class="top"><a class="logo" href="#/">🐦 Birds World</a><p>Species, diet, care, diseases and treatment</p></div>
 <div id="app"></div>
-<footer>Photos and summaries from Wikipedia / Wikimedia Commons under their respective licenses.</footer>
+<footer>Photos and summaries from Wikipedia / Wikimedia Commons under their licenses. General information only – not a substitute for a veterinarian.</footer>
 
 <script>
-/* ============ 1) YOUR DATA: add birds here ============
-   id    = short unique name used in the page link
-   wiki  = exact English Wikipedia article title (photo + summary come from it)  */
-const BIRDS = [
-{ id:"budgerigar", name:"Budgerigar (Budgie)",
+/* ===== 1) SHARED DISEASE ENTRIES (used by several groups) ===== */
+const EB=["Egg binding","Female sitting fluffed on the floor, straining, swollen abdomen","Emergency: warmth and quiet, then urgent vet care (calcium, assisted egg removal)"];
+const POX=["Avian pox","Wart-like crusts on face, feet or inside the mouth","No specific cure; vet supportive care, isolation, mosquito control; vaccines exist for poultry and pigeons"];
+const AI=["Avian influenza (bird flu)","Sudden deaths, swollen head, breathing problems, drop in eating","No treatment; report to veterinary authorities, isolate, strict biosecurity (can rarely infect humans)"];
+const ASP=["Aspergillosis (fungal lung infection)","Open-mouth breathing, tail bobbing, voice change, weakness","Vet-prescribed antifungals, sometimes nebulization; fix mold, dust and poor ventilation"];
+const BF=["Bumblefoot","Swollen, hard or sore foot pad, limping, scabs on the sole","Vet cleaning of the wound, bandaging and antibiotics; softer perches and cleaner surfaces"];
+const COC=["Coccidiosis","Diarrhea (sometimes bloody), weight loss, ruffled feathers","Vet-prescribed anticoccidial medicine; clean, dry housing and good hygiene"];
+const MITE=["Mites and lice","Itching, scaly crusts, feather damage, restlessness, pale or anemic birds","Vet-approved antiparasitic treatment; clean and treat cage, perches and housing"];
+
+/* ===== 2) GROUPS: shared diet, care and diseases ===== */
+const G={
+pa:{n:"Parrots",e:"🦜",
+ diet:["Quality pellets as the base, plus a good seed mix","Fresh vegetables daily and a little fruit; sprouted seeds","A few nuts as treats and calcium-rich greens","Fresh clean water every day"],
+ care:["Spacious cage with room to spread wings, plus daily time outside it","Daily social contact and mental stimulation: foraging toys, training","Rotate chew toys and use perches of different sizes","10–12 hours of dark, quiet sleep","No non-stick (PTFE) cookware, aerosols, candles or smoke near birds","Yearly check-up with an avian vet"],
+ dis:[["Psittacine beak & feather disease (PBFD)","Abnormal or lost feathers, beak changes, lethargy","No cure; vet testing, strict isolation and supportive care"],
+ ["Psittacosis (chlamydiosis)","Green/yellow droppings, eye or nose discharge, fluffed up; can infect humans","Long vet-prescribed antibiotic course; hygiene and isolation"],ASP,
+ ["Feather plucking","Bare patches, chewing or pulling feathers","Vet check for medical causes first, then diet, enrichment, sleep and routine changes"],
+ ["Fatty liver and vitamin A deficiency","Obesity, dull feathers, white spots in mouth, sneezing, overgrown beak","Vet diagnosis, switch from all-seed to pellets and vegetables, vitamin A source under vet advice"],EB,
+ ["Scaly face and leg mites","Crusty, honeycomb-like growths on beak, face or legs","Vet-prescribed antiparasitic treatment; clean the cage"]]},
+fi:{n:"Finches & Canaries",e:"🐤",
+ diet:["Quality finch or canary seed mix","Fresh greens and grated vegetables; egg food during molt and breeding","Cuttlebone and grit","Fresh water plus a bath"],
+ care:["Wide flight cage (finches fly horizontally, so wide beats tall)","Keep pairs or groups (but one male canary per cage)","Quiet, draft-free place with a steady light cycle","Provide nesting material when breeding","Clean air: no smoke, sprays or fumes"],
+ dis:[["Air sac mites","Clicking breathing, tail bobbing, loss of song","Vet-prescribed antiparasitic treatment; isolate and keep warm"],COC,
+ ["Scaly face and leg mites","Crusty growths on beak, legs or around eyes","Vet-prescribed antiparasitic treatment; clean cage and perches"],POX,EB,
+ ["Megabacteria (avian gastric yeast)","Weight loss despite eating, whole seeds in droppings, vomiting","Vet-prescribed antifungal; hygiene and diet support"]]},
+do:{n:"Doves & Pigeons",e:"🕊️",
+ diet:["Pigeon or dove grain mix (small seeds, peas, wheat)","Grit and mineral supplement","Fresh water daily in a wide bowl","Greens only occasionally"],
+ care:["Dry, ventilated loft or aviary","Clean droppings every day","Vaccination program – ask a vet, especially for paramyxovirus and pox","Quarantine new birds for several weeks","Protect from predators and rodents"],
+ dis:[["Canker (trichomoniasis)","Yellow cheesy lesions in throat or mouth, difficulty swallowing, weight loss","Vet-prescribed antiprotozoal medicine; treat the whole flock and drinking water"],
+ ["Paramyxovirus (PMV-1)","Twisted neck, tremors, green watery droppings, excess drinking","No cure; vaccination for prevention, isolation, supportive care, report where required"],
+ ["Salmonellosis (paratyphoid)","Diarrhea, swollen joints, weakness; can infect humans","Vet-chosen antibiotics after testing; strict hygiene"],COC,POX]},
+po:{n:"Poultry & Gamebirds",e:"🐔",
+ diet:["Complete feed matched to age (starter, grower, layer)","Grit, and oyster shell for laying hens","Greens and scraps in moderation; no moldy, salty or spoiled food","Clean water always available"],
+ care:["Dry, ventilated, predator-proof coop","Perches, nest boxes and a dust-bathing area","Clean bedding; control mites and rodents","Vaccinate following your local vet's schedule","Biosecurity: quarantine new birds, limit contact with wild birds"],
+ dis:[["Newcastle disease","Sneezing, gasping, green diarrhea, twisted neck, sudden deaths","No treatment; vaccination, isolation, report to authorities"],AI,
+ ["Marek's disease","Paralysis of legs or wings, gray eyes, tumors, weight loss","No cure; vaccination at hatching is the prevention"],COC,
+ ["Respiratory disease (mycoplasma, bronchitis)","Sneezing, nasal discharge, swollen eyes, rattling breathing","Vet-prescribed antibiotics and supportive care; improve ventilation"],MITE]},
+wa:{n:"Waterfowl",e:"🦆",
+ diet:["Waterfowl pellets or grain; no bread","Greens and aquatic plants","Grit","Water deep enough to dunk the whole head"],
+ care:["Clean water for swimming and preening","Dry bedding and safe shelter at night","Non-slip surfaces to protect feet","Avoid moldy straw and stagnant ponds","Predator protection"],
+ dis:[["Angel wing","Wing feathers twisting outward, bird cannot fold the wing","Splint or tape early (vet advice) and correct diet: less protein and sugar/bread"],
+ ["Botulism","Limp neck, weakness, paralysis, usually after stagnant water","Emergency vet care: supportive care, fresh water, sometimes antitoxin"],AI,BF,ASP]},
+ra:{n:"Birds of Prey",e:"🦅",
+ diet:["Whole prey: quail, day-old chicks, rodents","Fresh or properly frozen and thawed; never spoiled meat","Weigh regularly and monitor body condition","Clean water for drinking and bathing"],
+ care:["Spacious mews or aviary protected from weather","Clean perches of varied texture to protect feet","Permits and licenses are required in most countries","Experienced handler and regular avian vet checks","Calm, low-stress environment"],
+ dis:[ASP,BF,["Frounce (trichomoniasis)","Yellow lesions in mouth or throat, drooling, trouble swallowing","Vet-prescribed antiprotozoal medicine; stop feeding infected pigeons"],
+ ["Lead poisoning","Weakness, green droppings, tremors, inability to perch","Emergency vet: chelation therapy and supportive care; use lead-free food"],
+ ["Trauma and fractures","Drooping wing, bleeding, inability to fly or perch","Immediate vet care; keep warm, dark and quiet and do not manipulate the injury"]]},
+so:{n:"Songbirds & Softbills",e:"🎵",
+ diet:["Species-specific: insectivore mix, fruit, nectar or seed","Low-iron food for mynahs and toucans","Mealworms or insects for insect eaters","Fresh water and a bath"],
+ care:["Large aviary or cage with space to fly","Natural perches and plants","Quiet place and minimal handling stress","Wild songbirds: do not take them from nature; check local law"],
+ dis:[["Iron storage disease","Weight loss, swollen abdomen, breathing trouble (mynahs, toucans)","Low-iron diet and vet-managed treatment such as blood removal"],POX,
+ ["Trichomoniasis","Drooling, regurgitating food, swollen throat","Vet-prescribed antiprotozoal; clean feeders and water"],MITE,
+ ["Bacterial gut infection","Diarrhea, weakness, fluffed up","Vet testing, antibiotics chosen by the vet, hydration and warmth"]]},
+wi:{n:"Large & Wild Birds",e:"🦩",
+ diet:["Species-specific: grazing plants and grains (ostrich, emu), fish (penguins), small aquatic animals (flamingos, storks)","Zoo or rehab specialists plan the nutrition","Clean water at all times"],
+ care:["Not suitable as pets; permits are usually required","Large secure enclosure with the right habitat","Protected wildlife: take injured birds to a wildlife rescue","Enjoy watching from a distance in nature"],
+ dis:[ASP,["Avian malaria","Weakness, loss of appetite, pale gums, breathing difficulty","Vet-prescribed antimalarial treatment and mosquito control"],
+ ["Impaction (ostrich, emu)","Loss of appetite, swollen abdomen, no droppings","Urgent vet care, fluids, sometimes surgery; avoid swallowed foreign objects"],
+ ["Leg deformities in chicks","Splayed or twisted legs, difficulty standing","Early vet advice, non-slip floors, correct diet and exercise"],AI]}
+};
+
+/* ===== 3) SPECIES: [name, wikipedia title (""=same), scientific name, group, origin, size, lifespan, diet tip, optional image URL] =====
+   To use YOUR OWN photo for a bird, add its URL as the 9th item. */
+const B=[
+["Budgerigar","","Melopsittacus undulatus","pa","Australia","18 cm","5–10 years","Seed mix plus pellets, daily greens and a cuttlebone"],
+["Cockatiel","","Nymphicus hollandicus","pa","Australia","30–33 cm","15–20 years","Pellets with some seeds; avoid too many sunflower seeds"],
+["Lovebird","","Agapornis","pa","Africa and Madagascar","13–17 cm","10–15 years","Pellets, seeds and fruit; best kept in pairs"],
+["African Grey Parrot","Grey parrot","Psittacus erithacus","pa","Central Africa","33 cm","40–60 years","Pellets and calcium-rich greens; prone to low calcium"],
+["Sun Conure","Sun parakeet","Aratinga solstitialis","pa","Northeastern South America","30 cm","25–30 years","Pellets, fruit and vegetables; very loud"],
+["Blue-and-yellow Macaw","","Ara ararauna","pa","South America","85 cm","30–50 years","Pellets, vegetables and some nuts; needs a very large space"],
+["Scarlet Macaw","","Ara macao","pa","Central and South America","80–90 cm","40–50 years","Pellets, vegetables, nuts; strong loud voice"],
+["Eclectus Parrot","","Eclectus roratus","pa","Solomon Islands, New Guinea, northern Australia","35 cm","30–40 years","Needs plenty of fresh fruit and vegetables"],
+["Blue-fronted Amazon","","Amazona aestiva","pa","South America","37 cm","40–60 years","Pellets and vegetables; prone to obesity"],
+["Sulphur-crested Cockatoo","","Cacatua galerita","pa","Australia and New Guinea","45–50 cm","40–70 years","Pellets and vegetables; needs lots of attention"],
+["Rose-ringed Parakeet","","Psittacula krameri","pa","Africa and South Asia","40 cm","20–30 years","Pellets, seeds, fruit and vegetables"],
+["Rainbow Lorikeet","","Trichoglossus moluccanus","pa","Australia","30 cm","15–20 years","Nectar-based lorikeet diet plus fruit; messy droppings"],
+["Canary","Domestic canary","Serinus canaria domestica","fi","Domesticated from Canary Islands, Azores and Madeira birds","12–13 cm","8–10 years","Canary seed mix, greens and egg food when breeding"],
+["Zebra Finch","","Taeniopygia guttata","fi","Australia","10–11 cm","5–7 years","Finch mix, millet spray and greens"],
+["Gouldian Finch","","Chloebia gouldiae","fi","Northern Australia","12–14 cm","5–7 years","Finch mix plus greens and egg food; sensitive to stress"],
+["Java Sparrow","","Padda oryzivora","fi","Indonesia","15–17 cm","5–8 years","Seed mix with rice, greens and fruit"],
+["European Goldfinch","","Carduelis carduelis","fi","Europe, North Africa and western Asia","12–13 cm","5–10 years","Small seeds such as niger; wild capture may be illegal"],
+["Domestic Pigeon","","Columba livia domestica","do","Europe, North Africa and western Asia","30–35 cm","10–15 years","Pigeon grain mix, grit and clean water"],
+["African Collared Dove","","Streptopelia roseogrisea","do","Africa","28 cm","10–15 years","Small seed mix and grit; gentle and quiet"],
+["Diamond Dove","","Geopelia cuneata","do","Australia","20 cm","8–12 years","Small seeds and millet; needs a warm place"],
+["Laughing Dove","","Spilopelia senegalensis","do","Africa and Middle East","25 cm","8–10 years","Small seeds and grit"],
+["Chicken","","Gallus gallus domesticus","po","Domesticated from jungle fowl of Southeast Asia","40–70 cm","5–10 years","Complete layer feed plus grit and oyster shell"],
+["Japanese Quail","","Coturnix japonica","po","East Asia","17–20 cm","2–5 years","High-protein quail feed and clean water"],
+["Common Pheasant","","Phasianus colchicus","po","Asia","60–90 cm","3–5 years","Game bird feed, grain and greens"],
+["Indian Peafowl","","Pavo cristatus","po","South Asia","100–115 cm (males longer with tail)","15–20 years","Poultry or peafowl feed, grain and greens"],
+["Helmeted Guineafowl","","Numida meleagris","po","Africa","55–60 cm","10–15 years","Grain, insects and poultry feed"],
+["Barbary Partridge","","Alectoris barbara","po","North Africa","32–34 cm","3–5 years","Grain, seeds and greens"],
+["Mallard","","Anas platyrhynchos","wa","Northern Hemisphere","50–65 cm","5–10 years","Waterfowl feed and greens; no bread"],
+["Muscovy Duck","","Cairina moschata","wa","Americas","65–85 cm","8–12 years","Waterfowl pellets, greens and grain"],
+["Domestic Goose","","Anser anser domestica","wa","Europe and Asia","75–90 cm","10–20 years","Grass, greens and goose feed"],
+["Mute Swan","","Cygnus olor","wa","Europe and Asia","140–160 cm","10–20 years","Aquatic plants and grass; no bread"],
+["Peregrine Falcon","","Falco peregrinus","ra","Worldwide","34–58 cm","10–15 years","Whole quail or chicks; protected species in many places"],
+["Barn Owl","","Tyto alba","ra","Worldwide","33–39 cm","4–10 years in the wild","Whole mice, chicks and rodents"],
+["Harris's Hawk","","Parabuteo unicinctus","ra","The Americas","46–59 cm","10–15 years","Whole quail, chicks and rodents"],
+["Saker Falcon","","Falco cherrug","ra","Eurasia","45–55 cm","12–20 years","Whole quail and pigeons-free diet recommended"],
+["Eurasian Eagle-owl","","Bubo bubo","ra","Europe, Asia and North Africa","59–75 cm","15–20 years in the wild","Whole rodents and rabbits"],
+["Common Hill Myna","","Gracula religiosa","so","South and Southeast Asia","29 cm","10–15 years","Low-iron softbill pellets and fruit"],
+["European Robin","","Erithacus rubecula","so","Europe, North Africa and western Asia","14 cm","2–5 years in the wild","Insects and berries; best watched in nature"],
+["Common Nightingale","","Luscinia megarhynchos","so","Europe and Asia; winters in Africa","16 cm","2–7 years","Insects and berries; protected in many places"],
+["Toco Toucan","","Ramphastos toco","so","South America","55–65 cm","15–20 years","Low-iron fruit mix with insects"],
+["House Sparrow","","Passer domesticus","so","Eurasia and North Africa","16 cm","3–5 years in the wild","Seeds and insects; common wild bird"],
+["Common Ostrich","","Struthio camelus","wi","Africa","2–2.8 m","30–40 years","Grazing plants and grain; powerful kicks"],
+["Greater Flamingo","","Phoenicopterus roseus","wi","Africa, southern Europe and Asia","110–150 cm","30–50 years","Algae and small aquatic animals give its pink color"],
+["White Stork","","Ciconia ciconia","wi","Europe, Africa and Asia","100–115 cm","20–30 years","Insects, frogs, fish and small animals"],
+["African Penguin","","Spheniscus demersus","wi","Southern Africa","60–70 cm","10–20 years","Fish such as sardines and anchovies"]
+];
+const S=B.map(a=>({id:a[0].toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""),name:a[0],wiki:a[1]||a[0],sci:a[2],g:a[3],o:a[4],s:a[5],l:a[6],tip:a[7],img:a[8]||""}));
+
+/* ===== 4) PHOTO + SUMMARY (Wikipedia, free, cached) ===== */
+const CK="bw_wiki_v3";let cache={};
+try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){}
+async function wiki(t){
+ if(cache[t])return cache[t];
+ const r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(t.replace(/ /g,"_")));
+ if(!r.ok)throw 0;const d=await r.json();const th=d.thumbnail&&d.thumbnail.source;
+ const o={img:th?th.replace(/\/\d+px-/,"/800px-"):(d.originalimage&&d.originalimage.source)||"",text:d.extract||"",page:d.content_urls?d.content_urls.desktop.page:"https://en.wikipedia.org/wiki/"+t};
+ cache[t]=o;try{localStorage.setItem(CK,JSON.stringify(cache))}catch(e){}return o;
+}
+function showImg(box,src){const im=box.querySelector("img");if(!src)return;im.onload=()=>{im.classList.add("ld");const p=box.querySelector(".ph");if(p)p.remove()};im.src=src}
+
+/* ===== 5) HELPERS + FAVORITES ===== */
+const app=document.getElementById("app"),SITE="Birds World – A Complete Bird Guide";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ul=a=>"<ul>"+a.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ul>";
+let favs=[];try{favs=JSON.parse(localStorage.getItem("bw_fav")||"[]")}catch(e){}
+const isF=id=>favs.includes(id);
+function toggleF(id){favs=isF(id)?favs.filter(x=>x!==id):[...favs,id];try{localStorage.setItem("bw_fav",JSON.stringify(favs))}catch(e){}}
+let st={q:"",g:"all"};
+
+/* ===== 6) HOME PAGE ===== */
+function home(){
+ document.title=SITE;
+ const chips=[["all","All"],["fav","♥ Favorites"],...Object.keys(G).map(k=>[k,G[k].e+" "+G[k].n])];
+ app.innerHTML=`<div class="bar"><input id="q" class="search" type="search" placeholder="Search ${S.length} birds by name..." value="${esc(st.q)}"><div class="chips" id="chips"></div><div class="row"><span id="cnt"></span><button id="rnd">🎲 Random bird</button></div></div><main class="grid" id="grid"></main>`;
+ const grid=document.getElementById("grid");
+ function draw(){
+  const q=st.q.toLowerCase();
+  const items=S.filter(b=>(st.g==="all"||(st.g==="fav"?isF(b.id):b.g===st.g))&&(b.name+" "+b.sci+" "+b.o).toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById("chips").innerHTML=chips.map(c=>`<button class="chip ${st.g===c[0]?"on":""}" data-g="${c[0]}">${esc(c[1])}</button>`).join("");
+  document.getElementById("cnt").textContent=items.length+" bird"+(items.length===1?"":"s");
+  grid.innerHTML=items.map(b=>`<div class="card"><button class="fv" data-id="${b.id}">${isF(b.id)?"♥":"♡"}</button><a href="#/bird/${b.id}" data-w="${esc(b.wiki)}" data-i="${esc(b.img)}"><div class="photo"><div class="ph">${G[b.g].e}</div><img alt="${esc(b.name)}" loading="lazy"></div><div class="cb"><h2>${esc(b.name)}</h2><p class="sci">${esc(b.sci)}</p><span class="tag">${G[b.g].e} ${esc(G[b.g].n)}</span></div></a></div>`).join("")||"<p>No birds found.</p>";
+  const io=new IntersectionObserver(es=>es.forEach(async e=>{
+   if(!e.isIntersecting)return;io.unobserve(e.target);const box=e.target.querySelector(".photo");
+   if(e.target.dataset.i)return showImg(box,e.target.dataset.i);
+   try{showImg(box,(await wiki(e.target.dataset.w)).img)}catch(x){}
+  }),{rootMargin:"200px"});
+  grid.querySelectorAll(".card>a").forEach(a=>io.observe(a));
+ }
+ document.getElementById("q").oninput=e=>{st.q=e.target.value.trim();draw()};
+ document.getElementById("chips").onclick=e=>{const g=e.target.dataset.g;if(g){st.g=g;draw()}};
+ grid.onclick=e=>{const id=e.target.dataset.id;if(id){toggleF(id);e.target.textContent=isF(id)?"♥":"♡";if(st.g==="fav")draw()}};
+ document.getElementById("rnd").onclick=()=>{location.hash="#/bird/"+S[Math.floor(Math.random()*S.length)].id};
+ draw();
+}
+
+/* ===== 7) BIRD PAGE ===== */
+function detail(id){
+ const i=S.findIndex(b=>b.id===id);
+ if(i<0){app.innerHTML='<div class="wrap"><a class="back" href="#/">← All birds</a><p>Bird not found.</p></div>';return}
+ const b=S[i],g=G[b.g],p=S[(i+S.length-1)%S.length],n=S[(i+1)%S.length],sim=S.filter(x=>x.g===b.g&&x.id!==b.id).slice(0,5);
+ document.title=b.name+" – Care, Diseases & Treatment | Birds World";
+ const dz=g.dis.map(d=>`<details class="dz"><summary>${esc(d[0])}</summary><p><b>Signs:</b> ${esc(d[1])}</p><p><b>Possible treatment:</b> ${esc(d[2])}</p></details>`).join("");
+ app.innerHTML=`<article class="wrap"><a class="back" href="#/">← All birds</a>
+ <div class="hero" id="hero"><div class="ph">${g.e}</div><img alt="${esc(b.name)}"></div><p class="credit" id="credit"></p>
+ <h1>${esc(b.name)}</h1><p class="sci">${esc(b.sci)} · ${g.e} ${esc(g.n)}</p>
+ <div class="acts"><button id="fb">${isF(b.id)?"♥ Saved":"♡ Save"}</button><button id="sh">🔗 Share</button></div>
+ <div class="tabs" id="tabs"><button class="tab on" data-t="ov">Overview</button><button class="tab" data-t="di">Diet</button><button class="tab" data-t="ca">Care</button><button class="tab" data-t="dz">Diseases & Treatment</button></div>
+ <section class="pn on" id="p-ov"><p id="about">Loading description…</p>
+  <div class="facts"><div class="fact"><small>Origin</small>${esc(b.o)}</div><div class="fact"><small>Size</small>${esc(b.s)}</div><div class="fact"><small>Lifespan</small>${esc(b.l)}</div></div>
+  <div class="sec"><b>Diet tip:</b> ${esc(b.tip)}</div></section>
+ <section class="pn" id="p-di"><div class="sec"><h3>🌾 Feeding guide</h3>${ul(g.diet)}<p><b>For this bird:</b> ${esc(b.tip)}</p></div>
+  <div class="warn">Avoid avocado, chocolate, caffeine, alcohol, onion, garlic, salty or spoiled food, and anything moldy – these can be toxic to birds.</div></section>
+ <section class="pn" id="p-ca"><div class="sec"><h3>🏠 Care & housing</h3>${ul(g.care)}</div></section>
+ <section class="pn" id="p-dz"><div class="urg"><b>See a vet urgently if:</b> the bird is fluffed up and sleepy, sits on the cage floor, breathes with an open beak or tail bobbing, stops eating or drinking, has blood, cannot perch, or has sudden changes in droppings. Birds hide illness until they are very sick.</div>
+  <h3>Common diseases (tap to open)</h3>${dz}
+  <div class="warn">Treatment shown is general information about what vets usually do. Do not give medicines, antibiotics or doses by yourself – wrong treatment can kill a bird. Consult an avian vet.</div></section>
+ <h3>Similar birds</h3><div class="sim">${sim.map(x=>`<a href="#/bird/${x.id}">${esc(x.name)}</a>`).join("")}</div>
+ <div class="nav"><a href="#/bird/${p.id}">← ${esc(p.name)}</a><a href="#/bird/${n.id}">${esc(n.name)} →</a></div></article>`;
+ document.getElementById("tabs").onclick=e=>{const t=e.target.dataset.t;if(!t)return;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.dataset.t===t));
+  document.querySelectorAll(".pn").forEach(x=>x.classList.toggle("on",x.id==="p-"+t))};
+ document.getElementById("fb").onclick=e=>{toggleF(b.id);e.target.textContent=isF(b.id)?"♥ Saved":"♡ Save"};
+ document.getElementById("sh").onclick=async()=>{try{if(navigator.share)await navigator.share({title:b.name,url:location.href});else{await navigator.clipboard.writeText(location.href);alert("Link copied")}}catch(e){}};
+ if(b.img)showImg(document.getElementById("hero"),b.img);
+ wiki(b.wiki).then(r=>{
+  if(!b.img)showImg(document.getElementById("hero"),r.img);
+  document.getElementById("about").textContent=r.text||"";
+  document.getElementById("credit").innerHTML=`${b.img?"":"Photo and "}Summary: <a href="${r.page}" target="_blank" rel="noopener">Wikipedia</a>`;
+ }).catch(()=>{document.getElementById("about").textContent=""});
+}
+
+/* ===== 8) ROUTER ===== */
+function route(){const m=location.hash.match(/^#\/bird\/([\w-]+)/);m?detail(m[1]):home();window.scrollTo(0,0)}
+addEventListener("hashchange",route);route();
+</script>
+</body>
+</html>
