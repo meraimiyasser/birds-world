@@ -3,197 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birds World – Advanced Bird Guide &amp; AI Assistant</title>
-<meta name="description" content="A complete advanced bird guide: species, real photos, diet, care tips, health, and interactive AI assistant.">
+<title>Birds World – Real Bird Photos, Care Guide & AI Assistant</title>
+<meta name="description" content="Birds World is an advanced bird guide with real species photos from Wikimedia, diet and care tips, health information, and an interactive AI assistant.">
+<meta name="author" content="Meraimi Yasser">
 <link rel="canonical" href="https://meraimiyasser.github.io/birds-world/">
-<!-- Favicon / شعار الموقع في المتصفح -->
-<link rel="icon" href="https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=128&q=80">
+<meta property="og:title" content="Birds World – Real Bird Photos, Care Guide & AI Assistant">
+<meta property="og:description" content="Explore real bird photos, species information, care tips, nutrition, health advice, and ask the Bird Expert AI.">
+<meta property="og:url" content="https://meraimiyasser.github.io/birds-world/">
+<meta property="og:type" content="website">
+<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Aldabra_Drongo_Dicrurus_aldabranus.jpg/120px-Aldabra_Drongo_Dicrurus_aldabranus.jpg">
+
 <style>
-:root{--bg:#f6f8f3;--card:#fff;--tx:#1d2b22;--mut:#5d6b62;--ac:#2e7d4f;--ac2:#e4f1e8;--bd:#dfe7dc}
-@media (prefers-color-scheme:dark){:root{--bg:#121a15;--card:#1b261f;--tx:#e8f0ea;--mut:#9fb0a4;--ac:#5fc287;--ac2:#22352a;--bd:#2c3d32}}
+:root{
+  --bg:#f6f8f3; --card:#fff; --tx:#1d2b22; --mut:#5d6b62;
+  --ac:#2e7d4f; --ac-dark:#23603d; --ac2:#e4f1e8; --bd:#dfe7dc;
+  --shadow:0 8px 22px rgba(29,43,34,.08);
+}
+html[data-theme="dark"]{
+  --bg:#111913; --card:#1b261f; --tx:#e8f0ea; --mut:#9fb0a4;
+  --ac:#5fc287; --ac-dark:#3ea86e; --ac2:#22352a; --bd:#2c3d32;
+  --shadow:0 10px 26px rgba(0,0,0,.32);
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.6}
-header{padding:28px 16px 18px;text-align:center;background:var(--ac2)}
-h1{margin:0 0 6px;font-size:1.8rem}header p{margin:0;color:var(--mut)}
-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--bd);z-index:5}
-nav a{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:20px;text-decoration:none;font-size:0.95rem;transition:all 0.2s ease}
-nav a:hover{background:var(--ac2);color:var(--ac);border-color:var(--ac)}
-main{max-width:900px;margin:0 auto;padding:16px}
-h2{margin:26px 0 10px;scroll-margin-top:70px}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,0.02)}
-.card img{width:100%;height:150px;object-fit:cover;border-radius:10px;margin-bottom:10px;transition:transform 0.3s}
-.card img:hover{transform:scale(1.02)}
-.card h3{margin:0 0 6px;color:var(--ac)}.card p{margin:4px 0;font-size:.93rem}.card b{color:var(--ac)}
-.note{background:var(--ac2);border-radius:12px;padding:12px;margin:14px 0;font-size:.92rem}
-li{margin:6px 0}
-input{width:100%;padding:11px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;margin-bottom:12px}
-footer{text-align:center;color:var(--mut);font-size:.8rem;padding:20px 16px}
-
-/* AI Chat Box Styles */
-.ai-box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,0.04)}
-.chat-window{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);margin-bottom:12px}
-.msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:0.92rem;line-height:1.4}
-.msg.user{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:2px}
-.msg.bot{align-self:flex-start;background:var(--card);border:1px solid var(--bd);color:var(--tx);border-bottom-left-radius:2px}
-.chat-input-row{display:flex;gap:8px}
-.chat-input-row input{margin-bottom:0;flex:1}
-.chat-btn{background:var(--ac);color:#fff;border:none;padding:0 18px;border-radius:12px;cursor:pointer;font-weight:bold;font-size:0.95rem;transition:opacity 0.2s}
-.chat-btn:hover{opacity:0.9}
-.suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.sug-chip{font-size:0.8rem;padding:4px 10px;background:var(--ac2);color:var(--ac);border-radius:12px;cursor:pointer;border:1px solid var(--bd)}
-.sug-chip:hover{opacity:0.8}
-</style>
-</head>
-<body>
-<header>
-  <h1>🐦 Birds World</h1>
-  <p>Your advanced guide to birds: real species photos, expert care tips, health, and live AI assistant</p>
-</header>
-<nav>
-  <a href="#birds">Birds Species</a>
-  <a href="#ai-assistant">🤖 AI Assistant</a>
-  <a href="#care">Basic Care</a>
-  <a href="#health">Health &amp; Nutrition</a>
-</nav>
-<main>
-
-<h2 id="birds">Bird Species &amp; Real Photos</h2>
-<input id="s" type="search" placeholder="Search birds (e.g. canary, parrot, goldfinch)..." aria-label="Search birds">
-<div class="grid" id="grid"></div>
-
-<h2 id="ai-assistant">🤖 Ask AI Assistant</h2>
-<div class="ai-box">
-  <p style="margin-top:0; font-size:0.9rem; color:var(--mut);">Ask any question about bird care, feeding, breeding, or health, and the AI assistant will help you instantly!</p>
-  <div class="chat-window" id="chatWindow">
-    <div class="msg bot">👋 Hello! I am your Bird Expert AI. Ask me anything about your bird!</div>
-  </div>
-  <div class="chat-input-row">
-    <input type="text" id="aiInput" placeholder="Type your question here (e.g. What do canaries eat?)...">
-    <button class="chat-btn" id="sendBtn">Send</button>
-  </div>
-  <div class="suggestions">
-    <span class="sug-chip" onclick="askPreset('What can I feed my canary?')">🐤 Canary diet</span>
-    <span class="sug-chip" onclick="askPreset('How to deal with molting?')">🪶 Molting tips</span>
-    <span class="sug-chip" onclick="askPreset('Is avocado toxic to parrots?')">⚠️ Toxic foods</span>
-    <span class="sug-chip" onclick="askPreset('How often should I bath my bird?')">🛁 Bathing frequency</span>
-  </div>
-</div>
-
-<h2 id="care">Basic Care for All Birds</h2>
-<div class="card"><ul>
-<li><b>Cage:</b> large enough to spread wings and make short flights; away from drafts, the kitchen and smoke.</li>
-<li><b>Hygiene:</b> clean the cage floor daily, wash food and water dishes daily, disinfect the cage weekly.</li>
-<li><b>Water:</b> always clean and fresh, with a bath two to three times a week.</li>
-<li><b>Light and sleep:</b> 10–12 hours of dark, quiet sleep and indirect daylight.</li>
-<li><b>Temperature:</b> avoid extreme heat and sudden cold; keep it stable.</li>
-<li><b>Interaction:</b> social birds such as parrots need daily time, toys and enrichment.</li>
-<li><b>Safety:</b> avoid burnt non-stick (PTFE) cookware, perfumes and cleaning sprays; their fumes are toxic to birds.</li>
-</ul></div>
-<div class="note">⚠️ Never feed birds: avocado, chocolate, caffeine, alcohol, large amounts of onion or garlic, or apple seeds and fruit pits.</div>
-
-<h2 id="health">Health &amp; Nutrition</h2>
-<div class="card"><h3>🥚 Proteins and Supplements</h3><ul>
-<li><b>Protein sources:</b> boiled egg (with crushed shell for calcium), mealworms and dried crickets for insect-eaters, cooked legumes and sprouted seed mixes.</li>
-<li><b>Calcium:</b> cuttlebone and mineral blocks, especially important for laying females.</li>
-<li><b>Vitamins:</b> vitamin A (carrots, sweet potato, leafy greens), vitamin D3 (unfiltered sunlight), and water-soluble vitamins under veterinary guidance.</li>
-<li><b>During molting:</b> extra protein and amino acids (such as methionine) support feather regrowth.</li>
-<li><b>Grit:</b> small stones help some birds, like pigeons and chickens, grind grain.</li>
-</ul></div>
-<div class="card" style="margin-top:12px"><h3>💊 Common Illnesses and Treatments</h3><ul>
-<li><b>Diarrhea and gut infections:</b> treated by cause (bacterial or parasitic), usually with antibiotics or anticoccidials prescribed by a vet.</li>
-<li><b>Internal parasites:</b> dewormers (such as ivermectin or fenbendazole, depending on species) at vet-set doses.</li>
-<li><b>Mites and lice:</b> bird-safe sprays or drops, plus a deep clean of the cage.</li>
-<li><b>Fungal disease (e.g. aspergillosis):</b> antifungals by prescription; prevent with good ventilation and clean food.</li>
-<li><b>Vitamin deficiency:</b> corrected with a varied diet and suitable supplements.</li>
-</ul></div>
-<div class="note">🩺 <b>Important:</b> this is general information only. Never give any medicine or antibiotic without advice from an avian vet; a wrong dose can kill a small bird. See a vet at once for fluffed feathers, lethargy, loss of appetite, labored breathing or abnormal droppings.</div>
-</main>
-<footer>General information only; it does not replace a veterinarian.</footer>
-
-<script>
-const B=[
-["Canary","Canary seed mix, rapeseed and niger seed, leafy greens, and egg food in breeding season.","Roomy cage, bath dish, good ventilation, no drafts. Known for its song.","https://images.unsplash.com/photo-1522858547137-f1d65c1fb6d6?auto=format&fit=crop&w=500&q=80"],
-["Budgerigar (Budgie)","Millet and oat mix, fresh vegetables and fruit, a little boiled egg.","Social; needs toys, interaction and a beak-trimming perch.","https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=500&q=80"],
-["Cockatiel","Mixed seeds, pellets, vegetables, fruit and light protein.","Loves whistling and attention; needs a big cage and daily out-of-cage time.","https://images.unsplash.com/photo-1555169062-01347abf4f39?auto=format&fit=crop&w=500&q=80"],
-["Lovebird","Seeds, fruit, vegetables and high-quality pellets.","Often kept in pairs; needs a nesting spot and protection from high heat.","https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=500&q=80"],
-["African Grey Parrot","Pellets, vegetables and fruit, a few nuts, calcium source.","Very intelligent; needs constant mental stimulation or may pluck feathers.","https://images.unsplash.com/photo-1522926193637-af3c40a3e5d0?auto=format&fit=crop&w=500&q=80"],
-["Large Parrots (Macaw, Cockatoo, Amazon)","Pellets, nuts, fruit, vegetables and varied seeds.","Long-lived (50+ years); needs a huge cage, daily interaction and expertise.","https://images.unsplash.com/photo-1569683795645-b62e50fbf103?auto=format&fit=crop&w=500&q=80"],
-["Goldfinch","Niger and rapeseed, thistle seeds, a few oily seeds.","Active singer; likes a roomy cage and small seeds.","https://images.unsplash.com/photo-1579306193806-ea12a6f3bb10?auto=format&fit=crop&w=500&q=80"],
-["Zebra Finch","Millet and small grains, greens, cuttlebone, protein during breeding.","Lives in small groups; best kept in pairs in a long cage.","https://images.unsplash.com/photo-1606567595334-d39972c85dbe?auto=format&fit=crop&w=500&q=80"],
-["Nightingale","Fruit, vegetables, insects and a special softbill food mix.","Active bird; needs a roomy cage and high cleanliness.","https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=500&q=80"],
-["Pigeon","Wheat, corn, peas and barley with grit, minerals and clean water.","Needs a clean, dry loft and vaccination against common diseases.","https://images.unsplash.com/photo-1589244111663-a76cb582ff63?auto=format&fit=crop&w=500&q=80"],
-["Chicken","Balanced layer feed, grains, greens, and crushed eggshell or oyster shell for calcium.","Needs a safe, dry coop and a dust bath to fight parasites.","https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=500&q=80"],
-["Ducks and Geese","Waterfowl feed, grains, leafy greens and insects.","Need water for bathing and dabbling; clean the area regularly.","https://images.unsplash.com/photo-1550853024-fae8cd484752?auto=format&fit=crop&w=500&q=80"],
-["Peacock","Grains and seeds, vegetables, insects and balanced poultry feed.","Needs wide space and a high roost, and protection from severe cold.","https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80"],
-["Flamingo","Small crustaceans, algae and special feed rich in carotene to keep feather color.","Needs a shallow pool and a flock; best left to specialist zoos.","https://images.unsplash.com/photo-1497206365907-f5e630693df0?auto=format&fit=crop&w=500&q=80"],
-["Owl","Rodents, insects and small birds depending on species.","Nocturnal; needs a license in many countries and specialist vet care.","https://images.unsplash.com/photo-1543598060-144793ab755f?auto=format&fit=crop&w=500&q=80"],
-["Turkey","High-protein turkey feed, grains and leafy greens.","Needs a wide, dry coop and vaccination against common diseases.","https://images.unsplash.com/photo-1579613832125-5d34a1332a99?auto=format&fit=crop&w=500&q=80"],
-["Quail","High-protein quail feed (20–24%) and small grains.","Fast-growing; needs proper warmth and avoid overcrowding.","https://images.unsplash.com/photo-1534567153574-2b12153a87f0?auto=format&fit=crop&w=500&q=80"],
-["Ostrich","Plant feed, alfalfa, vegetables and grit for digestion.","Needs very large areas and strong fencing; its kick is dangerous.","https://images.unsplash.com/photo-1574068468729-54a7f961f196?auto=format&fit=crop&w=500&q=80"],
-["Falcons and Birds of Prey","Fresh meat (quail, pigeon, fed rodents) depending on species.","Need expertise, regular training, a quiet space and specialist vet care.","https://images.unsplash.com/photo-1611689342806-0863700ce1e4?auto=format&fit=crop&w=500&q=80"],
-["Wild Birds and Sparrows","Seeds, insects, fruit and nectar depending on habitat.","Better watched than kept; provide water and food in your garden without trapping them.","https://images.unsplash.com/photo-1452570053594-1b985d6ea890?auto=format&fit=crop&w=500&q=80"]
-];
-
-const g=document.getElementById("grid");
-function draw(f){
-  g.textContent="";
-  B.filter(b=>(b[0]+b[1]+b[2]).toLowerCase().includes(f)).forEach(([n,fd,c,imgUrl])=>{
-    const d=document.createElement("div");d.className="card";
-    const img = document.createElement("img");
-    img.src = imgUrl;
-    img.alt = n;
-    d.appendChild(img);
-    const t=(k,x,cl)=>{const y=document.createElement(k);y.textContent=x;if(cl)y.className=cl;return y};
-    const p=(l,x)=>{const q=document.createElement("p");q.append(t("b",l),document.createTextNode(x));return q};
-    d.append(t("h3",n),p("Diet: ",fd),p("Care: ",c));
-    g.append(d);
-  });
-  if(!g.children.length)g.textContent="No birds found. Try another name.";
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--tx);
+  font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.65;
+  transition:background .25s,color .25s;
 }
-draw("");
-document.getElementById("s").addEventListener("input",e=>draw(e.target.value.trim().toLowerCase()));
+img{max-width:100%;display:block}
+a{color:inherit}
 
-const chatWin = document.getElementById('chatWindow');
-const aiInp = document.getElementById('aiInput');
-const sendBtn = document.getElementById('sendBtn');
-
-function addMsg(txt, isUser){
-  const d = document.createElement('div');
-  d.className = 'msg ' + (isUser ? 'user' : 'bot');
-  d.textContent = txt;
-  chatWin.appendChild(d);
-  chatWin.scrollTop = chatWin.scrollHeight;
+header{
+  padding:36px 16px 24px;text-align:center;
+  background:linear-gradient(135deg,var(--ac2),transparent);
+  border-bottom:1px solid var(--bd);
 }
+h1{margin:0 0 8px;font-size:clamp(1.8rem,4vw,2.5rem)}
+header p{margin:0 auto;color:var(--mut);max-width:680px}
 
-function generateResponse(query){
-  const q = query.toLowerCase();
-  if(q.includes('canary') || q.includes('كناري')) return "🐤 Canaries love canary seed mix, niger seeds, leafy greens, and egg food during breeding. Keep them away from cold drafts!";
-  if(q.includes('avocado') || q.includes('chocolate') || q.includes('toxic') || q.includes('سام')) return "⚠️ Never give birds avocado, chocolate, caffeine, alcohol, onion, garlic, or fruit seeds! They are toxic.";
-  if(q.includes('molt') || q.includes('تبديل') || q.includes('طرح')) return "🪶 During molting, birds need extra protein (like boiled egg) and calcium to rebuild strong, healthy feathers.";
-  if(q.includes('bath') || q.includes('استحمام') || q.includes('مااء')) return "🛁 Offer clean water for bathing 2 to 3 times a week. It helps keep their feathers clean and skin healthy.";
-  if(q.includes('sick') || q.includes('مريض') || q.includes('علاج')) return "🩺 If your bird shows signs of illness (fluffed feathers, loss of appetite, lethargy), please consult an avian vet immediately!";
-  if(q.includes('hello') || q.includes('hi') || q.includes('مرحبا')) return "👋 Hello! How can I help you with your birds today?";
-  return "🐦 For best results: ensure clean daily water, balanced seed/pellet mix, fresh greens, 10-12 hours of sleep, and an avian vet checkup when needed!";
+.topbar{
+  position:sticky;top:0;z-index:30;
+  background:color-mix(in srgb,var(--bg) 90%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--bd);
 }
-
-function handleSend(){
-  const val = aiInp.value.trim();
-  if(!val) return;
-  addMsg(val, true);
-  aiInp.value = '';
-  setTimeout(()=>{
-    addMsg(generateResponse(val), false);
-  }, 400);
-}
-
-sendBtn.addEventListener('click', handleSend);
-aiInp.addEventListener('keypress', e => { if(e.key === 'Enter') handleSend(); });
-
-function askPreset(txt){
-  aiInp.value = txt;
-  handleSend();
-}
-</script>
-</body>
-</html>
+.nav-inner{
+  max-width:1050px;margin:auto;padding:10px 14px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
