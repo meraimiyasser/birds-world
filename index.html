@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birds World – Complete 45 Species PRO++ Edition</title>
-<meta name="description" content="Complete professional bird guide with all 45 species, calculators, breeding trackers, audio players, custom notes, and voice search.">
+<title>Birds World – Complete 45 Birds Guide PRO++</title>
+<meta name="description" content="Complete professional bird guide with all 45 bird species, diet calculator, breeding tracker, notes, and voice search.">
 <style>
 :root{--bg:#f8fafc;--card:#ffffff;--text:#0f172a;--muted:#64748b;--ac:#10b981;--ac-hover:#059669;--line:#e2e8f0;--warn:#fef3c7;--wt:#92400e;--red:#fee2e2;--rt:#991b1b;--shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03)}
 [data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#f8fafc;--muted:#94a3b8;--ac:#34d399;--ac-hover:#10b981;--line:#334155;--warn:#451a03;--wt:#fde68a;--red:#7f1d1d;--rt:#fca5a5;--shadow:0 4px 6px -1px rgba(0,0,0,0.2)}
@@ -21,7 +21,7 @@ header{background:var(--card);border-bottom:1px solid var(--line);position:stick
 .btn:hover{background:var(--ac-hover)}
 .icon-btn{background:var(--card);border:1px solid var(--line);color:var(--text);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
 
-.hero-banner{text-align:center;padding:40px 20px 20px;max-width:800px;margin:0 auto}
+.hero-banner{text-align:center;padding:30px 20px 10px;max-width:800px;margin:0 auto}
 .hero-banner h1{margin:0 0 8px;font-size:2.2rem}
 .hero-banner p{color:var(--muted);margin:0}
 
@@ -79,7 +79,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:40px 20px;b
 
 <header>
  <div class="header-inner">
-  <a class="logo" href="#/">🐦 Birds World <span style="font-size:0.7rem;background:var(--ac);color:#fff;padding:2px 6px;border-radius:6px">PRO++ (45 Species)</span></a>
+  <a class="logo" href="#/">🐦 Birds World <span style="font-size:0.7rem;background:var(--ac);color:#fff;padding:2px 6px;border-radius:6px">PRO++ (45 Birds)</span></a>
   <div class="nav-actions">
    <button class="icon-btn" id="themeToggle" title="Toggle Theme">🌙</button>
   </div>
@@ -91,7 +91,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:40px 20px;b
 <footer>Birds World Professional Edition · Powered by Wikipedia & Wikimedia Commons API</footer>
 
 <script>
-/* ===== DATASET & STRUCTURE ===== */
+/* ===== 1) SHARED DISEASE ENTRIES ===== */
 const EB=["Egg binding","Female sitting fluffed on the floor, straining, swollen abdomen","Emergency: warmth and quiet, then urgent vet care (calcium, assisted egg removal)"];
 const POX=["Avian pox","Wart-like crusts on face, feet or inside the mouth","No specific cure; vet supportive care, isolation, mosquito control"];
 const AI=["Avian influenza (bird flu)","Sudden deaths, swollen head, breathing problems, drop in eating","No treatment; report to veterinary authorities, isolate"];
@@ -100,17 +100,19 @@ const BF=["Bumblefoot","Swollen, hard or sore foot pad, limping, scabs on the so
 const COC=["Coccidiosis","Diarrhea (sometimes bloody), weight loss, ruffled feathers","Vet-prescribed anticoccidial medicine; clean, dry housing"];
 const MITE=["Mites and lice","Itching, scaly crusts, feather damage, restlessness","Vet-approved antiparasitic treatment; clean cage and perches"];
 
+/* ===== 2) GROUPS ===== */
 const G={
  pa:{n:"Parrots",e:"🦜",diet:["Quality pellets as base, plus seed mix","Fresh vegetables daily and a little fruit","Fresh clean water every day"],care:["Spacious cage with room to spread wings","Daily social contact and mental stimulation","10–12 hours of dark, quiet sleep"],dis:[["PBFD","Abnormal feathers, beak changes","No cure; strict isolation"],["Psittacosis","Green/yellow droppings, eye discharge","Antibiotic course"],ASP,EB], foodWeight:15, incDays:21, audioQuery:"Parrots singing calling sound"},
  fi:{n:"Finches & Canaries",e:"🐤",diet:["Quality finch seed mix","Fresh greens and grated vegetables","Cuttlebone and grit"],care:["Wide flight cage (horizontal space)","Quiet, draft-free place","Clean air: no smoke or fumes"],dis:[["Air sac mites","Clicking breathing, tail bobbing","Antiparasitic treatment"],COC,POX,EB], foodWeight:4, incDays:14, audioQuery:"Canary singing song sound"},
  do:{n:"Doves & Pigeons",e:"🕊️",diet:["Pigeon grain mix (seeds, peas, wheat)","Grit and mineral supplement","Fresh water daily"],care:["Dry, ventilated loft or aviary","Clean droppings every day","Quarantine new birds"],dis:[["Canker","Yellow cheesy lesions in throat","Antiprotozoal medicine"],["Paramyxovirus","Twisted neck, tremors","Vaccination & isolation"],COC], foodWeight:30, incDays:18, audioQuery:"Dove cooing sound"},
- po:{n:"Poultry",e:"🐔",diet:["Complete feed matched to age","Grit and oyster shell","Clean water always"],care:["Dry, predator-proof coop","Nest boxes and dust-bathing area","Biosecurity"],dis:[["Newcastle disease","Sneezing, green diarrhea","Vaccination & isolation"],AI,COC,MITE], foodWeight:120, incDays:21, audioQuery:"Chicken clucking crowing sound"},
+ po:{n:"Poultry & Gamebirds",e:"🐔",diet:["Complete feed matched to age","Grit and oyster shell","Clean water always"],care:["Dry, predator-proof coop","Nest boxes and dust-bathing area","Biosecurity"],dis:[["Newcastle disease","Sneezing, green diarrhea","Vaccination & isolation"],AI,COC,MITE], foodWeight:120, incDays:21, audioQuery:"Chicken clucking crowing sound"},
  wa:{n:"Waterfowl",e:"🦆",diet:["Waterfowl pellets or grain","Greens and aquatic plants","Water deep enough to dunk head"],care:["Clean water for swimming","Dry bedding at night","Predator protection"],dis:[["Angel wing","Wing feathers twisting outward","Splint & correct diet"],AI,BF,ASP], foodWeight:150, incDays:28, audioQuery:"Duck quack sound"},
  ra:{n:"Birds of Prey",e:"🦅",diet:["Whole prey: quail, rodents","Fresh or properly thawed meat","Clean water for bathing"],care:["Spacious aviary protected from weather","Clean perches of varied texture","Experienced handler"],dis:[ASP,BF,["Frounce","Yellow lesions in mouth","Antiprotozoal medicine"]], foodWeight:80, incDays:30, audioQuery:"Hawk eagle screech sound"},
- so:{n:"Songbirds",e:"🎵",diet:["Insectivore mix, fruit or seed","Low-iron food for mynahs","Fresh water and bath"],care:["Large aviary with flying space","Quiet place with minimal stress"],dis:[["Iron storage disease","Weight loss, swollen abdomen","Low-iron diet"],POX,MITE], foodWeight:6, incDays:13, audioQuery:"Nightingale bird singing song"},
- wi:{n:"Wild Birds",e:"🦩",diet:["Species-specific natural diet","Clean water at all times"],care:["Protected wildlife habitat","Leave in nature or rescue centers"],dis:[ASP,["Avian malaria","Weakness, pale gums","Antimalarial treatment"],AI], foodWeight:200, incDays:30, audioQuery:"Flamingo wild bird sound"}
+ so:{n:"Songbirds & Softbills",e:"🎵",diet:["Insectivore mix, fruit or seed","Low-iron food for mynahs","Fresh water and bath"],care:["Large aviary with flying space","Quiet place with minimal stress"],dis:[["Iron storage disease","Weight loss, swollen abdomen","Low-iron diet"],POX,MITE], foodWeight:6, incDays:13, audioQuery:"Nightingale bird singing song"},
+ wi:{n:"Large & Wild Birds",e:"🦩",diet:["Species-specific natural diet","Clean water at all times"],care:["Protected wildlife habitat","Leave in nature or rescue centers"],dis:[ASP,["Avian malaria","Weakness, pale gums","Antimalarial treatment"],AI], foodWeight:200, incDays:30, audioQuery:"Flamingo wild bird sound"}
 };
 
+/* ===== 3) ALL 45 SPECIES DATA (FULL ORIGINAL LIST) ===== */
 const C=f=>"https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(f.replace(/ /g,"_"))+"?width=800";
 const B=[
 ["Budgerigar","","Melopsittacus undulatus","pa","Australia","18 cm","5–10 years","Seed mix plus pellets, daily greens and a cuttlebone","Budgerigar (Karayil).jpg"],
@@ -159,10 +161,22 @@ const B=[
 ["White Stork","","Ciconia ciconia","wi","Europe, Africa and Asia","100–115 cm","20–30 years","Insects, frogs, fish and small animals","White stork (Ciconia ciconia) Białowieza.jpg"],
 ["African Penguin","","Spheniscus demersus","wi","Southern Africa","60–70 cm","10–20 years","Fish such as sardines and anchovies","African Penguin (Spheniscus demersus) hurrying to the water ... (52672159677).jpg"]
 ];
-const S=B.map(a=>({id:a[0].toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""),name:a[0],wiki:a[1]||a[0],sci:a[2],g:a[3],o:a[4],s:a[5],l:a[6],tip:a[7],img:a[8]?C(a[8]):""}));
+
+const S=B.map(a=>({
+ id:a[0].toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""),
+ name:a[0],
+ wiki:a[1]||a[0],
+ sci:a[2],
+ g:a[3],
+ o:a[4],
+ s:a[5],
+ l:a[6],
+ tip:a[7],
+ img:a[8]?C(a[8]):""
+}));
 
 /* State & Storage */
-const CK="bw_pro_v4";let cache={};
+const CK="bw_pro_v5";let cache={};
 try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){}
 const saveC=()=>{try{localStorage.setItem(CK,JSON.stringify(cache))}catch(e){}};
 async function wiki(t){
@@ -200,13 +214,13 @@ document.getElementById("themeToggle").textContent=savedTheme==="dark"?"☀️":
 /* ===== HOME PAGE ===== */
 const app=document.getElementById("app");
 function home(){
- document.title="Birds World – Complete 45 Species PRO++";
- const chips=[["all","All Species"],["fav","♥ Favorites"],...Object.keys(G).map(k=>[k,G[k].e+" "+G[k].n])];
+ document.title="Birds World – All 45 Species Guide";
+ const chips=[["all","All 45 Species"],["fav","♥ Favorites"],...Object.keys(G).map(k=>[k,G[k].e+" "+G[k].n])];
  
  app.innerHTML=`
  <div class="hero-banner">
   <h1>Discover the Wonderful World of Birds</h1>
-  <p>Professional avian platform with all 45 species, calculators, audio player, breeding tools, and management features.</p>
+  <p>Complete professional avian guide featuring all 45 species, calculators, audio, breeding tracking and notes.</p>
  </div>
  <main class="main-container">
   <div class="stats-grid">
@@ -228,8 +242,8 @@ function home(){
 
  const grid=document.getElementById("grid");
  function draw(){
-  const q=st.q.toLowerCase();
-  const items=S.filter(b=>(st.g==="all"||(st.g==="fav"?isF(b.id):b.g===st.g))&&(b.name+" "+b.sci+" "+b.o).toLowerCase().includes(q));
+  const q=st.q.toLowerCase().trim();
+  const items=S.filter(b=>(st.g==="all"||(st.g==="fav"?isF(b.id):b.g===st.g))&&(b.name+" "+b.sci+" "+b.o).toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
   
   document.getElementById("chips").innerHTML=chips.map(c=>`<button class="chip ${st.g===c[0]?"on":""}" data-g="${c[0]}">${c[1]}</button>`).join("");
   
@@ -347,7 +361,7 @@ function detail(id){
      <div style="font-size:2rem">🔊</div>
      <div style="flex:1">
       <div style="font-weight:600">${g.n} Natural Song & Calls</div>
-      <div style="font-size:0.85rem;color:var(--muted)">Audio stream preset for simulation</div>
+      <div style="font-size:0.85rem;color:var(--muted)">Search audio recordings and natural calls</div>
      </div>
      <a class="btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(g.audioQuery)}" target="_blank" rel="noopener">▶ Search Audio on YouTube</a>
     </div>
@@ -391,7 +405,7 @@ function detail(id){
  document.getElementById("tabs").onclick=e=>{
   const t=e.target.dataset.t;if(!t)return;
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.dataset.t===t));
-  document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("on",x.id===p-"+t));
+  document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("on",x.id==="p-"+t));
  };
 
  /* Calculator Logic */
