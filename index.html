@@ -4,47 +4,66 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Birds World – Complete 45 Birds Guide PRO++</title>
-<meta name="description" content="Complete professional bird guide with all 45 species, photo credits, diet calculator, breeding tracker, synth audio, side-by-side comparison, quiz, notes, and voice search.">
+<meta name="description" content="Complete professional bird guide with 45 species, real bird sounds, photo credits, diet calculator, breeding tracker, comparison, quiz, notes, sightings and voice search.">
+<meta name="theme-color" content="#10b981">
+<link rel="manifest" href='data:application/manifest+json,{"name":"Birds World PRO++","short_name":"Birds World","start_url":"./","display":"standalone","background_color":"%23f8fafc","theme_color":"%2310b981"}'>
+
 <style>
-:root{--bg:#f8fafc;--card:#ffffff;--text:#0f172a;--muted:#64748b;--ac:#10b981;--ac-hover:#059669;--line:#e2e8f0;--warn:#fef3c7;--wt:#92400e;--red:#fee2e2;--rt:#991b1b;--shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03)}
-[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#f8fafc;--muted:#94a3b8;--ac:#34d399;--ac-hover:#10b981;--line:#334155;--warn:#451a03;--wt:#fde68a;--red:#7f1d1d;--rt:#fca5a5;--shadow:0 4px 6px -1px rgba(0,0,0,0.2)}
-*{box-sizing:border-box}html{color-scheme:light dark}
+:root{
+--bg:#f8fafc;--card:#ffffff;--text:#0f172a;--muted:#64748b;--ac:#10b981;--ac-hover:#059669;
+--line:#e2e8f0;--warn:#fef3c7;--wt:#92400e;--red:#fee2e2;--rt:#991b1b;
+--shadow:0 4px 6px -1px rgba(0,0,0,.05),0 2px 4px -1px rgba(0,0,0,.03)
+}
+[data-theme="dark"]{
+--bg:#0f172a;--card:#1e293b;--text:#f8fafc;--muted:#94a3b8;--ac:#34d399;--ac-hover:#10b981;
+--line:#334155;--warn:#451a03;--wt:#fde68a;--red:#7f1d1d;--rt:#fca5a5;
+--shadow:0 4px 6px -1px rgba(0,0,0,.2)
+}
+*{box-sizing:border-box}
+html{color-scheme:light dark}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s}
-a{color:var(--ac);text-decoration:none}a:hover{text-decoration:underline}
+a{color:var(--ac);text-decoration:none}
+a:hover{text-decoration:underline}
 button{font:inherit;cursor:pointer;border:none;background:none}
 
 header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
-.header-inner{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:1.5rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
-.nav-actions{display:flex;gap:10px;align-items:center}
+.header-inner{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{font-size:1.4rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
+.nav-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .btn{background:var(--ac);color:#fff;padding:8px 14px;border-radius:10px;font-weight:600;font-size:.9rem;transition:background .2s;display:inline-flex;align-items:center;gap:6px}
 .btn:hover{background:var(--ac-hover)}
 .btn-outline{background:transparent;border:1px solid var(--line);color:var(--text)}
 .btn-outline:hover{background:var(--line)}
 .icon-btn{background:var(--card);border:1px solid var(--line);color:var(--text);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
 
-.hero-banner{text-align:center;padding:30px 20px 10px;max-width:800px;margin:0 auto}
+.hero-banner{text-align:center;padding:30px 20px 10px;max-width:900px;margin:0 auto}
 .hero-banner h1{margin:0 0 8px;font-size:2.2rem}
 .hero-banner p{color:var(--muted);margin:0}
 
 .main-container{max-width:1200px;margin:0 auto;padding:0 20px 40px}
 .control-panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:24px;box-shadow:var(--shadow)}
-.search-row{display:flex;gap:10px;margin-bottom:16px}
-.search-input{flex:1;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--text);font-size:1rem}
+.search-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search-input,.select-input{flex:1;min-width:180px;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--text);font-size:1rem}
+.select-input{flex:0 0 220px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
 .chip{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:20px;padding:6px 14px;font-size:.85rem;font-weight:500;transition:all .2s}
 .chip.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
 .stat-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
-.stat-card h4{margin:0 0 4px;color:var(--muted);font-size:.85rem;text-transform:uppercase}
+.stat-card h4{margin:0 0 4px;color:var(--muted);font-size:.8rem;text-transform:uppercase}
 .stat-card .val{font-size:1.5rem;font-weight:800}
+
+.bird-day{display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,var(--card),var(--bg));border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:24px;box-shadow:var(--shadow)}
+.bird-day .emoji{font-size:3rem}
+.bird-day h3{margin:0}
+.bird-day p{margin:4px 0 0;color:var(--muted)}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;position:relative}
-.card:hover{transform:-translateY(4px);box-shadow:0 10px 15px -3px rgba(0,0,0,0.1)}
+.card:hover{transform:translateY(-4px);box-shadow:0 10px 15px -3px rgba(0,0,0,.1)}
 .card a{display:block;color:inherit;text-decoration:none}
-.photo{aspect-ratio:4/3;background:var(--line);position:relative;overflow:hidden}
+.photo{aspect-ratio:4/3;background:var(--line);position:relative;overflow:hidden;cursor:zoom-in}
 .photo img{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s}
 .photo img.ld{opacity:1}
 .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
@@ -54,61 +73,67 @@ header{background:var(--card);border-bottom:1px solid var(--line);position:stick
 .tag{display:inline-block;background:var(--bg);border-radius:8px;padding:2px 8px;font-size:.75rem;color:var(--muted);border:1px solid var(--line)}
 .card-actions{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
 .compare-checkbox{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
+.fv-btn{position:absolute;top:10px;right:10px;z-index:2;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#ef4444;box-shadow:var(--shadow)}
 
-.fv-btn{position:absolute;top:10px;right:10px;z-index:2;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#ef4444;box-shadow:var(--shadow)}
-
-/* Detail & Modal Views */
 .wrap{max-width:900px;margin:0 auto;padding:20px}
 .back-link{display:inline-flex;align-items:center;gap:6px;font-weight:600;margin-bottom:16px}
-.hero-detail{border-radius:20px;overflow:hidden;background:var(--line);aspect-ratio:16/9;position:relative;box-shadow:var(--shadow)}
+.hero-detail{border-radius:20px;overflow:hidden;background:var(--line);aspect-ratio:16/9;position:relative;box-shadow:var(--shadow);cursor:zoom-in}
 .credit{font-size:.78rem;color:var(--muted);margin:6px 0 14px}
 .detail-meta{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
 .meta-badge{background:var(--card);border:1px solid var(--line);padding:8px 14px;border-radius:10px;font-size:.9rem}
 .tabs{display:flex;gap:8px;overflow-x:auto;margin:20px 0 12px;background:var(--card);padding:6px;border-radius:14px;border:1px solid var(--line)}
 .tab{flex:1;text-align:center;padding:10px;border-radius:10px;font-weight:600;color:var(--text);white-space:nowrap;transition:background .2s}
 .tab.on{background:var(--ac);color:#fff}
-.panel{display:none}.panel.on{display:block}
+.panel{display:none}
+.panel.on{display:block}
 .box-section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin:12px 0;box-shadow:var(--shadow)}
 .notes-area{width:100%;height:100px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;margin-top:8px}
-
-.calc-group, .breed-group{margin:12px 0}
-.calc-group label, .breed-group label{display:block;font-weight:600;margin-bottom:6px}
-.calc-input, .breed-input{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
-.calc-results, .breed-results{background:var(--bg);border:1px solid var(--line);padding:12px;border-radius:10px;margin-top:12px;font-size:.95rem}
+.calc-group,.breed-group{margin:12px 0}
+.calc-group label,.breed-group label{display:block;font-weight:600;margin-bottom:6px}
+.calc-input,.breed-input{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+.calc-results,.breed-results{background:var(--bg);border:1px solid var(--line);padding:12px;border-radius:10px;margin-top:12px;font-size:.95rem}
 
 .quiz-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:24px;box-shadow:var(--shadow);text-align:center}
 .quiz-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:14px}
 .quiz-btn{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-weight:600;transition:all .2s}
 .quiz-btn:hover{border-color:var(--ac);color:var(--ac)}
 
-/* Comparison Table Modal */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .modal.on{display:flex}
 .modal-content{background:var(--card);border-radius:20px;padding:24px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow);position:relative}
 .modal-close{position:absolute;top:16px;right:20px;font-size:1.5rem;cursor:pointer}
 .comp-table{width:100%;border-collapse:collapse;margin-top:16px}
-.comp-table th, .comp-table td{border:1px solid var(--line);padding:12px;text-align:left}
+.comp-table th,.comp-table td{border:1px solid var(--line);padding:12px;text-align:left}
 .comp-table th{background:var(--bg)}
 
 footer{text-align:center;color:var(--muted);font-size:.85rem;padding:40px 20px;border-top:1px solid var(--line);margin-top:40px}
-@media print { header, .nav-actions, .tabs, footer, .control-panel, .fv-btn, .quiz-box { display: none !important; } body { background: #fff; color: #000; } }
+@media(max-width:700px){
+.header-inner{flex-direction:column;align-items:stretch}
+.nav-actions{justify-content:center}
+.search-row{flex-direction:column}
+.select-input{width:100%}
+.bird-day{flex-direction:column;text-align:center}
+}
+@media print{
+header,.nav-actions,.tabs,footer,.control-panel,.fv-btn,.quiz-box{display:none!important}
+body{background:#fff;color:#000}
+}
 </style>
 </head>
 <body>
 
 <header>
  <div class="header-inner">
-  <a class="logo" href="#/">🐦 Birds World <span style="font-size:0.7rem;background:var(--ac);color:#fff;padding:2px 6px;border-radius:6px">PRO++ (45 Birds)</span></a>
+  <a class="logo" href="#/">🐦 Birds World <span style="font-size:.7rem;background:var(--ac);color:#fff;padding:2px 6px;border-radius:6px">PRO++</span></a>
   <div class="nav-actions">
    <button class="btn btn-outline" id="compareModalBtn">⚖️ Compare (<span id="compCount">0</span>)</button>
-   <button class="icon-btn" id="themeToggle" title="Toggle Theme">🌙</button>
+   <button class="icon-btn" id="themeToggle" title="Toggle Theme" aria-label="Toggle dark mode">🌙</button>
   </div>
  </div>
 </header>
 
 <div id="app"></div>
 
-<!-- Modal Comparison Window -->
 <div class="modal" id="compModal">
  <div class="modal-content">
   <span class="modal-close" id="closeModal">&times;</span>
@@ -117,32 +142,44 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:40px 20px;b
  </div>
 </div>
 
-<footer>Photos and summaries from Wikipedia / Wikimedia Commons under their licenses. General information only.</footer>
+<div class="modal" id="imgModal">
+ <div class="modal-content" style="text-align:center">
+  <span class="modal-close" id="closeImgModal">&times;</span>
+  <img id="lightboxImg" style="max-width:100%;max-height:75vh;border-radius:12px" alt="Bird photo">
+  <p id="lightboxCaption" style="color:var(--muted);font-size:.85rem"></p>
+ </div>
+</div>
+
+<footer>
+ Photos and summaries from Wikipedia / Wikimedia Commons under their licenses.<br>
+ Bird sounds from <a href="https://xeno-canto.org/" target="_blank" rel="noopener noreferrer">Xeno-canto</a>. General information only; contact an avian veterinarian for health problems.
+</footer>
 
 <script>
-/* ===== 1) SHARED DISEASE ENTRIES ===== */
-const EB=["Egg binding","Female sitting fluffed on the floor, straining, swollen abdomen","Emergency: warmth and quiet, then urgent vet care (calcium, assisted egg removal)"];
+/* ================= DISEASES ================= */
+const EB=["Egg binding","Female sitting fluffed on the floor, straining, swollen abdomen","Emergency: warmth and quiet, then urgent avian vet care"];
 const POX=["Avian pox","Wart-like crusts on face, feet or inside the mouth","No specific cure; vet supportive care, isolation, mosquito control"];
-const AI=["Avian influenza (bird flu)","Sudden deaths, swollen head, breathing problems, drop in eating","No treatment; report to veterinary authorities, isolate"];
-const ASP=["Aspergillosis (fungal lung infection)","Open-mouth breathing, tail bobbing, voice change, weakness","Vet-prescribed antifungals, sometimes nebulization; fix mold and dust"];
-const BF=["Bumblefoot","Swollen, hard or sore foot pad, limping, scabs on the sole","Vet cleaning of the wound, bandaging and antibiotics"];
-const COC=["Coccidiosis","Diarrhea (sometimes bloody), weight loss, ruffled feathers","Vet-prescribed anticoccidial medicine; clean, dry housing"];
+const AI=["Avian influenza","Sudden deaths, swollen head, breathing problems, drop in eating","No treatment; report to veterinary authorities, isolate"];
+const ASP=["Aspergillosis","Open-mouth breathing, tail bobbing, voice change, weakness","Vet-prescribed antifungals; reduce mold and dust"];
+const BF=["Bumblefoot","Swollen, hard or sore foot pad, limping, scabs","Vet cleaning, bandaging and antibiotics"];
+const COC=["Coccidiosis","Diarrhea, weight loss, ruffled feathers","Vet-prescribed anticoccidial medicine; clean dry housing"];
 const MITE=["Mites and lice","Itching, scaly crusts, feather damage, restlessness","Vet-approved antiparasitic treatment; clean cage and perches"];
 
-/* ===== 2) GROUPS ===== */
+/* ================= GROUPS ================= */
 const G={
- pa:{n:"Parrots",e:"🦜",diet:["Quality pellets as base, plus seed mix","Fresh vegetables daily and a little fruit","Fresh clean water every day"],care:["Spacious cage with room to spread wings","Daily social contact and mental stimulation","10–12 hours of dark, quiet sleep"],dis:[["PBFD","Abnormal feathers, beak changes","No cure; strict isolation"],["Psittacosis","Green/yellow droppings, eye discharge","Antibiotic course"],ASP,EB], foodWeight:15, incDays:21, synthPitch:1200},
- fi:{n:"Finches & Canaries",e:"🐤",diet:["Quality finch seed mix","Fresh greens and grated vegetables","Cuttlebone and grit"],care:["Wide flight cage (horizontal space)","Quiet, draft-free place","Clean air: no smoke or fumes"],dis:[["Air sac mites","Clicking breathing, tail bobbing","Antiparasitic treatment"],COC,POX,EB], foodWeight:4, incDays:14, synthPitch:2400},
- do:{n:"Doves & Pigeons",e:"🕊️",diet:["Pigeon grain mix (seeds, peas, wheat)","Grit and mineral supplement","Fresh water daily"],care:["Dry, ventilated loft or aviary","Clean droppings every day","Quarantine new birds"],dis:[["Canker","Yellow cheesy lesions in throat","Antiprotozoal medicine"],["Paramyxovirus","Twisted neck, tremors","Vaccination & isolation"],COC], foodWeight:30, incDays:18, synthPitch:400},
- po:{n:"Poultry & Gamebirds",e:"🐔",diet:["Complete feed matched to age","Grit and oyster shell","Clean water always"],care:["Dry, predator-proof coop","Nest boxes and dust-bathing area","Biosecurity"],dis:[["Newcastle disease","Sneezing, green diarrhea","Vaccination & isolation"],AI,COC,MITE], foodWeight:120, incDays:21, synthPitch:600},
- wa:{n:"Waterfowl",e:"🦆",diet:["Waterfowl pellets or grain","Greens and aquatic plants","Water deep enough to dunk head"],care:["Clean water for swimming","Dry bedding at night","Predator protection"],dis:[["Angel wing","Wing feathers twisting outward","Splint & correct diet"],AI,BF,ASP], foodWeight:150, incDays:28, synthPitch:300},
- ra:{n:"Birds of Prey",e:"🦅",diet:["Whole prey: quail, rodents","Fresh or properly thawed meat","Clean water for bathing"],care:["Spacious aviary protected from weather","Clean perches of varied texture","Experienced handler"],dis:[ASP,BF,["Frounce","Yellow lesions in mouth","Antiprotozoal medicine"]], foodWeight:80, incDays:30, synthPitch:1600},
- so:{n:"Songbirds & Softbills",e:"🎵",diet:["Insectivore mix, fruit or seed","Low-iron food for mynahs","Fresh water and bath"],care:["Large aviary with flying space","Quiet place with minimal stress"],dis:[["Iron storage disease","Weight loss, swollen abdomen","Low-iron diet"],POX,MITE], foodWeight:6, incDays:13, synthPitch:2200},
- wi:{n:"Large & Wild Birds",e:"🦩",diet:["Species-specific natural diet","Clean water at all times"],care:["Protected wildlife habitat","Leave in nature or rescue centers"],dis:[ASP,["Avian malaria","Weakness, pale gums","Antimalarial treatment"],AI], foodWeight:200, incDays:30, synthPitch:500}
+ pa:{n:"Parrots",e:"🦜",diet:["Quality pellets as base, plus seed mix","Fresh vegetables daily and a little fruit","Fresh clean water every day"],care:["Spacious cage with room to spread wings","Daily social contact and mental stimulation","10–12 hours of dark, quiet sleep"],dis:[["PBFD","Abnormal feathers, beak changes","No cure; strict isolation"],["Psittacosis","Green/yellow droppings, eye discharge","Antibiotic course"],ASP,EB],foodWeight:15,incDays:21,synthPitch:1200},
+ fi:{n:"Finches & Canaries",e:"🐤",diet:["Quality finch seed mix","Fresh greens and grated vegetables","Cuttlebone and grit"],care:["Wide flight cage with horizontal space","Quiet, draft-free place","Clean air: no smoke or fumes"],dis:[["Air sac mites","Clicking breathing, tail bobbing","Antiparasitic treatment"],COC,POX,EB],foodWeight:4,incDays:14,synthPitch:2400},
+ do:{n:"Doves & Pigeons",e:"🕊️",diet:["Pigeon grain mix: seeds, peas, wheat","Grit and mineral supplement","Fresh water daily"],care:["Dry, ventilated loft or aviary","Clean droppings every day","Quarantine new birds"],dis:[["Canker","Yellow cheesy lesions in throat","Antiprotozoal medicine"],["Paramyxovirus","Twisted neck, tremors","Vaccination & isolation"],COC],foodWeight:30,incDays:18,synthPitch:400},
+ po:{n:"Poultry & Gamebirds",e:"🐔",diet:["Complete feed matched to age","Grit and oyster shell","Clean water always"],care:["Dry, predator-proof coop","Nest boxes and dust-bathing area","Strong biosecurity"],dis:[["Newcastle disease","Sneezing, green diarrhea","Vaccination & isolation"],AI,COC,MITE],foodWeight:120,incDays:21,synthPitch:600},
+ wa:{n:"Waterfowl",e:"🦆",diet:["Waterfowl pellets or grain","Greens and aquatic plants","Water deep enough to dunk head"],care:["Clean water for swimming","Dry bedding at night","Predator protection"],dis:[["Angel wing","Wing feathers twisting outward","Splint & correct diet"],AI,BF,ASP],foodWeight:150,incDays:28,synthPitch:300},
+ ra:{n:"Birds of Prey",e:"🦅",diet:["Whole prey: quail, rodents","Fresh or properly thawed meat","Clean water for bathing"],care:["Spacious aviary protected from weather","Clean perches of varied texture","Experienced handler only"],dis:[ASP,BF,["Frounce","Yellow lesions in mouth","Antiprotozoal medicine"]],foodWeight:80,incDays:30,synthPitch:1600},
+ so:{n:"Songbirds & Softbills",e:"🎵",diet:["Insectivore mix, fruit or seed","Low-iron food for mynahs","Fresh water and bath"],care:["Large aviary with flying space","Quiet place with minimal stress"],dis:[["Iron storage disease","Weight loss, swollen abdomen","Low-iron diet"],POX,MITE],foodWeight:6,incDays:13,synthPitch:2200},
+ wi:{n:"Large & Wild Birds",e:"🦩",diet:["Species-specific natural diet","Clean water at all times"],care:["Protected wildlife habitat","Leave in nature or contact rescue centers"],dis:[ASP,["Avian malaria","Weakness, pale gums","Antimalarial treatment"],AI],foodWeight:200,incDays:30,synthPitch:500}
 };
 
-/* ===== 3) ALL 45 SPECIES DATA ===== */
+/* ================= 45 SPECIES ================= */
 const C=f=>"https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(f.replace(/ /g,"_"))+"?width=800";
+
 const B=[
 ["Budgerigar","","Melopsittacus undulatus","pa","Australia","18 cm","5–10 years","Seed mix plus pellets, daily greens and a cuttlebone","Budgerigar (Karayil).jpg"],
 ["Cockatiel","","Nymphicus hollandicus","pa","Australia","30–33 cm","15–20 years","Pellets with some seeds; avoid too many sunflower seeds","Wildpark Schwarzach Nymphensittich 1.jpg"],
@@ -155,7 +192,7 @@ const B=[
 ["Blue-fronted Amazon","","Amazona aestiva","pa","South America","37 cm","40–60 years","Pellets and vegetables; prone to obesity","Amazona aestiva -San Francisco Zoo-8a.jpg"],
 ["Sulphur-crested Cockatoo","","Cacatua galerita","pa","Australia and New Guinea","45–50 cm","40–70 years","Pellets and vegetables; needs lots of attention","Sulphur-crested Cockatoo (Cacatua galerita) (8079604259).jpg"],
 ["Rose-ringed Parakeet","","Psittacula krameri","pa","Africa and South Asia","40 cm","20–30 years","Pellets, seeds, fruit and vegetables","Rose-ringed parakeet at Mumbai (Oct, 24) 01.jpg"],
-["Rainbow Lorikeet","","Trichoglossus moluccanus","pa","Australia","30 cm","15–20 years","Nectar-based lorikeet diet plus fruit; messy droppings","Rainbow Lorikeet (Trichoglossus moluccanus) on fence, Sydney.jpg"],
+["Rainbow Lorikeet","","Trichoglossus moluccanus","pa","Australia","30 cm","15–20 years","Nectar-based lorikeet diet plus fruit","Rainbow Lorikeet (Trichoglossus moluccanus) on fence, Sydney.jpg"],
 ["Canary","Domestic canary","Serinus canaria domestica","fi","Domesticated from Canary Islands, Azores and Madeira birds","12–13 cm","8–10 years","Canary seed mix, greens and egg food when breeding","A yellow domestic canary on a stick.jpg"],
 ["Zebra Finch","","Taeniopygia guttata","fi","Australia","10–11 cm","5–7 years","Finch mix, millet spray and greens","Taeniopygia guttata -Karratha, Pilbara, Western Australia, Australia -male-8 (2).jpg"],
 ["Gouldian Finch","","Chloebia gouldiae","fi","Northern Australia","12–14 cm","5–7 years","Finch mix plus greens and egg food; sensitive to stress","Gouldian finch aviary 3.25.18 DSC 0451.jpg"],
@@ -168,7 +205,7 @@ const B=[
 ["Chicken","","Gallus gallus domesticus","po","Domesticated from jungle fowl of Southeast Asia","40–70 cm","5–10 years","Complete layer feed plus grit and oyster shell","Gallus gallus domesticus LC0262.jpg"],
 ["Japanese Quail","","Coturnix japonica","po","East Asia","17–20 cm","2–5 years","High-protein quail feed and clean water","Japanese Quail.jpg"],
 ["Common Pheasant","","Phasianus colchicus","po","Asia","60–90 cm","3–5 years","Game bird feed, grain and greens","Phasianus colchicus in Tashkent botanical garden.jpg"],
-["Indian Peafowl","","Pavo cristatus","po","South Asia","100–115 cm (males longer with tail)","15–20 years","Poultry or peafowl feed, grain and greens","Indian peafowl (Pavo cristatus) male.jpg"],
+["Indian Peafowl","","Pavo cristatus","po","South Asia","100–115 cm","15–20 years","Poultry or peafowl feed, grain and greens","Indian peafowl (Pavo cristatus) male.jpg"],
 ["Helmeted Guineafowl","","Numida meleagris","po","Africa","55–60 cm","10–15 years","Grain, insects and poultry feed","Numida meleagris.001 - Woburn Safari Park.JPG"],
 ["Barbary Partridge","","Alectoris barbara","po","North Africa","32–34 cm","3–5 years","Grain, seeds and greens","Alectoris barbara portrait Tenerife.jpg"],
 ["Mallard","","Anas platyrhynchos","wa","Northern Hemisphere","50–65 cm","5–10 years","Waterfowl feed and greens; no bread","Mallard 2025 11 15 02.jpg"],
@@ -193,93 +230,152 @@ const B=[
 
 const S=B.map(a=>({
  id:a[0].toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""),
- name:a[0],
- wiki:a[1]||a[0],
- sci:a[2],
- g:a[3],
- o:a[4],
- s:a[5],
- l:a[6],
- tip:a[7],
+ name:a[0],wiki:a[1]||a[0],sci:a[2],g:a[3],o:a[4],s:a[5],l:a[6],tip:a[7],
  img:a[8]?C(a[8]):""
 }));
 
-/* ===== 4) WIKI & CREDITS FUNCTIONS ===== */
-const CK="bw_pro_v7";let cache={};
+/* ================= STORAGE ================= */
+const CK="bw_pro_v8";
+let cache={};
 try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){}
 const saveC=()=>{try{localStorage.setItem(CK,JSON.stringify(cache))}catch(e){}};
+
 async function wiki(t){
  t=t[0]+t.slice(1).toLowerCase();
  if(cache[t])return cache[t];
  const r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(t.replace(/ /g,"_")));
- if(!r.ok)throw 0;const d=await r.json();const th=d.thumbnail&&d.thumbnail.source;
- const o={img:th?th.replace(/\/\d+px-/,"/800px-"):(d.originalimage&&d.originalimage.source)||"",text:d.extract||"",page:d.content_urls?d.content_urls.desktop.page:"https://en.wikipedia.org/wiki/"+t};
+ if(!r.ok)throw 0;
+ const d=await r.json();
+ const th=d.thumbnail&&d.thumbnail.source;
+ const o={
+  img:th?th.replace(/\/\d+px-/,"/800px-"):(d.originalimage&&d.originalimage.source)||"",
+  text:d.extract||"",
+  page:d.content_urls?d.content_urls.desktop.page:"https://en.wikipedia.org/wiki/"+t
+ };
  cache[t]=o;saveC();return o;
 }
+
 async function credit(src){
- const m=src.match(/FilePath\/([^?]+)/)||src.match(/\/(?:thumb\/)?[0-9a-f]\/[0-9a-f]{2}\/([^\/?]+)/);
+ if(!src)return null;
+ const m=src.match(/FilePath\/([^?]+)/);
  if(!m)return null;
  const f=decodeURIComponent(m[1]),k="c:"+f;
  if(cache[k])return cache[k];
  const r=await fetch("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&format=json&origin=*&titles="+encodeURIComponent("File:"+f));
- const d=await r.json(),p=Object.values(d.query.pages)[0],x=p.imageinfo&&p.imageinfo[0].extmetadata;
+ const d=await r.json();
+ const p=Object.values(d.query.pages)[0];
+ const x=p.imageinfo&&p.imageinfo[0].extmetadata;
  if(!x)return null;
  const strip=h=>h?String(h).replace(/<[^>]*>/g,"").trim():"";
- const o={f,a:strip(x.Artist&&x.Artist.value),l:strip(x.LicenseShortName&&x.LicenseShortName.value)};
+ const o={f:f,a:strip(x.Artist&&x.Artist.value),l:strip(x.LicenseShortName&&x.LicenseShortName.value)};
  cache[k]=o;saveC();return o;
 }
+
 function showImg(box,src){
- const im=box.querySelector("img");if(!src)return;
+ const im=box.querySelector("img");
+ if(!im||!src)return;
  im.onload=()=>{im.classList.add("ld");const p=box.querySelector(".ph");if(p)p.remove()};
+ im.onerror=()=>{
+  im.style.display="none";
+  if(!box.querySelector(".ph")){
+   const ph=document.createElement("div");
+   ph.className="ph";ph.textContent="🐦";
+   box.appendChild(ph);
+  }
+ };
  im.src=src;
 }
 
+/* ================= USER DATA ================= */
 let favs=[];try{favs=JSON.parse(localStorage.getItem("bw_fav_pro")||"[]")}catch(e){}
 const isF=id=>favs.includes(id);
-const toggleF=id=>{favs=isF(id)?favs.filter(x=>x!==id):[...favs,id];try{localStorage.setItem("bw_fav_pro",JSON.stringify(favs))}catch(e){}};
+const toggleF=id=>{
+ favs=isF(id)?favs.filter(x=>x!==id):[...favs,id];
+ try{localStorage.setItem("bw_fav_pro",JSON.stringify(favs))}catch(e){}
+};
+
+let notes={};try{notes=JSON.parse(localStorage.getItem("bw_notes_pro")||"{}")}catch(e){}
+
+let visited=[];try{visited=JSON.parse(localStorage.getItem("bw_visited")||"[]")}catch(e){}
+function markVisited(id){
+ if(!visited.includes(id)){
+  visited.push(id);
+  try{localStorage.setItem("bw_visited",JSON.stringify(visited))}catch(e){}
+ }
+}
+
+let sightings=[];try{sightings=JSON.parse(localStorage.getItem("bw_sightings")||"[]")}catch(e){}
 
 let compareList=[];
 function toggleCompare(id){
- if(compareList.includes(id)) compareList=compareList.filter(x=>x!==id);
- else if(compareList.length<3) compareList.push(id);
- else alert("You can compare up to 3 birds at a time.");
+ if(compareList.includes(id)){
+  compareList=compareList.filter(x=>x!==id);
+ }else if(compareList.length<3){
+  compareList.push(id);
+ }else{
+  alert("You can compare up to 3 birds at a time.");
+ }
  document.getElementById("compCount").textContent=compareList.length;
+ if(typeof draw==="function")draw();
 }
 
-let notes={};try{notes=JSON.parse(localStorage.getItem("bw_notes_pro")||"{}")}catch(e){}
-let st={q:"",g:"all"};
+let st={q:"",g:"all",sort:"name"};
 
-/* Web Audio Synthesizer for Bird Song */
+/* ================= SOUND ================= */
 function playBirdSynth(freq){
- try {
+ try{
   const AudioCtx=window.AudioContext||window.webkitAudioContext;
   if(!AudioCtx)return;
   const ctx=new AudioCtx();
   const osc=ctx.createOscillator();
   const gain=ctx.createGain();
-  osc.type='sine';
-  osc.frequency.setValueAtTime(freq, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(freq*1.5, ctx.currentTime+0.1);
-  osc.frequency.exponentialRampToValueAtTime(freq*0.8, ctx.currentTime+0.2);
-  gain.gain.setValueAtTime(0.3, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime+0.3);
- } catch(e){}
+  osc.type="sine";
+  osc.frequency.setValueAtTime(freq,ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(freq*1.5,ctx.currentTime+.1);
+  osc.frequency.exponentialRampToValueAtTime(freq*.8,ctx.currentTime+.2);
+  gain.gain.setValueAtTime(.3,ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.01,ctx.currentTime+.3);
+  osc.connect(gain);gain.connect(ctx.destination);
+  osc.start();osc.stop(ctx.currentTime+.3);
+ }catch(e){}
 }
 
-/* Quiz Logic */
+async function loadRealBirdSound(b){
+ const box=document.getElementById("realAudioBox");
+ if(!box)return;
+ box.innerHTML="<p>🔎 Searching real recordings…</p>";
+ try{
+  const q=encodeURIComponent('sp:"'+b.sci+'"');
+  const r=await fetch("https://xeno-canto.org/api/2/recordings?query="+q);
+  const d=await r.json();
+  const rec=d.recordings&&d.recordings[0];
+  if(!rec){
+   box.innerHTML="<p>No real recording found for this species.</p>";
+   return;
+  }
+  box.innerHTML=`
+   <audio controls preload="none" style="width:100%">
+    <source src="${rec.file}" type="audio/mpeg">
+   </audio>
+   <p style="font-size:.85rem;color:var(--muted)">
+    Recording by ${rec.rec||"Unknown"} · ${rec.cnt||""} ·
+    <a href="${rec.url}" target="_blank" rel="noopener noreferrer">Xeno-canto</a>
+   </p>`;
+ }catch(e){
+  box.innerHTML="<p>Could not load the recording. Please check your connection.</p>";
+ }
+}
+
+/* ================= QUIZ ================= */
 let currentQuiz=null;
 function initQuiz(){
  const target=S[Math.floor(Math.random()*S.length)];
- const wrong=S.filter(x=>x.id!==target.id).sort(()=>0.5-Math.random()).slice(0,3);
- const opts=[target,...wrong].sort(()=>0.5-Math.random());
+ const wrong=S.filter(x=>x.id!==target.id).sort(()=>.5-Math.random()).slice(0,3);
+ const opts=[target,...wrong].sort(()=>.5-Math.random());
  currentQuiz={target,opts};
 }
 
-/* Theme Management */
+/* ================= THEME ================= */
 const savedTheme=localStorage.getItem("bw_theme_pro")||"light";
 document.documentElement.setAttribute("data-theme",savedTheme);
 document.getElementById("themeToggle").onclick=()=>{
@@ -290,58 +386,88 @@ document.getElementById("themeToggle").onclick=()=>{
 };
 document.getElementById("themeToggle").textContent=savedTheme==="dark"?"☀️":"🌙";
 
-/* Modal Management */
+/* ================= MODALS ================= */
 const compModal=document.getElementById("compModal");
+const imgModal=document.getElementById("imgModal");
+
 document.getElementById("compareModalBtn").onclick=()=>{
- if(compareList.length===0){
-  alert("Please check 'Compare' on at least 1 or 2 bird cards first.");
+ if(!compareList.length){
+  alert("Please check 'Compare' on at least one bird card first.");
   return;
  }
- const container=document.getElementById("compTableContainer");
  const birds=compareList.map(id=>S.find(x=>x.id===id));
- container.innerHTML=`
+ document.getElementById("compTableContainer").innerHTML=`
   <table class="comp-table">
-   <thead>
-    <tr>
-     <th>Feature</th>
-     ${birds.map(b=>`<th>${b.name}</th>`).join("")}
-    </tr>
-   </thead>
+   <thead><tr><th>Feature</th>${birds.map(b=>`<th>${b.name}</th>`).join("")}</tr></thead>
    <tbody>
     <tr><td>Scientific Name</td>${birds.map(b=>`<td><i>${b.sci}</i></td>`).join("")}</tr>
     <tr><td>Origin</td>${birds.map(b=>`<td>${b.o}</td>`).join("")}</tr>
     <tr><td>Size</td>${birds.map(b=>`<td>${b.s}</td>`).join("")}</tr>
     <tr><td>Lifespan</td>${birds.map(b=>`<td>${b.l}</td>`).join("")}</tr>
-    <tr><td>Group</td>${birds.map(b=>`<td>${G[b.g].e}${G[b.g].n}</td>`).join("")}</tr>
+    <tr><td>Group</td>${birds.map(b=>`<td>${G[b.g].e} ${G[b.g].n}</td>`).join("")}</tr>
     <tr><td>Diet Tip</td>${birds.map(b=>`<td>${b.tip}</td>`).join("")}</tr>
    </tbody>
-  </table>
- `;
+  </table>`;
  compModal.classList.add("on");
 };
-document.getElementById("closeModal").onclick=()=>compModal.classList.remove("on");
 
-/* ===== HOME PAGE ===== */
+document.getElementById("closeModal").onclick=()=>compModal.classList.remove("on");
+compModal.onclick=e=>{if(e.target===compModal)compModal.classList.remove("on")};
+
+function openLightbox(src,name){
+ document.getElementById("lightboxImg").src=src;
+ document.getElementById("lightboxCaption").textContent=name;
+ imgModal.classList.add("on");
+}
+document.getElementById("closeImgModal").onclick=()=>imgModal.classList.remove("on");
+imgModal.onclick=e=>{if(e.target===imgModal)imgModal.classList.remove("on")};
+
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"){
+  compModal.classList.remove("on");
+  imgModal.classList.remove("on");
+ }
+});
+
+/* ================= HOME ================= */
 const app=document.getElementById("app");
+
 function home(){
  document.title="Birds World – Complete 45 Species Guide";
- if(!currentQuiz) initQuiz();
- const chips=[["all","All 45 Species"],["fav","♥ Favorites"],...Object.keys(G).map(k=>[k,G[k].e+" "+G[k].n])];
- 
+ if(!currentQuiz)initQuiz();
+
+ const chips=[["all","All 45 Species"],["fav","♥ Favorites"],
+ ...Object.keys(G).map(k=>[k,G[k].e+" "+G[k].n])];
+
+ const birdOfDay=S[new Date().getDate()%S.length];
+
  app.innerHTML=`
  <div class="hero-banner">
   <h1>Discover the Wonderful World of Birds</h1>
-  <p>Complete professional avian guide featuring all 45 species, photo credits, calculators, audio, breeding tracking, comparison tool, and quiz.</p>
+  <p>45 species · real bird sounds · photo credits · care tools · breeding tracker · sightings · comparison · quiz</p>
  </div>
+
  <main class="main-container">
+  <div class="bird-day">
+   <div class="emoji">${G[birdOfDay.g].e}</div>
+   <div>
+    <h3>🌟 Bird of the Day</h3>
+    <a href="#/bird/${birdOfDay.id}"><b>${birdOfDay.name}</b></a>
+    <p>${birdOfDay.sci}</p>
+   </div>
+  </div>
+
   <div class="stats-grid">
    <div class="stat-card"><h4>Total Species</h4><div class="val">${S.length}</div></div>
    <div class="stat-card"><h4>Families</h4><div class="val">${Object.keys(G).length}</div></div>
-   <div class="stat-card"><h4>Saved Favorites</h4><div class="val">${favs.length}</div></div>
+   <div class="stat-card"><h4>Favorites</h4><div class="val">${favs.length}</div></div>
+   <div class="stat-card"><h4>Explored</h4><div class="val">${visited.length}/${S.length}</div></div>
+   <div class="stat-card"><h4>My Sightings</h4><div class="val">${sightings.length}</div></div>
   </div>
 
   <div class="quiz-box">
-   <h3>🧠 Avian Quiz: Which bird species originates from "${currentQuiz.target.o}"?</h3>
+   <h3>🧠 Avian Quiz: Which bird has this scientific name?</h3>
+   <p style="color:var(--muted)"><i>${currentQuiz.target.sci}</i></p>
    <div class="quiz-options">
     ${currentQuiz.opts.map(o=>`<button class="quiz-btn" data-ans="${o.id}">${o.name}</button>`).join("")}
    </div>
@@ -350,7 +476,13 @@ function home(){
 
   <div class="control-panel">
    <div class="search-row">
-    <input id="q" class="search-input" type="search" placeholder="Search all ${S.length} birds by name, origin or scientific name..." value="${st.q}">
+    <input id="q" class="search-input" type="search" aria-label="Search birds"
+      placeholder="Search all ${S.length} birds by name, origin or scientific name..." value="${st.q}">
+    <select id="sortBy" class="select-input" aria-label="Sort birds">
+     <option value="name">Sort: Name</option>
+     <option value="size">Sort: Size</option>
+     <option value="lifespan">Sort: Lifespan</option>
+    </select>
     <button class="btn" id="voiceBtn">🎙️ Voice</button>
    </div>
    <div class="chips" id="chips"></div>
@@ -359,16 +491,28 @@ function home(){
   <div class="grid" id="grid"></div>
  </main>`;
 
+ document.getElementById("sortBy").value=st.sort;
+
  const grid=document.getElementById("grid");
+
  function draw(){
   const q=st.q.toLowerCase().trim();
-  const items=S.filter(b=>(st.g==="all"||(st.g==="fav"?isF(b.id):b.g===st.g))&&(b.name+" "+b.sci+" "+b.o).toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
-  
-  document.getElementById("chips").innerHTML=chips.map(c=>`<button class="chip ${st.g===c[0]?"on":""}" data-g="${c[0]}">${c[1]}</button>`).join("");
-  
+  let items=S.filter(b=>
+   (st.g==="all"||(st.g==="fav"?isF(b.id):b.g===st.g))&&
+   (b.name+" "+b.sci+" "+b.o).toLowerCase().includes(q)
+  );
+
+  if(st.sort==="name")items.sort((a,b)=>a.name.localeCompare(b.name));
+  if(st.sort==="size")items.sort((a,b)=>parseFloat(a.s)-parseFloat(b.s));
+  if(st.sort==="lifespan")items.sort((a,b)=>parseInt(b.l)-parseInt(a.l));
+
+  document.getElementById("chips").innerHTML=chips.map(c=>
+   `<button class="chip ${st.g===c[0]?"on":""}" data-g="${c[0]}">${c[1]}</button>`
+  ).join("");
+
   grid.innerHTML=items.map(b=>`
    <div class="card">
-    <button class="fv-btn" data-id="${b.id}">${isF(b.id)?"♥":"♡"}</button>
+    <button class="fv-btn" data-id="${b.id}" aria-label="Favorite">${isF(b.id)?"♥":"♡"}</button>
     <a href="#/bird/${b.id}">
      <div class="photo"><div class="ph">${G[b.g].e}</div><img alt="${b.name}" loading="lazy"></div>
      <div class="card-body">
@@ -382,80 +526,92 @@ function home(){
       <input type="checkbox" class="comp-chk" data-id="${b.id}" ${compareList.includes(b.id)?"checked":""}> Compare
      </label>
     </div>
-   </div>`).join("")||"<p style='grid-column:1/-1;text-align:center;color:var(--muted);padding:40px'>No birds found matching your search.</p>";
+   </div>`).join("")||"<p style='grid-column:1/-1;text-align:center;color:var(--muted);padding:40px'>No birds found.</p>";
 
   grid.querySelectorAll(".card>a").forEach(async a=>{
-   const href=a.getAttribute("href");
-   const id=href.split("/")[2];
+   const id=a.getAttribute("href").split("/")[2];
    const bird=S.find(x=>x.id===id);
    const box=a.querySelector(".photo");
-   if(bird.img) showImg(box,bird.img);
-   else {
-    try{const r=await wiki(bird.wiki);if(r.img)showImg(box,r.img);}catch(e){}
+   if(bird.img)showImg(box,bird.img);
+   else{
+    try{
+     const r=await wiki(bird.wiki);
+     if(r.img)showImg(box,r.img);
+    }catch(e){}
    }
   });
  }
 
  document.getElementById("q").oninput=e=>{st.q=e.target.value;draw()};
- document.getElementById("chips").onclick=e=>{const g=e.target.dataset.g;if(g){st.g=g;draw()}};
+ document.getElementById("sortBy").onchange=e=>{st.sort=e.target.value;draw()};
+ document.getElementById("chips").onclick=e=>{
+  const g=e.target.dataset.g;
+  if(g){st.g=g;draw()}
+ };
+
  grid.onclick=e=>{
-  const fvBtn=e.target.closest(".fv-btn");
-  if(fvBtn){
-   const id=fvBtn.dataset.id;
-   toggleF(id);
-   fvBtn.textContent=isF(id)?"♥":"♡";
-   if(st.g==="fav") draw();
+  const fv=e.target.closest(".fv-btn");
+  if(fv){
+   toggleF(fv.dataset.id);
+   fv.textContent=isF(fv.dataset.id)?"♥":"♡";
+   if(st.g==="fav")draw();
   }
   const chk=e.target.closest(".comp-chk");
-  if(chk){
-   toggleCompare(chk.dataset.id);
-  }
+  if(chk)toggleCompare(chk.dataset.id);
  };
 
  document.querySelector(".quiz-options").onclick=e=>{
   const btn=e.target.closest(".quiz-btn");
   if(!btn)return;
-  const id=btn.dataset.ans;
   const res=document.getElementById("quizResult");
-  if(id===currentQuiz.target.id){
+  if(btn.dataset.ans===currentQuiz.target.id){
    res.style.color="var(--ac)";
    res.textContent="🎉 Correct answer!";
-   setTimeout(()=>{initQuiz();home();},1500);
+   setTimeout(()=>{initQuiz();home()},1200);
   }else{
    res.style.color="var(--rt)";
    res.textContent="❌ Wrong! Correct: "+currentQuiz.target.name;
-   setTimeout(()=>{initQuiz();home();},2000);
+   setTimeout(()=>{initQuiz();home()},1800);
   }
  };
 
  document.getElementById("voiceBtn").onclick=()=>{
-  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SpeechRecognition){alert("Voice search not supported.");return;}
-  const rec=new SpeechRecognition();
-  rec.onresult=e=>{document.getElementById("q").value=e.results[0][0].transcript;st.q=e.results[0][0].transcript;draw();};
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert("Voice search is not supported in this browser.");return}
+  const rec=new SR();
+  rec.onresult=e=>{
+   const text=e.results[0][0].transcript;
+   document.getElementById("q").value=text;
+   st.q=text;draw();
+  };
   rec.start();
  };
 
  draw();
 }
 
-/* ===== DETAIL PAGE ===== */
+/* ================= DETAIL ================= */
 function detail(id){
  const b=S.find(x=>x.id===id);
- if(!b){app.innerHTML="<div class='wrap'><h2>Bird not found</h2><a href='#/'>Back to home</a></div>";return;}
+ if(!b){
+  app.innerHTML="<div class='wrap'><h2>Bird not found</h2><a href='#/'>Back to home</a></div>";
+  return;
+ }
+
+ markVisited(b.id);
+
  const g=G[b.g];
- const userNote=notes[id]||"";
  const baseWeight=g.foodWeight||15;
  const incDays=g.incDays||18;
- const synthPitch=g.synthPitch||1000;
- const todayStr=new Date().toISOString().split('T')[0];
+ const todayStr=new Date().toISOString().split("T")[0];
 
  app.innerHTML=`
  <main class="wrap">
   <a class="back-link" href="#/">← Back to all birds</a>
+
   <div class="hero-detail" id="hero"><div class="ph">${g.e}</div><img alt="${b.name}"></div>
-  <p class="credit" id="credit">Loading photo credits & summary…</p>
-  
+  <p class="credit" id="credit">Loading photo credits and summary…</p>
+
   <h1>${b.name}</h1>
   <p class="sci">${b.sci} · ${g.e} ${g.n}</p>
 
@@ -465,16 +621,20 @@ function detail(id){
    <div class="meta-badge">⏳ Lifespan: <b>${b.l}</b></div>
   </div>
 
-  <div style="margin:10px 0"><button class="btn btn-outline" onclick="window.print()">🖨️ Print Fact Sheet</button></div>
+  <div style="margin:10px 0;display:flex;gap:10px;flex-wrap:wrap">
+   <button class="btn btn-outline" onclick="window.print()">🖨️ Print</button>
+   <button class="btn btn-outline" id="shareBtn">🔗 Share</button>
+   <button class="btn btn-outline" id="sightingBtn">📍 I Saw This Bird</button>
+  </div>
 
   <div class="tabs" id="tabs">
    <button class="tab on" data-t="ov">Overview</button>
-   <button class="tab" data-t="di">Feeding Calc</button>
-   <button class="tab" data-t="au">Audio & Sounds</button>
-   <button class="tab" data-t="br">Breeding Tracker</button>
+   <button class="tab" data-t="di">Feeding</button>
+   <button class="tab" data-t="au">Sounds</button>
+   <button class="tab" data-t="br">Breeding</button>
    <button class="tab" data-t="ca">Care</button>
-   <button class="tab" data-t="dz">Diseases</button>
-   <button class="tab" data-t="nt">My Notes</button>
+   <button class="tab" data-t="dz">Health</button>
+   <button class="tab" data-t="nt">Notes</button>
   </div>
 
   <div class="panel on" id="p-ov">
@@ -484,30 +644,31 @@ function detail(id){
 
   <div class="panel" id="p-di">
    <div class="box-section">
-    <h3>🌾 Feeding & Diet Guidelines</h3>
+    <h3>🌾 Feeding Guidelines</h3>
     <ul>${g.diet.map(x=>`<li>${x}</li>`).join("")}</ul>
    </div>
    <div class="box-section">
     <h3>⚖️ Daily Feed & Water Calculator</h3>
     <div class="calc-group">
-     <label for="birdCount">Number of Birds:</label>
+     <label for="birdCount">Number of Birds</label>
      <input type="number" id="birdCount" class="calc-input" value="1" min="1" max="1000">
     </div>
-    <div class="calc-results" id="calcResults">
-     <div>• Dry Seeds / Pellets: <b><span id="resFood">${baseWeight}</span> g / day</b></div>
-     <div>• Fresh Vegetables / Greens: <b><span id="resVeg">${Math.round(baseWeight*0.4)}</span> g / day</b></div>
-     <div>• Clean Drinking Water: <b><span id="resWater">${baseWeight*2}</span> ml / day</b></div>
+    <div class="calc-results">
+     <div>Dry Seeds / Pellets: <b><span id="resFood">${baseWeight}</span> g/day</b></div>
+     <div>Fresh Greens: <b><span id="resVeg">${Math.round(baseWeight*.4)}</span> g/day</b></div>
+     <div>Drinking Water: <b><span id="resWater">${baseWeight*2}</span> ml/day</b></div>
     </div>
    </div>
   </div>
 
   <div class="panel" id="p-au">
    <div class="box-section">
-    <h3>🎵 Bird Calls & Singing Player</h3>
-    <p style="color:var(--muted);font-size:.9rem">Synthesize or search natural singing calls for ${b.name}:</p>
-    <div class="audio-player-box">
-     <button class="btn" id="playSynthBtn">🔊 Play Synthesized Call Chirp</button>
-     <a class="btn btn-outline" href="https://www.youtube.com/results?search_query=${encodeURIComponent(b.name+" bird singing sound")}" target="_blank" rel="noopener">▶ Search Audio on YouTube</a>
+    <h3>🎵 Real Bird Sounds</h3>
+    <button class="btn" id="loadSoundBtn">🔎 Load Real Recording</button>
+    <div id="realAudioBox" style="margin-top:12px"></div>
+    <div style="margin-top:12px">
+     <button class="btn btn-outline" id="playSynthBtn">🔊 Play Synthesized Chirp</button>
+     <a class="btn btn-outline" href="https://www.youtube.com/results?search_query=${encodeURIComponent(b.name+" bird sound")}" target="_blank" rel="noopener noreferrer">▶ Search More Sounds</a>
     </div>
    </div>
   </div>
@@ -515,96 +676,127 @@ function detail(id){
   <div class="panel" id="p-br">
    <div class="box-section">
     <h3>🗓️ Breeding & Hatching Tracker</h3>
-    <p style="color:var(--muted);font-size:.9rem">Calculate expected hatching date based on incubation period (~${incDays} days for ${g.n}).</p>
+    <p style="color:var(--muted)">Estimated incubation period: about ${incDays} days for ${g.n}.</p>
     <div class="breed-group">
-     <label for="incStartDate">Incubation Start Date (Eggs set):</label>
+     <label for="incStartDate">Incubation Start Date</label>
      <input type="date" id="incStartDate" class="breed-input" value="${todayStr}">
     </div>
-    <div class="breed-results" id="breedResults">
-     <div>• Expected Hatching Date: <b id="resHatch">...</b></div>
-     <div>• Estimated Incubation Period: <b>${incDays} Days</b></div>
+    <div class="breed-results">
+     <div>Expected Hatching Date: <b id="resHatch">...</b></div>
+     <div>Estimated Incubation Period: <b>${incDays} days</b></div>
     </div>
    </div>
   </div>
 
   <div class="panel" id="p-ca">
-   <div class="box-section"><h3>🏠 Care & Housing</h3><ul>${g.care.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <div class="box-section">
+    <h3>🏠 Care & Housing</h3>
+    <ul>${g.care.map(x=>`<li>${x}</li>`).join("")}</ul>
+   </div>
   </div>
 
   <div class="panel" id="p-dz">
-   <div class="box-section"><h3>🩺 Common Health Issues</h3>
-    ${g.dis.map(d=>`<p><b>• ${d[0]}:</b>${d[1]}<br><small style="color:var(--muted)">Treatment: ${d[2]}</small></p>`).join("<hr style='border:0;border-top:1px solid var(--line);margin:10px 0'>")}
+   <div class="box-section">
+    <h3>🩺 Common Health Issues</h3>
+    <p style="color:var(--rt)"><b>Important:</b> This is general information only. For breathing difficulty, egg binding, sudden weakness, or multiple sick birds, contact an avian veterinarian immediately.</p>
+    ${g.dis.map(d=>`<p><b>• ${d[0]}:</b> ${d[1]}<br><small style="color:var(--muted)">Treatment: ${d[2]}</small></p>`).join("<hr style='border:0;border-top:1px solid var(--line);margin:10px 0'>")}
    </div>
   </div>
 
   <div class="panel" id="p-nt">
    <div class="box-section">
-    <h3>📝 Personal Notes (Saved Locally)</h3>
-    <textarea class="notes-area" id="noteInput" placeholder="Type your breeding or medical notes here...">${userNote}</textarea>
+    <h3>📝 Personal Notes</h3>
+    <textarea class="notes-area" id="noteInput" placeholder="Write breeding, health or care notes...">${notes[id]||""}</textarea>
     <button class="btn" style="margin-top:10px" id="saveNoteBtn">Save Note</button>
    </div>
   </div>
  </main>`;
 
  document.getElementById("tabs").onclick=e=>{
-  const t=e.target.dataset.t;if(!t)return;
+  const t=e.target.dataset.t;
+  if(!t)return;
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.dataset.t===t));
   document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("on",x.id==="p-"+t));
  };
 
- document.getElementById("playSynthBtn").onclick=()=>playBirdSynth(synthPitch);
+ document.getElementById("playSynthBtn").onclick=()=>playBirdSynth(g.synthPitch);
+ document.getElementById("loadSoundBtn").onclick=()=>loadRealBirdSound(b);
 
- /* Calculator Logic */
  const countInput=document.getElementById("birdCount");
- if(countInput){
-  countInput.oninput=e=>{
-   const val=Math.max(1, parseInt(e.target.value)||1);
-   document.getElementById("resFood").textContent=val*baseWeight;
-   document.getElementById("resVeg").textContent=Math.round(val*baseWeight*0.4);
-   document.getElementById("resWater").textContent=val*baseWeight*2;
-  };
- }
+ countInput.oninput=e=>{
+  const val=Math.max(1,parseInt(e.target.value)||1);
+  document.getElementById("resFood").textContent=val*baseWeight;
+  document.getElementById("resVeg").textContent=Math.round(val*baseWeight*.4);
+  document.getElementById("resWater").textContent=val*baseWeight*2;
+ };
 
- /* Breeding Calculator Logic */
  const dateInput=document.getElementById("incStartDate");
- function updateHatchDate(){
+ function updateHatch(){
   if(!dateInput.value)return;
   const d=new Date(dateInput.value);
   d.setDate(d.getDate()+incDays);
-  document.getElementById("resHatch").textContent=d.toDateString();
+  document.getElementById("resHatch").textContent=d.toLocaleDateString();
  }
- if(dateInput){
-  dateInput.onchange=updateHatchDate;
-  updateHatchDate();
- }
+ dateInput.onchange=updateHatch;
+ updateHatch();
 
  document.getElementById("saveNoteBtn").onclick=()=>{
-  const val=document.getElementById("noteInput").value;
-  notes[id]=val;
-  try{localStorage.setItem("bw_notes_pro",JSON.stringify(notes));alert("Note saved successfully!");}catch(e){}
+  notes[id]=document.getElementById("noteInput").value;
+  try{
+   localStorage.setItem("bw_notes_pro",JSON.stringify(notes));
+   alert("Note saved successfully!");
+  }catch(e){alert("Could not save the note.")}
+ };
+
+ document.getElementById("sightingBtn").onclick=()=>{
+  sightings.push({id:b.id,name:b.name,date:new Date().toISOString()});
+  try{
+   localStorage.setItem("bw_sightings",JSON.stringify(sightings));
+   alert(b.name+" added to your sighting log!");
+  }catch(e){alert("Could not save sighting.")}
+ };
+
+ document.getElementById("shareBtn").onclick=async()=>{
+  const url=location.href;
+  const text=b.name+" ("+b.sci+") – Birds World";
+  if(navigator.share){
+   try{await navigator.share({title:b.name,text,url})}catch(e){}
+  }else{
+   try{
+    await navigator.clipboard.writeText(text+"\n"+url);
+    alert("Link copied!");
+   }catch(e){alert(url)}
+  }
  };
 
  const hero=document.getElementById("hero");
  if(b.img)showImg(hero,b.img);
+ hero.onclick=()=>{
+  const img=hero.querySelector("img");
+  if(img&&img.src)openLightbox(img.src,b.name);
+ };
+
  wiki(b.wiki).then(async r=>{
   if(!b.img&&r.img)showImg(hero,r.img);
   document.getElementById("about").textContent=r.text||"No description available.";
   const cr=document.getElementById("credit");
-  const sum=`Summary: <a href="${r.page}" target="_blank" rel="noopener">Wikipedia</a>`;
+  const sum=`Summary: <a href="${r.page}" target="_blank" rel="noopener noreferrer">Wikipedia</a>`;
   cr.innerHTML=sum;
   try{
    const c=await credit(b.img||r.img);
    if(c){
-    let txt=`Photo: `;
+    let txt="Photo: ";
     if(c.a)txt+=c.a+" ";
-    if(c.l)txt+=`(${c.l}) `;
-    cr.innerHTML=`${txt} / <a href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(c.f)}" target="_blank" rel="noopener">Wikimedia Commons</a> · ${sum}`;
+    if(c.l)txt+="("+c.l+") ";
+    cr.innerHTML=txt+" / <a href='https://commons.wikimedia.org/wiki/File:"+encodeURIComponent(c.f)+"' target='_blank' rel='noopener noreferrer'>Wikimedia Commons</a> · "+sum;
    }
   }catch(e){}
- }).catch(()=>{document.getElementById("about").textContent="Failed to load summary."});
+ }).catch(()=>{
+  document.getElementById("about").textContent="Could not load the encyclopedia summary.";
+ });
 }
 
-/* Router */
+/* ================= ROUTER ================= */
 function route(){
  const h=location.hash;
  if(h.startsWith("#/bird/"))detail(h.slice(7));
