@@ -219,6 +219,20 @@ dialog .db{padding:var(--s-3);overflow-y:auto;max-height:calc(90vh - 66px)}
 .qopt.right{background:var(--ok);color:var(--ok-fg);border-color:transparent}
 .qopt.wrong{background:var(--danger);color:var(--danger-fg);border-color:transparent}
 
+/* ============ 7b. ATLAS / SOUND ID / ASSISTANT ============ */
+.card.sm{padding:var(--s-3)}
+.bar{height:9px;border-radius:var(--r-full);background:var(--surface-2);border:1px solid var(--line);overflow:hidden;margin-top:var(--s-3)}
+.bar i{display:block;height:100%;background:var(--ac);border-radius:var(--r-full);transition:width .3s var(--ease)}
+.arow{align-items:center;padding:var(--s-2);border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface)}
+.arow img{flex:0 0 auto}
+.wave{width:100%;height:150px;margin-top:var(--s-3)}
+label.inline{display:inline-flex;align-items:center;gap:6px}
+.feat{display:flex;gap:var(--s-3);align-items:flex-start;padding:var(--s-3);border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2)}
+.feat b{display:block;font-size:1.02rem}
+.feat p{color:var(--muted);font-size:.85rem;margin:2px 0 6px}
+.feat a{font-weight:700;font-size:.86rem}
+.ai-body{white-space:pre-wrap;word-break:break-word}
+
 /* ============ 8. RESPONSIVE / PRINT ============ */
 @media (max-width:820px){
   .bar-in{gap:var(--s-2)}
@@ -296,14 +310,24 @@ const CFG = Object.freeze({
          commons: "https://commons.wikimedia.org/w/api.php",
          xeno: "https://xeno-canto.org/api/3/recordings",
          xenoSite: "https://xeno-canto.org/catalogue",
-         thumbPx: 800, timeoutMs: 9000 },
+         /* Verified live: both are keyless and answer cross-origin browser
+            requests. GBIF gives the full backbone classification, Wikidata
+            gives vernacular names (Arabic included) and a Commons file. */
+         gbif: "https://api.gbif.org/v1",
+         wd: "https://www.wikidata.org/w/api.php",
+         sparql: "https://query.wikidata.org/sparql",
+         avesKey: 212,
+         thumbPx: 800, timeoutMs: 9000, sparqlTimeoutMs: 30000 },
+  ATLAS: { pageSize: 100, concurrency: 3, gapMs: 90, sparqlBatch: 60, defaultCap: 1200, maxCap: 12000 },
+  VOICE: { seconds: 6, fft: 1024, bands: [0.4, 0.8, 1.4, 2.4, 3.8, 6, 8.5, 12] },
   DB: { name: "birds-world", version: 1, media: "media" },
   get remote() { return store.settings.apiBase ? store.settings.apiBase.replace(/\/+$/, "") + "/api" : null; },
 });
 
 const KEYS = { fav: "favorites", note: "notes", visits: "visits", birds: "birds",
   sightings: "sightings", cards: "srs", score: "progress", saved: "savedSearches",
-  settings: "settings", outbox: "outbox", wiki: "cache:wiki", credit: "cache:credit" };
+  settings: "settings", outbox: "outbox", wiki: "cache:wiki", credit: "cache:credit",
+  atlas: "atlas:meta", ai: "ai_chat" };
 
 const TRAITS = [
   ["difficulty", 1, 5, "Care difficulty"], ["noise", 1, 5, "Noise level"],
@@ -361,6 +385,42 @@ const T = {
     compare_hint:"Tick Compare on species cards (up to 3).", radar:"Shape comparison",
     which_bird:"Which species is it?",
     copy:"Link copied", shared:"Shared", install:"Install app",
+
+    /* atlas */
+    nav_atlas:"Atlas", atlas_h:"World bird atlas", atlas_source:"Names and classification: GBIF backbone. Arabic names and photos: Wikidata and Wikimedia Commons.",
+    atlas_sub:"Pull the global bird checklist onto this device. Imported species join search and can be photographed, described and voice-matched.",
+    atlas_scope:"Scope", atlas_all:"All birds (class Aves)", atlas_order:"One order only", atlas_cap:"Maximum species",
+    atlas_start:"Start import", atlas_stop:"Stop", atlas_running:"Importing…", atlas_done:"Import finished", atlas_have:"Species stored",
+    atlas_found:"Found", atlas_none:"No atlas data on this device yet — run an import first.", atlas_clear:"Delete atlas data",
+    atlas_row:"Atlas", atlas_tax:"Classification", atlas_enrich:"Fetch Arabic name and photo", atlas_enriching:"Enriching…",
+    atlas_include:"Include atlas species in search", atlas_off:"Atlas import needs a connection.", atlas_throttled:"Slowed down: too many requests.",
+    atlas_noimg:"No freely licensed photo found", atlas_cleared:"Atlas data deleted", atlas_enriched:"Added",
+    atlas_promote:"Log a sighting", atlas_quick:"Quick import", atlas_deep:"Deep import",
+    photo:"Photos", yes:"Yes", tax_order:"Order", tax_family:"Family", tax_genus:"Genus",
+    caps_h:"What is new",
+    feat_atlas:"Every bird on Earth", feat_atlas_d:"Import the global checklist by order or by family, then browse it offline.",
+    /* ai */
+    nav_ai:"AI assistant", ai_h:"Bird assistant", ai_ph:"Ask about care, health, a species, or what suits a flat…",
+    ai_send:"Ask", ai_local:"On this device", ai_cloud:"Cloud model", ai_thinking:"Thinking…", ai_reset:"Reset conversation",
+    ai_base:"Model API base URL", ai_key:"Model API key", ai_model:"Model name", ai_cloud_hint:"Cloud mode sends your question and a summary of your local birds to that address. Empty fields keep everything on this device.",
+    ai_off:"No cloud model configured — answering from the local guide and your records.", ai_fail:"The model call failed, so this answer came from local data.",
+    ai_src:"Grounded in", ai_sug:"Try asking", ai_strip:"Model keys are never written to a backup.", ai_empty:"Ask a question to start.",
+    ai_triage:"Health triage", ai_recommend:"Recommendation", ai_facts:"Species facts", ai_search:"Semantic search", ai_compare:"Comparison",
+    feat_ai:"Ask anything about your birds", feat_ai_d:"Health triage, recommendations and species facts from your own data — or a model you connect.",
+    /* sound id */
+    nav_id:"Sound ID", id_h:"Identify a bird from its song", id_sub:"The recording never leaves this device: analysis runs on measured pitch, note rate and band energy.",
+    id_rec:"Record", id_stoprec:"Stop", id_listening:"Listening…", id_again:"Try again", id_fromfile:"Use an audio file",
+    id_none:"No reference voices indexed yet — index some songs first.", id_build:"Index reference songs", id_building:"Indexing",
+    id_lib:"Reference library", id_indexed:"Indexed voices", id_mic_no:"Microphone unavailable or permission denied.",
+    id_noaudio:"Could not read that audio.", id_quiet:"Only background noise reached the microphone — move closer or record a longer burst.", id_notonal:"No clear pitched note was found; wind and insects cannot be identified.", id_best:"Closest match", id_conf:"Confidence", id_feats:"Measured from your recording",
+    id_pitch:"Peak frequency", id_rate2:"Notes per second", id_bands:"Energy by frequency band", id_shape:"Song shape across frequencies", id_cands:"Candidates",
+    id_against:"Compare with this species", id_test:"Play a synthetic call", id_srclink:"Reference recording",
+    id_test_ok:"Self-test passed: the estimator recovered the known pitch and note rate of the synthetic call.",
+    id_test_fail:"Self-test drifted — this browser's audio path may resample the recording. Treat other results with care.",
+    id_note:"Matches are acoustic similarity, not proof of identity.", id_clearlib:"Delete indexed voices", id_libempty:"Library is empty",
+    id_scope:"Which species to index", id_scope_lib:"My guide (45 species)", id_scope_atlas:"Atlas species in view", id_scope_fav:"Favorites",
+    id_scope_hint:"Freely licensed field recordings exist mostly for wild species, so the atlas scope indexes far more than the guide list. A species with no usable recording is skipped, not guessed.",
+    feat_id:"Name a bird from its song", feat_id_d:"Record six seconds and rank it against reference songs measured the same way.",
   },
   ar: {
     skip:"تخطَّ إلى المحتوى", badge:"دليل ميداني", compare:"مقارنة", disclaimer:"معلومات عامة فقط وليست استشارة بيطرية. عند عسر التنفس أو احتباس البيضة أو الوهن المفاجئ راجع طبيب طيور فوراً.",
@@ -407,6 +467,40 @@ const T = {
     compare_hint:"فعّل «مقارنة» على بطاقات الأنواع (٣ كحد أقصى).", radar:"مقارنة الشكل",
     which_bird:"أي نوع هذا؟",
     copy:"نُسخ الرابط", shared:"تمت المشاركة", install:"تثبيت التطبيق",
+
+    /* الأطلس */
+    nav_atlas:"الأطلس", atlas_h:"أطلس الطيور العالمي", atlas_source:"الأسماء والتصنيف من GBIF، والأسماء العربية والصور من Wikidata وويكيبيديا كومنز.",
+    atlas_sub:"اسحب قائمة الطيور العالمية إلى هذا الجهاز. الأنواع المستوردة تدخل في البحث وتقبل الصور والوصف والمقارنة الصوتية.",
+    atlas_scope:"النطاق", atlas_all:"كل الطيور (فئة الطيور)", atlas_order:"رتبة واحدة فقط", atlas_cap:"أقصى عدد للأنواع",
+    atlas_start:"ابدأ الاستيراد", atlas_stop:"إيقاف", atlas_running:"جارٍ الاستيراد…", atlas_done:"اكتمل الاستيراد", atlas_have:"الأنواع المخزّنة",
+    atlas_found:"تم العثور على", atlas_none:"لا توجد بيانات أطلس على هذا الجهاز — نفّذ استيراداً أولاً.", atlas_clear:"حذف بيانات الأطلس",
+    atlas_row:"أطلس", atlas_tax:"التصنيف", atlas_enrich:"اجلب الاسم العربي والصورة", atlas_enriching:"جارٍ الإثراء…",
+    atlas_include:"أضف أنواع الأطلس إلى البحث", atlas_off:"استيراد الأطلس يحتاج اتصالاً.", atlas_throttled:"أبطأنا السحب: عدد طلبات كبير.",
+    atlas_noimg:"لم نعثر على صورة مرخّصة بحرية", atlas_cleared:"حُذفت بيانات الأطلس", atlas_enriched:"أُضيف",
+    atlas_promote:"سجّل مشاهدة", atlas_quick:"استيراد سريع", atlas_deep:"استيراد شامل",
+    photo:"الصور", yes:"نعم", tax_order:"الرتبة", tax_family:"الفصيلة", tax_genus:"الجنس",
+    caps_h:"ما الجديد",
+    feat_atlas:"كل طيور الأرض", feat_atlas_d:"استورد القائمة العالمية بحسب الرتبة أو الفصيلة ثم تصفحها بلا إنترنت.",
+    /* الذكاء الاصطناعي */
+    nav_ai:"مساعد ذكي", ai_h:"مساعد الطيور", ai_ph:"اسأل عن العناية أو الصحة أو نوع بعينه أو ما يناسب شقة صغيرة…",
+    ai_send:"اسأل", ai_local:"على هذا الجهاز", ai_cloud:"نموذج سحابي", ai_thinking:"أفكّر…", ai_reset:"تصفير المحادثة",
+    ai_base:"عنوان API للنموذج", ai_key:"مفتاح API", ai_model:"اسم النموذج", ai_cloud_hint:"في الوضع السحابي تُرسل أسئلتك وملخّص طيورك المحلية إلى هذا العنوان. اترك الحقول فارغة لتبقى البيانات على جهازك.",
+    ai_off:"لا يوجد نموذج سحابي — تجيب عنك قاعدة البيانات المحلية وسجلاتك.", ai_fail:"فشل الاتصال بالنموذج، لذا جاء هذا الرد من البيانات المحلية.",
+    ai_src:"مبني على", ai_sug:"جرّب أن تسأل", ai_strip:"مفاتيح النموذج لا تُكتب أبداً في النسخة الاحتياطية.", ai_empty:"اطرح سؤالاً لتبدأ.",
+    ai_triage:"فرز صحي", ai_recommend:"توصية", ai_facts:"بطاقة نوع", ai_search:"بحث دلالي", ai_compare:"مقارنة",
+    /* التعرف الصوتي */
+    nav_id:"تعرّف صوتي", id_h:"تعرّف على الطائر من غنائه", id_sub:"لا يغادر التسجيل جهازك: التحليل يقيس الذروة الترددية ومعدل النغمات وتوزيع الطاقة.",
+    id_rec:"سجّل", id_stoprec:"أوقف", id_listening:"أستمع…", id_again:"أعد المحاولة", id_fromfile:"استخدم ملفاً صوتياً",
+    id_none:"لا توجد أصوات مرجعية مفهرسة — ابدأ بفهرسة بعض الأغاني.", id_build:"فهرسة أغاني مرجعية", id_building:"جارٍ الفهرسة",
+    id_lib:"المكتبة المرجعية", id_indexed:"أصوات مفهرسة", id_mic_no:"الميكروفون غير متاح أو تم رفض الإذن.",
+    id_noaudio:"تعذّرت قراءة هذا الصوت.", id_quiet:"لم يصل الميكروفون سوى ضوضاء خلفية — اقترب أو سجّل مقطعاً أطول.", id_notonal:"لم يُعثر على نبرة محددة واضحة؛ لا يمكن التعرف على الرياح أو الحشرات.", id_best:"أقرب مطابقة", id_conf:"درجة الثقة", id_feats:"قياسات تسجيلك",
+    id_pitch:"الذروة الترددية", id_rate2:"نغمة في الثانية", id_bands:"الطاقة حسب نطاق التردد", id_shape:"شكل الغناء عبر الترددات", id_cands:"المرشحون",
+    id_against:"قارن مع هذا النوع", id_test:"شغّل نداءً اصطناعياً", id_srclink:"التسجيل المرجعي",
+    id_test_ok:"اختبار ذاتي ناجح: قياس الذروة الترددية ومعدل النغمات طابقت النداء الاصطناعي المعروف.",
+    id_test_fail:"القياس انحرف — قد يعيد هذا المتصفح تغيير معدل العينة. تعامل مع النتائج الأخرى بحذر.",
+    id_note:"التطابق قياس صوتي وليس دليلاً قاطعاً على الهوية.", id_clearlib:"حذف الأصوات المفهرسة", id_libempty:"المكتبة فارغة",
+    id_scope:"أي أنواع تُفهرس", id_scope_lib:"مرشدي (٤٥ نوعاً)", id_scope_atlas:"أنواع الأطلس المعروضة", id_scope_fav:"المفضلة",
+    feat_id:"سمِّ الطائر من صوته", feat_id_d:"سجّل ست ثوانٍ وقارنها بأغانٍ مرجعية قيست بالطريقة نفسها.",
   },
 };
 const tr = (k, v) => {
@@ -442,6 +536,7 @@ const avg = a => (a.length ? sum(a) / a.length : 0);
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);
 const debounce = (fn, ms = 180) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const nap = ms => new Promise(r => setTimeout(r, ms));
 const dayKey = (d = new Date()) => new Date(d).toISOString().slice(0, 10);
 const fmtDate = (iso, lang = I18N.lang) => { try { return new Date(iso).toLocaleDateString(lang === "ar" ? "ar-EG" : "en-GB", { year:"numeric", month:"short", day:"numeric" }); } catch { return iso; } };
 const addDays = (iso, n) => { const d = new Date(iso); d.setDate(d.getDate() + n); return d; };
@@ -695,7 +790,8 @@ class Collection {
 }
 
 const store = {
-  settings: Object.assign({ theme: "auto", accent: 162, apiBase: "", xenoKey: "", lastSync: 0, installHinted: false }, lsGet(KEYS.settings, {})),
+  settings: Object.assign({ theme: "auto", accent: 162, apiBase: "", xenoKey: "", lastSync: 0, installHinted: false,
+    aiBase: "", aiKey: "", aiModel: "", includeAtlas: false, atlasCap: CFG.ATLAS.defaultCap }, lsGet(KEYS.settings, {})),
   favs: new Set(lsGet(KEYS.fav, [])),
   notes: lsGet(KEYS.note, {}),
   visits: new Set(lsGet(KEYS.visits, [])),
@@ -892,6 +988,206 @@ async function xenoRecordings(b, qty = 6) {
   })).filter(r => r.file);
 }
 
+/* ------------------------------------------------------------- ATLAS CATALOGUE */
+/* The world checklist walks the GBIF backbone (class → order → family → genus →
+ * species) and enriches each family with ONE Wikidata query per 60 names, which
+ * is what keeps a whole class inside a polite request budget. Imported rows carry
+ * no husbandry traits: nothing is invented, and the interface says so. */
+const Atlas = {
+  rows: [], bySci: new Map(), byFam: new Map(),
+  meta: { fams: [], total: 0, at: 0 },
+  state: { running: false, cancel: false, phase: "", pulled: 0, cap: 0, fam: "", note: "" },
+  loaded: false,
+
+  key(fk) { return "atlas:fam:" + fk; },
+  count() { return this.rows.length; },
+  get(sci) { return this.bySci.get(sci); },
+  families() { return (this.meta.fams || []).slice().sort((a, b) => String(a.name).localeCompare(String(b.name))); },
+
+  async load() {
+    if (this.loaded) return this.rows;
+    this.loaded = true;
+    const meta = await idbGet("atlas:meta");
+    if (meta && meta.fams && meta.fams.length) {
+      this.meta = meta;
+      const chunks = await Promise.all(meta.fams.map(f => idbGet(this.key(f.key))));
+      meta.fams.forEach((f, i) => (chunks[i] || []).forEach(r => this.adopt(r, f.key)));
+      this.meta.total = this.rows.length;
+    }
+    return this.rows;
+  },
+  adopt(r, fk) {
+    if (!r || !r.sci || this.bySci.has(r.sci)) return;
+    r.atlas = true;
+    this.bySci.set(r.sci, r);
+    this.rows.push(r);
+    if (!this.byFam.has(fk)) this.byFam.set(fk, []);
+    this.byFam.get(fk).push(r);
+  },
+  async flushFam(fk) {
+    const rows = this.byFam.get(fk) || [];
+    await idbPut(this.key(fk), rows);
+    const head = rows[0] || {};
+    let f = this.meta.fams.find(x => x.key === fk);
+    if (!f) { f = { key: fk }; this.meta.fams.push(f); }
+    f.name = head.family || f.name || ""; f.order = head.order || f.order || ""; f.n = rows.length;
+    this.meta.total = this.rows.length; this.meta.at = Date.now();
+    await idbPut("atlas:meta", this.meta);
+  },
+
+  /* Paged children of one taxon, with one polite retry on a rate-limit. */
+  async children(taxonKey) {
+    const out = []; let offset = 0, retried = false;
+    for (;;) {
+      if (this.state.cancel) break;
+      const url = CFG.API.gbif + "/species/" + taxonKey + "/children?limit=" + CFG.ATLAS.pageSize + "&offset=" + offset;
+      let page;
+      try { page = await req(url, { timeout: 15000 }); }
+      catch (e) {
+        if (!retried && /429|5\d\d/.test(String(e && e.message))) { retried = true; this.state.note = tr("atlas_throttled"); await nap(2500); continue; }
+        throw e;
+      }
+      const rs = page.results || [];
+      out.push(...rs);
+      offset += rs.length;
+      if (page.endOfRecords || !rs.length || offset >= 3000) break;
+      await nap(CFG.ATLAS.gapMs);
+    }
+    return out.filter(x => x && x.key);
+  },
+  async orders() {
+    const raw = await cachedJSON("gbifo", "aves", CFG.API.gbif + "/species/" + CFG.API.avesKey + "/children?limit=200");
+    return ((raw && raw.results) || []).filter(x => x.rank === "ORDER")
+      .map(x => ({ key: x.key, name: x.canonicalName })).sort((a, b) => a.name.localeCompare(b.name));
+  },
+
+  addRow(node, lin, out) {
+    const sci = node.canonicalName || node.scientificName;
+    if (!sci || out.some(r => r.sci === sci) || this.bySci.has(sci)) return;
+    out.push({ id: "a-" + slug(sci), sci, genus: lin.genus || sci.split(" ")[0] || "", family: lin.family,
+      order: lin.order, gbif: node.key, fk: lin.fk, atlas: true, en: "", ar: "", file: "", img: "" });
+  },
+  /* Family node → species, descending at most `depth` extra ranks. */
+  async collect(node, lin, out, depth, cap) {
+    if (this.state.cancel || out.length >= cap) return;
+    let kids;
+    try { kids = await this.children(node.key); } catch { return; }
+    kids.filter(k => k.rank === "SPECIES").forEach(k => this.addRow(k, lin, out));
+    if (depth <= 0) return;
+    for (const k of kids.filter(x => x.rank && x.rank !== "SPECIES" && !/SUBSPECIES|VARIETY|FORM$/.test(x.rank))) {
+      if (this.state.cancel || out.length >= cap) return;
+      await this.collect(k, { ...lin, genus: node.rank === "GENUS" ? (node.canonicalName || lin.genus) : lin.genus }, out, depth - 1, cap);
+    }
+  },
+
+  /* One query, up to 60 names: English + Arabic labels and a Commons file. */
+  async sparql(names) {
+    const values = names.map(n => '"' + String(n).replace(/[\\"]/g, "") + '"@mul').join(" ");
+    const q = "SELECT ?item ?sci ?en ?ar ?img WHERE { VALUES ?sci {" + values + "} " +
+      "?item rdfs:label ?sci ; wdt:P105 ?rank . " +
+      'OPTIONAL { ?item rdfs:label ?en FILTER(lang(?en)="en") } ' +
+      'OPTIONAL { ?item rdfs:label ?ar FILTER(lang(?ar)="ar") } ' +
+      "OPTIONAL { ?item wdt:P18 ?img } } LIMIT 900";
+    const j = await req(CFG.API.sparql + "?format=json&query=" + encodeURIComponent(q), { timeout: CFG.API.sparqlTimeoutMs });
+    const map = new Map();
+    ((j.results || {}).bindings || []).forEach(b => {
+      const k = b.sci.value, cur = map.get(k) || {};
+      if (b.item && !cur.wd) cur.wd = b.item.value.split("/").pop();
+      if (b.en && !cur.en) cur.en = b.en.value;
+      if (b.ar && !cur.ar) cur.ar = b.ar.value;
+      if (b.img && !cur.file) cur.file = decodeURIComponent(b.img.value.split("/").pop()).replace(/_/g, " ");
+      map.set(k, cur);
+    });
+    return map;
+  },
+  async enrichRows(rows) {
+    const touched = new Set();
+    for (let i = 0; i < rows.length; i += CFG.ATLAS.sparqlBatch) {
+      if (this.state.cancel) break;
+      const batch = rows.slice(i, i + CFG.ATLAS.sparqlBatch);
+      let map = null;
+      try { map = await this.sparql(batch.map(r => r.sci)); } catch { /* offline: keep Latin names */ }
+      batch.forEach(r => {
+        const hit = map && map.get(r.sci);
+        if (!hit) return;
+        if (hit.en) r.en = hit.en;
+        if (hit.ar) r.ar = hit.ar;
+        if (hit.wd && !r.wd) r.wd = hit.wd;
+        if (hit.file && !r.file) { r.file = hit.file; r.img = commonsThumb(hit.file, 600); }
+        touched.add(r.fk);
+      });
+      await nap(50);
+    }
+    for (const fk of touched) await this.flushFam(fk);
+    return touched.size;
+  },
+
+  /* opts: { orderKey, orderName, cap, enrich, onProg } */
+  async run(opts = {}) {
+    if (this.state.running) return { added: 0 };
+    await this.load();
+    const cap = Math.max(1, Math.min(CFG.ATLAS.maxCap, opts.cap || CFG.ATLAS.defaultCap));
+    this.state = { running: true, cancel: false, phase: tr("atlas_running"), pulled: this.rows.length, cap, fam: "", note: "" };
+    const before = this.rows.length;
+    try {
+      const orders = opts.orderKey
+        ? [{ key: opts.orderKey, canonicalName: opts.orderName || "", rank: "ORDER" }]
+        : (await this.children(CFG.API.avesKey)).filter(x => x.rank === "ORDER");
+      const queue = [];
+      for (const o of orders) {
+        if (this.state.cancel || this.rows.length >= cap) break;
+        this.state.phase = o.canonicalName;
+        try { if (opts.onProg) opts.onProg(this.state); } catch { /* view was replaced mid-import */ }
+        const kids = await this.children(o.key);
+        for (const k of kids) {
+          if (k.rank === "FAMILY") queue.push({ node: k, order: o.canonicalName });
+          else if (k.rank && k.rank !== "SPECIES") {
+            const below = await this.children(k.key).catch(() => []);
+            below.filter(x => x.rank === "FAMILY").forEach(x => queue.push({ node: x, order: o.canonicalName }));
+          }
+        }
+      }
+      for (const item of queue) {
+        if (this.state.cancel || this.rows.length >= cap) break;
+        const lin = { fk: item.node.key, family: item.node.canonicalName, order: item.order, genus: "" };
+        const found = [];
+        await this.collect(item.node, lin, found, 2, cap - this.rows.length);
+        const novel = found.filter(r => !this.bySci.has(r.sci));
+        novel.forEach(r => this.adopt(r, lin.fk));
+        if (novel.length) await this.flushFam(lin.fk);
+        if (opts.enrich !== false && novel.length) await this.enrichRows(novel);
+        this.state.fam = lin.family; this.state.pulled = this.rows.length;
+        try { if (opts.onProg) opts.onProg(this.state); } catch { /* view was replaced mid-import */ }
+      }
+    } catch (e) {
+      this.state.note = String((e && e.message) || e);
+      if (/abort|Failed to fetch|HTTP /.test(this.state.note)) this.state.note = tr("atlas_off");
+    } finally {
+      this.state.running = false;
+      this.state.phase = "";
+    }
+    return { added: this.rows.length - before };
+  },
+  stop() { this.state.cancel = true; },
+  async clear() {
+    for (const f of (this.meta.fams || [])) await idbDel(this.key(f.key));
+    await idbDel("atlas:meta");
+    this.rows = []; this.bySci.clear(); this.byFam.clear();
+    this.meta = { fams: [], total: 0, at: 0 }; this.loaded = true;
+  },
+  match(q, cap = 80) {
+    const s = String(q).toLowerCase().trim();
+    if (!s) return [];
+    return this.rows.map(r => ({ r, s: Math.max(fuzzyScore(s, r.sci), fuzzyScore(s, r.en || "") * 1.1, fuzzyScore(s, r.ar || "") * 1.2) }))
+      .filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, cap).map(x => x.r);
+  },
+  async stats() {
+    await this.load();
+    return { n: this.rows.length, withAr: this.rows.filter(r => r.ar).length, withImg: this.rows.filter(r => r.img).length,
+      fams: (this.meta.fams || []).length, at: this.meta.at };
+  },
+};
+
 /* ------------------------------------------------------- REMOTE / COMMUNITY */
 const remote = {
   get base() { return CFG.remote; },
@@ -958,7 +1254,7 @@ function queueWrite(type, op, payload) {
 }
 
 /* -------------------------------------------------------------- DERIVED READS */
-const speciesName = b => (I18N.lang === "ar" && b.ar ? b.ar : b.en);
+const speciesName = b => (I18N.lang === "ar" && b.ar ? b.ar : (b.en || b.sci || ""));
 const byId = id => SPECIES.find(b => b.id === id);
 const isFav = id => store.favs.has(id);
 function toggleFav(id) {
@@ -1152,6 +1448,924 @@ function detachAnalyser() {
   if (audio.node) { try { audio.node.disconnect(); } catch { /* already gone */ } audio.node = null; }
 }
 
+/* ------------------------------------------------------- ACOUSTIC ENGINE */
+/* A hand-written radix-2 FFT and a small set of song measurements. Reference
+ * recordings and field recordings pass through exactly the same maths, so a
+ * match means the two sounds share pitch range, note rate and band energy.
+ * Nothing about a species is assumed: a voice only enters the library after it
+ * has been downloaded from a freely licensed file and measured. */
+const Acoustic = {
+  N: CFG.VOICE.fft,
+  /* fingerprint schema version — stored references from an older build are
+     measured differently and must never be compared against the current one */
+  FV: 4,
+  /* log-spaced pitch histogram: 0.3–12 kHz in 32 bins (~13% per bin) covers a
+     dove's 400 Hz coo and a wren's 9 kHz trill on the same axis */
+  PH: { n: 32, lo: 0.3, hi: 12 },
+  edges: CFG.VOICE.bands.map(f => f * 1000),
+
+  fft(re, im) {
+    const n = re.length;
+    for (let i = 1, j = 0; i < n; i++) {
+      let bit = n >> 1;
+      for (; j & bit; bit >>= 1) j ^= bit;
+      j ^= bit;
+      if (i < j) { let t = re[i]; re[i] = re[j]; re[j] = t; t = im[i]; im[i] = im[j]; im[j] = t; }
+    }
+    for (let len = 2; len <= n; len <<= 1) {
+      const ang = -2 * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang), half = len >> 1;
+      for (let i = 0; i < n; i += len) {
+        let cr = 1, ci = 0;
+        for (let k = 0; k < half; k++) {
+          const a = i + k, b = a + half;
+          const xr = re[b] * cr - im[b] * ci, xi = re[b] * ci + im[b] * cr;
+          re[b] = re[a] - xr; im[b] = im[a] - xi;
+          re[a] += xr; im[a] += xi;
+          const nr = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = nr;
+        }
+      }
+    }
+  },
+  mono(buf) {
+    const chs = Math.max(1, buf.numberOfChannels), out = new Float32Array(buf.length);
+    for (let c = 0; c < chs; c++) { const d = buf.getChannelData(c); for (let i = 0; i < out.length; i++) out[i] += d[i] / chs; }
+    return { data: out, sr: buf.sampleRate };
+  },
+  q(arr, p) { const s = arr.slice().sort((a, b) => a - b); return s.length ? s[clamp(Math.round(p * (s.length - 1)), 0, s.length - 1)] : 0; },
+
+  /* AudioBuffer → fingerprint */
+  analyse(buf, maxSec = 22) {
+    if (!buf || !buf.length) return null;
+    const m = this.mono(buf), sr = m.sr;
+    let data = m.data;
+    if (data.length > sr * maxSec) data = data.subarray(0, Math.floor(sr * maxSec));
+    const N = this.N, hop = N >> 1;
+    if (data.length < N * 4) return null;
+    const nb = this.edges.length - 1, binHz = sr / N;
+    const binBand = new Int8Array(N / 2).fill(-1);
+    for (let k = 1; k < N / 2; k++) {
+      const hz = k * binHz;
+      for (let b = 0; b < nb; b++) if (hz >= this.edges[b] && hz < this.edges[b + 1]) { binBand[k] = b; break; }
+    }
+    const win = new Float32Array(N);
+    for (let i = 0; i < N; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (N - 1));
+    const re = new Float32Array(N), im = new Float32Array(N), pr = new Float32Array(N), pi = new Float32Array(N);
+    const frames = Math.floor((data.length - N) / hop) + 1;
+    const bandE = new Float64Array(frames * nb);
+    const cent = [], flux = [], rms = [], flat = [], pings = [], doms = [], tons = [];
+    let prevMag = null;
+    const lagLo = Math.max(3, Math.floor(sr / 11000)), lagHi = Math.min(N - 2, Math.floor(sr / 650));
+
+    for (let fr = 0; fr < frames; fr++) {
+      const off = fr * hop;
+      let sq = 0;
+      for (let i = 0; i < N; i++) sq += data[off + i] * data[off + i];
+      const e = Math.sqrt(sq / N);
+      for (let i = 0; i < N; i++) { re[i] = data[off + i] * win[i]; im[i] = 0; }
+      this.fft(re, im);
+      const half = N / 2, mag = new Float32Array(half);
+      let tot = 0, logs = 0, ce = 0, cw = 0;
+      for (let k = 1; k < half; k++) {
+        const mm = Math.hypot(re[k], im[k]);
+        mag[k] = mm; tot += mm; logs += Math.log(mm + 1e-9);
+        const b = binBand[k];
+        if (b < 0) continue;
+        bandE[fr * nb + b] += mm * mm;
+        ce += mm * mm; cw += mm * mm * (k * binHz);
+      }
+      cent.push(ce > 1e-12 ? cw / ce / 1000 : 0);
+      flat.push(tot > 1e-6 ? Math.exp(logs / (half - 1)) / (tot / (half - 1) + 1e-9) : 1);
+      rms.push(e);
+      let f = 0;
+      if (prevMag) { for (let k = 1; k < half; k++) { const d = mag[k] - prevMag[k]; if (d > 0) f += d; } }
+      flux.push(f);
+      if (prevMag) { for (let k = 1; k < half; k++) prevMag[k] = mag[k]; } else { prevMag = new Float32Array(half); prevMag.set(mag); }
+      /* tonal pitch from the autocorrelation of the same window */
+      let ping = 0, ton = 0;
+      if (e > 0.004) {
+        for (let k = 0; k < N; k++) {
+          const kk = k < half ? k : N - k;
+          const v = kk === 0 ? tot / half : (kk < half ? mag[kk] : mag[half - 1]);
+          pr[k] = v * v; pi[k] = 0;
+        }
+        this.fft(pr, pi);
+        /* the ACF decays monotonically at first, so only a local maximum counts
+           as a period — otherwise the estimate sticks to the smallest lag */
+        let best = -1, bestLag = 0, r0 = pr[0] || 1;
+        const peaks = [];
+        for (let lag = lagLo; lag <= lagHi; lag++) {
+          if (pr[lag] <= pr[lag - 1] || (lag < lagHi && pr[lag] < pr[lag + 1])) continue;
+          const v = pr[lag] / r0;
+          peaks.push([lag, v]);
+          if (v > best) { best = v; bestLag = lag; }
+        }
+        /* an overtone-rich note repeats at half its true period too, so take the
+           shortest near-equal peak instead of the octave-down reading */
+        for (const [lag, v] of peaks) {
+          if (lag < bestLag && v >= best * 0.82) { best = v; bestLag = lag; break; }
+        }
+        if (best > 0.3 && bestLag) { ping = sr / bestLag / 1000; ton = clamp(best, 0, 1); }
+      }
+      pings.push(ping); tons.push(ton);
+      /* dominant frequency: the tallest spectral peak inside the note's own
+         band. Starting the search just below the detected pitch keeps low
+         callers (doves, owls, waterfowl) intact while excluding the wind
+         rumble and insect floor that always sit under a song and would
+         otherwise win the global peak — that is what made a chaffinch
+         measure 0.6 kHz instead of 3.5 kHz. */
+      let dom = 0;
+      if (ping > 0) {
+        const lo = Math.max(2, Math.floor(Math.max(0.22, ping * 0.72) * 1000 / binHz));
+        const hi = Math.min(half - 2, Math.ceil(12.5 * 1000 / binHz));
+        let bv = 0, bp = 0;
+        for (let k = lo; k <= hi; k++) if (mag[k] > bv) { bv = mag[k]; bp = k; }
+        if (bp > 1 && bp < half - 1) {
+          const al = Math.log(mag[bp - 1] + 1e-9), be = Math.log(mag[bp] + 1e-9), gi = Math.log(mag[bp + 1] + 1e-9);
+          const den = al - 2 * be + gi;
+          dom = (bp + (den ? clamp(0.5 * (al - gi) / den, -1, 1) : 0)) * binHz / 1000;
+        }
+      }
+      doms.push(dom);
+    }
+    /* voice gate, then note onsets: a flux peak above the voiced median with a
+       60 ms refractory, so hiss and insects cannot inflate the note rate */
+    const sortedRms = rms.slice().sort((a, b) => a - b);
+    const floor = sortedRms.length ? sortedRms[Math.floor(sortedRms.length * 0.1)] : 0;
+    const voiceCut = Math.max(floor * 3.2, 0.0035);
+    const vf = [];
+    for (let i = 1; i < flux.length; i++) if (rms[i] >= voiceCut) vf.push(i);
+    const fs = vf.map(i => flux[i]).sort((a, b) => a - b);
+    const fMed = fs.length ? fs[Math.floor(fs.length / 2)] : 0;
+    const fSpread = fs.length ? Math.max(fs[Math.floor(fs.length * 0.9)] - fMed, fMed * 0.25, 1e-9) : 1;
+    const thr = fMed + Math.max(fSpread * 0.85, fMed * 0.1);
+    const refr = Math.max(2, Math.round(0.06 * sr / hop));
+    let notes = 0, lastNote = -999;
+    for (const i of vf) {
+      if (i - lastNote < refr || flux[i] <= thr) continue;
+      if (flux[i] < flux[i - 1] || flux[i] < flux[Math.min(flux.length - 1, i + 1)]) continue;
+      notes++; lastNote = i;
+    }
+    const voicedSec = vf.length * hop / sr;
+    const voiced = round(vf.length / Math.max(1, frames), 3);
+    const rate = voicedSec > 0.25 ? round(notes / voicedSec, 2) : 0;
+    /* descriptors come from the voiced frames only: a 20 s clip that is 15 s of
+       wind still normalises to the bird, not to the wind. With too few voiced
+       frames (a nearly silent take) fall back to everything rather than emit 0 */
+    const src = vf.length >= 8 ? vf : Array.from({ length: frames }, (_, i) => i);
+    const bands = new Float64Array(nb);
+    for (const i of src) for (let b = 0; b < nb; b++) bands[b] += bandE[i * nb + b];
+    const bandSum = sum(Array.from(bands)) || 1;
+    const sec = data.length / sr;
+    const pingList = src.map(i => pings[i]).filter(v => v > 0);
+    const domList = src.map(i => doms[i]).filter(v => v > 0.25);
+    const centList = src.map(i => cent[i]).filter(v => v > 0);
+    const flatList = src.map(i => flat[i]);
+    const pMin = this.q(pingList, 0.08), pMed = this.q(pingList, 0.5), pMax = this.q(pingList, 0.92);
+    const domMed = this.q(domList, 0.5), domHi = this.q(domList, 0.9);
+    /* the descriptor that actually separates songbirds: where the notes sit
+       across the octave scale, kept as a distribution instead of a median. A
+       great tit is a spike at 4 kHz and a blackbird a broad mass from 2.5 to
+       8 kHz — they can share a median, so the shape is compared, not the centre */
+    const P = this.PH, ph = new Float64Array(P.n), ps = new Float64Array(P.n);
+    const plo = Math.log(P.lo), pspan = Math.log(P.hi / P.lo), rMed = this.q(rms, 0.5) || 1;
+    for (const i of src) {
+      const f = doms[i];
+      if (!(f > P.lo)) continue;
+      const w = clamp(rms[i] / rMed, 0.25, 3) * (0.35 + 0.65 * tons[i]);
+      const x = clamp((Math.log(f) - plo) / pspan, 0, 0.99999) * P.n;
+      const b0 = Math.floor(x), fr = x - b0;
+      ph[b0] += w * (1 - fr);
+      if (b0 + 1 < P.n) ph[b0 + 1] += w * fr;
+    }
+    /* one 3-tap smoothing pass: a little pitch drift between mics must not read
+       as a different song */
+    for (let i = 0; i < P.n; i++)
+      ps[i] = 0.5 * ph[i] + 0.25 * ph[Math.max(0, i - 1)] + 0.25 * ph[Math.min(P.n - 1, i + 1)];
+    const phSum = sum(Array.from(ps)) || 1;
+    return {
+      V: this.FV,
+      dur: round(sec, 2), sr,
+      bands: Array.from(bands, v => round(v / bandSum, 4)),
+      ph: Array.from(ps, v => round(v / phSum, 4)),
+      centroid: round(this.q(centList, 0.5), 2),
+      flatness: round(this.q(flatList, 0.5), 3),
+      dom: round(domMed, 2), domHi: round(domHi, 2),
+      pMin: round(pMin, 2), pMed: round(pMed, 2), pMax: round(pMax, 2),
+      /* ratios survive a bad mic and a distant perch: where the energy sits
+         relative to the note's own pitch, and how wide the pitch range is */
+      tone: round(domMed / (pMed || domMed || 1), 3),
+      span: round(pMax / Math.max(0.12, pMin), 3),
+      notes, rate, voiced,
+      frames, at: Date.now(),
+    };
+  },
+
+  /* weighted distance: shape terms first, absolute frequencies as minority votes */
+  compare(a, b) {
+    if (!a || !b || !a.bands || !b.bands) return { d: 1, score: 0, why: [] };
+    const prof = (x, y) => {
+      let dot = 0, na = 0, nb2 = 0, l1 = 0;
+      for (let i = 0; i < x.length; i++) { dot += x[i] * y[i]; na += x[i] ** 2; nb2 += y[i] ** 2; l1 += Math.abs(x[i] - y[i]); }
+      return { cos: dot / (Math.sqrt(na * nb2) + 1e-9), l1: clamp(l1 / 2, 0, 1) };
+    };
+    /* 1-D Wasserstein distance on the pitch histogram: the least "work" needed
+       to move one song's mass onto the other's. Tolerates a whole-tone shift
+       between two mics, which a bin-by-bin difference would punish as a
+       different species */
+    const wass = (x, y) => { let c = 0, acc = 0; for (let i = 0; i < x.length; i++) { acc += x[i] - y[i]; c += Math.abs(acc); } return clamp(c / x.length * 2.6, 0, 1); };
+    const inter = (x, y) => { let m = 0; for (let i = 0; i < x.length; i++) m += Math.min(x[i], y[i]); return clamp(1 - m, 0, 1); };
+    const same = a.ph && b.ph && a.ph.length === b.ph.length;
+    const bp = prof(a.bands, b.bands);
+    const lr = (x, y) => clamp(Math.abs(Math.log((x + 0.06) / (y + 0.06))) / 1.2, 0, 1);
+    const rr = (x, y) => clamp(Math.abs(Math.log((x + 0.02) / (y + 0.02))) / 0.55, 0, 1);
+    const parts = {
+      shape: same ? wass(a.ph, b.ph) : bp.l1,
+      tone: same ? inter(a.ph, b.ph) : 1 - bp.cos,
+      band: 1 - bp.cos, spread: bp.l1,
+      dom: lr(a.dom, b.dom), pitch: lr(a.pMed, b.pMed), hi: lr(a.pMax, b.pMax),
+      span: rr(a.span, b.span), rate: lr(a.rate, b.rate),
+      cent: clamp(Math.abs(a.centroid - b.centroid) / 3.5, 0, 1),
+      voice: clamp(Math.abs(a.voiced - b.voiced) / 0.6, 0, 1),
+    };
+    const w = { shape: .34, tone: .13, band: .11, spread: .05, dom: .08, pitch: .08,
+                hi: .04, span: .07, rate: .06, cent: .03, voice: .02 };
+    const d = sum(Object.keys(w).map(k => w[k] * parts[k])) / sum(Object.values(w));
+    const pct = v => Math.round(clamp(1 - v, 0, 1) * 100);
+    const why = [
+      [tr("id_shape"), pct(parts.shape), ""],
+      [tr("id_pitch"), pct(parts.dom), round(a.dom, 1) + " / " + round(b.dom, 1) + " kHz"],
+      [tr("id_rate2"), pct(parts.rate), round(a.rate, 1) + " / " + round(b.rate, 1)],
+      [tr("id_feats"), pct(parts.span), round(a.span, 2) + " / " + round(b.span, 2) + "×"],
+    ];
+    return { d: round(d, 4), score: clamp(Math.round(100 * Math.exp(-5 * d)), 1, 99), parts, why };
+  },
+
+  /* ------------------------------------------------- reference voice library */
+  lib: { index: null, building: false, cancel: false, done: 0, total: 0, note: "" },
+  keyOf: sci => "fp:" + sci,
+  async index() {
+    if (this.lib.index) return this.lib.index;
+    const idx = await idbGet("fp:index");
+    this.lib.index = idx || [];
+    return this.lib.index;
+  },
+  async entries() {
+    const idx = await this.index();
+    const rows = await Promise.all(idx.map(s => idbGet(this.keyOf(s))));
+    /* voices measured by an older fingerprint schema are silently dropped —
+       they would be compared on a different scale than the live engine */
+    return rows.filter(Boolean)
+      .map(r => Object.assign({}, r, { voices: (r.voices || []).filter(v => v && v.fp && v.fp.V === this.FV) }))
+      .filter(r => r.voices.length);
+  },
+  /* freely licensed recordings on Commons, keyless and already cached by the SW */
+  async candidates(sci) {
+    const url = CFG.API.commons + "?action=query&generator=search&gsrnamespace=6&gsrlimit=16&gsrsearch=" +
+      encodeURIComponent('filetype:audio "' + sci + '"') + "&prop=imageinfo&iiprop=url|mime|size&format=json&origin=*";
+    const raw = await req(url, { timeout: 14000 });
+    const pages = Object.values((raw && raw.query && raw.query.pages) || {});
+    return pages.map(p => {
+      const i = (p.imageinfo || [])[0] || {};
+      return { title: p.title, file: String(p.title).replace(/^File:/, ""), url: i.url, mime: i.mime,
+        kb: Math.round((i.size || 0) / 1024), secs: round(i.duration || 0, 1) };
+    }).filter(x => x.url && x.secs >= 6 && x.secs <= 80 && x.kb > 20 && x.kb < 4200)
+      .sort((a, b) => Math.abs(a.secs - 20) - Math.abs(b.secs - 20));
+  },
+  async fetchBuffer(url) {
+    const blob = await req(url, { expect: "blob", timeout: 30000 });
+    const ctx = audioCtx() || new (window.AudioContext || window.webkitAudioContext)();
+    try { return await ctx.decodeAudioData(await blob.arrayBuffer()); } catch { return null; }
+  },
+  /* measure several freely licensed files and keep the ones that agree: a single
+     noisy take must not define a species, and one species needs several voices
+     because a 7 s clip and a 60 s song measure differently */
+  async addReference(sci) {
+    const files = (await this.candidates(sci)).slice(0, 8);
+    if (!files.length) return null;
+    const measured = [];
+    for (const f of files) {
+      const buf = await this.fetchBuffer(f.url);
+      const fp = buf && this.analyse(buf);
+      if (fp && fp.dom > 0.3 && fp.voiced >= 0.04) measured.push({ fp, file: f.file, url: f.url, secs: f.secs });
+      if (measured.length >= 6) break;
+    }
+    if (!measured.length) return null;
+    let voices = measured;
+    if (measured.length > 2) {
+      const means = measured.map((m, i) => avg(measured.filter((_, j) => j !== i).map(o => this.compare(m.fp, o.fp).d)));
+      const cut = this.q(means, 0.65);
+      const kept = measured.filter((_, i) => means[i] <= cut);
+      if (kept.length >= 2) voices = kept.slice(0, 5);
+    }
+    const row = { sci, voices, at: Date.now() };
+    await idbPut(this.keyOf(sci), row);
+    const idx = await this.index();
+    if (!idx.includes(sci)) { idx.push(sci); await idbPut("fp:index", idx); }
+    return row;
+  },
+  async build(list, onProg) {
+    if (this.lib.building) return 0;
+    const want = uniq(list.filter(Boolean)).slice(0, 400);
+    this.lib = Object.assign(this.lib, { building: true, cancel: false, done: 0, total: want.length, note: "" });
+    let ok = 0;
+    for (const sci of want) {
+      if (this.lib.cancel) break;
+      try { if (await this.addReference(sci)) ok++; } catch (e) { this.lib.note = String(e.message || e); }
+      this.lib.done++;
+      if (onProg) onProg(this.lib);
+      await nap(120);
+    }
+    this.lib.building = false;
+    this.lib.index = null;
+    return ok;
+  },
+  stopBuild() { this.lib.cancel = true; },
+  async removeReference(sci) {
+    await idbDel(this.keyOf(sci));
+    const idx = (await this.index()).filter(s => s !== sci);
+    this.lib.index = idx;
+    await idbPut("fp:index", idx);
+  },
+  async clearLibrary() {
+    const idx = await this.index();
+    for (const s of idx) await idbDel(this.keyOf(s));
+    await idbDel("fp:index");
+    this.lib.index = [];
+  },
+
+  /* A wind-only or silent take must report "nothing to compare", not a
+     confident wrong answer — that is the difference between a tool people
+     trust and one that quietly misleads them about a live animal. */
+  quality(fp) {
+    if (!fp) return { ok: false, why: tr("id_noaudio") };
+    if (!(fp.dom > 0.3) || !(fp.pMed > 0)) return { ok: false, why: tr("id_notonal") };
+    if (fp.voiced < 0.03) return { ok: false, why: tr("id_quiet") };
+    return { ok: true };
+  },
+
+  /* rank the library (or a candidate subset) against one fingerprint.
+     `score` is acoustic similarity; `conf` is the share of probability this
+     species holds among the candidates actually compared — with a small library
+     both numbers are high, which is exactly why the view shows the library size */
+  async identify(fp, only) {
+    if (!fp) return [];
+    let rows = await this.entries();
+    if (only && only.length) { const set = new Set(only); rows = rows.filter(r => set.has(r.sci)); }
+    const ranked = [];
+    for (const r of rows) {
+      let best = null, agree = 0;
+      for (const v of r.voices) {
+        const c = this.compare(fp, v.fp);
+        if (c.d < 0.22) agree++;
+        if (!best || c.score > best.score) best = c;
+      }
+      if (best) ranked.push({ sci: r.sci, row: r, score: best.score, why: best.why, d: best.d,
+        voices: r.voices.length, agree, conf: 0 });
+    }
+    ranked.sort((a, b) => a.d - b.d);
+    const T = 0.12, es = ranked.map(r => Math.exp(-r.d / T)), tot = sum(es) || 1;
+    ranked.forEach((r, i) => { r.conf = Math.round(100 * es[i] / tot); });
+    if (ranked.length > 1) ranked[0].amb = ranked[0].conf - ranked[1].conf < 12;
+    return ranked;
+  },
+
+  /* -------------------------------------------------------------- recording */
+  rec: { mr: null, chunks: [], stream: null, started: 0, timer: 0 },
+  supported() { return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder); },
+  async start() {
+    if (!this.supported()) throw new Error(tr("id_mic_no"));
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+    const mr = new MediaRecorder(stream);
+    this.rec = { mr, chunks: [], stream, started: Date.now(), timer: 0 };
+    mr.ondataavailable = e => { if (e.data && e.data.size) this.rec.chunks.push(e.data); };
+    mr.start(200);
+    return mr;
+  },
+  async finish() {
+    const { mr, stream } = this.rec;
+    if (!mr) return null;
+    const blob = new Promise(res => { mr.onstop = () => res(new Blob(this.rec.chunks, { type: mr.mimeType || "audio/webm" })); });
+    try { mr.stop(); } catch { /* already stopped */ }
+    (stream.getTracks() || []).forEach(t => t.stop());
+    this.rec = { mr: null, chunks: [], stream: null, started: 0, timer: 0 };
+    const b = await blob;
+    const ctx = audioCtx() || new (window.AudioContext || window.webkitAudioContext)();
+    try { return await ctx.decodeAudioData(await b.arrayBuffer()); } catch { return null; }
+  },
+  cancelRec() {
+    const { mr, stream } = this.rec;
+    try { if (mr && mr.state !== "inactive") mr.stop(); } catch { /* ignore */ }
+    (stream && stream.getTracks() || []).forEach(t => t.stop());
+    this.rec = { mr: null, chunks: [], stream: null, started: 0, timer: 0 };
+  },
+  /* deterministic signal for the built-in self-test: pitch and rate are known */
+  synth({ freq = 2400, notes = 8, dur = 2, sr = 44100 } = {}) {
+    const n = Math.floor(sr * dur), data = new Float32Array(n), per = n / notes;
+    for (let i = 0; i < n; i++) {
+      const t = (i - Math.floor(i / per) * per) / per;
+      const env = Math.sin(Math.PI * clamp(t, 0, 1)) ** 2;
+      const ph = 2 * Math.PI * freq * (i / sr);
+      data[i] = (Math.sin(ph) + .35 * Math.sin(2 * ph) + .12 * Math.sin(3 * ph)) * env * .4;
+    }
+    const buf = (audioCtx() || new (window.AudioContext || window.webkitAudioContext)()).createBuffer(1, n, sr);
+    buf.copyToChannel(data, 0);
+    return buf;
+  },
+};
+
+/* band-energy bars for the identification screen */
+function drawBands(cv, a, b) {
+  const s = setupCanvas(cv, 150), { ctx, w, h } = s;
+  if (!ctx) return;
+  const nb = a.bands.length, pad = 22, bw = (w - pad) / nb;
+  ctx.clearRect(0, 0, w, h);
+  ctx.strokeStyle = css("--line"); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad, h - 14); ctx.lineTo(w, h - 14); ctx.stroke();
+  ctx.font = "10px system-ui"; ctx.fillStyle = css("--muted");
+  for (let i = 0; i < nb; i++) {
+    const x = pad + i * bw;
+    const scale = Math.max(...a.bands, ...(b ? b.bands : [0]), 0.02);
+    const ha = (h - 22) * a.bands[i] / scale;
+    ctx.fillStyle = css("--ac");
+    ctx.fillRect(x + 2, h - 14 - ha, bw / 2 - 3, ha);
+    if (b) {
+      const hb = (h - 22) * b.bands[i] / scale;
+      ctx.strokeStyle = css("--text"); ctx.lineWidth = 1.6; ctx.strokeRect(x + bw / 2, h - 14 - hb, bw / 2 - 3, hb);
+    }
+    ctx.fillStyle = css("--muted");
+    ctx.fillText(CFG.VOICE.bands[i] + "k", x + 2, h - 3);
+  }
+}
+
+/* ================================================================== AI ====
+   Two engines behind one box. local() reasons over what is already in this
+   device: the trait table of the curated species, the atlas rows, and your own
+   birds with their weight and symptom log. cloud() sends the same grounded
+   facts to a model you configure — off until you give it a base URL.
+   The local half is deliberately not a chatbot: it answers the four questions
+   a keeper actually asks (is this serious / which bird suits me / what does
+   this species need / compare these two) with numbers it can show its work on.
+   ====================================================================== */
+const AI = {
+  bi(en, ar) { return I18N.lang === "ar" ? ar : en; },
+
+  /* ------------------------------------------------------------- text --- */
+  norm(s) {
+    return String(s || "").toLowerCase()
+      .replace(/[`\u064B-\u0652\u0670\u0640]/g, "")
+      .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
+      /* ي and ئ fold to a single letter, otherwise "يأكل" normalises to
+         "ياكل" while a pattern written with ي never matches it */
+      .replace(/[ئء]/g, "ي")
+      .replace(/[^\p{L}\p{N}\s]+/gu, " ").replace(/\s+/g, " ").trim();
+  },
+  STOP: new Set(("a an the of and or to in is are was be do does did i you it we they this that with for on my me your some any " +
+    "ما الذي哪些 التي الذي هؤلاء ذاك تلك في من على عن هل انا انت هو هي نحن ان كان كان يكون لماذا كيف اي أي" +
+    " " + "how what which best good should would could can tell give").split(/\s+/)),
+  words(s) { return this.norm(s).split(" ").map(w => this.stripAr(w)).filter(w => w.length > 1 && !this.STOP.has(w)); },
+
+  /* ------------------------------------------- semantic index (TF-IDF) --- */
+  ix: null,
+  invalidate() { this.ix = null; },
+  corpus() {
+    const rows = SPECIES.concat(Atlas.rows);
+    return rows.map(r => ({ r, text: this.norm([r.en, r.ar, r.sci, r.origin, r.tip, r.habitat,
+      GROUPS[r.g] ? GROUPS[r.g].en + " " + GROUPS[r.g].ar : "", r.family, r.order].filter(Boolean).join(" ")) }));
+  },
+  build() {
+    const docs = this.corpus(), df = new Map();
+    docs.forEach(d => {
+      d.tf = new Map();
+      for (const w of this.words(d.text)) d.tf.set(w, (d.tf.get(w) || 0) + 1);
+      d.len = Math.sqrt(sum(Array.from(d.tf.values(), v => v * v)) || 1);
+      for (const w of d.tf.keys()) df.set(w, (df.get(w) || 0) + 1);
+    });
+    const N = docs.length;
+    this.ix = { docs, idf: new Map(Array.from(df, ([w, n]) => [w, Math.log(N / (n + 1)) + 1])) };
+    return this.ix;
+  },
+  /* rank every species and atlas row by weighted word overlap — this is what
+     makes "small quiet bird for an apartment" find the right animal */
+  semantic(q, k = 8) {
+    if (!this.ix) this.build();
+    const ws = uniq(this.words(q).flatMap(w => w.length > 4 ? [w, w.slice(0, Math.max(3, w.length - 2))] : [w]));
+    const vw = new Map();
+    ws.forEach(w => vw.set(w, (vw.get(w) || 0) + (this.ix.idf.get(w) || 0.4)));
+    const scored = this.ix.docs.map(d => {
+      let dot = 0;
+      vw.forEach((wv, w) => { const tf = d.tf.get(w); if (tf) dot += wv * (1 + Math.log(tf)); });
+      return { r: d.r, s: dot / (d.len || 1) };
+    }).filter(x => x.s > 0).sort((a, b) => b.s - a.s);
+    return scored.slice(0, k);
+  },
+
+  /* --------------------------------------------- husbandry word → range --- */
+  WANT: [
+    [/quiet|silent|neighbo|apartment|flat|هادي|هدوء|سكون|شقه|جيران|ضوضاء قليله/, { noise: [1, 2] }, "quiet"],
+    [/small|tiny|space|compact|صغي|مساحه|ضيق|مكان صغير|حجم صغير/, { space: [1, 2], sizeMax: 45 }, "small"],
+    [/big|large|aviary|garden|outdoor|roomy|كبي|حديقه|حظيره|خارج|فناء/, { space: [4, 5] }, "large"],
+    [/beginner|first|new|hobby|easy|simple|مبتدي|للمبتد|سهل|اول|جديد|هاوي|بسيط/, { difficulty: [1, 2] }, "easy"],
+    [/cheap|low cost|budget|afford|inexpensive|رخي|تكلف|ميزاني|اقل تكلفه|اقتصادي/, { cost: [1, 2] }, "cheap"],
+    [/talk|speak|mimic|imitate|vocal|word|يقلد|كلام|يتكلم|نطق|يحكي|كلم/, { talk: true }, "talking"],
+    [/song|sing|warbl|melod|tune|chirp|غناء|تغريد|لحن|صوت جميل|مغرد/, { g: ["fi", "so"] }, "songster"],
+    [/child|kid|famil|hand|tame|pet|touch|طفل|اطفال|عائل|اليف|يد|لمس|رفيق/, { sociability: [4, 5] }, "family-friendly"],
+    [/alone|solo|independ|low maint|busy|work|منفرد|وحيد|مستقل|انشغالي|عمل|دوام/, { sociability: [1, 2] }, "independent"],
+    [/long live|longevity|years|decades|عمر طويل|معمر|سنين|سنوات|يبقى طويلا/, { longevity: [18, 80] }, "long-lived"],
+    [/egg|meat|breed|hatch|brood|تفريخ|بيض|لحم|تكاثر|انتاج/, { g: ["po", "wa", "do"] }, "productive"],
+    [/color|colou|beaut|plumage|pretty|جمال|الوان|تلوين|جميل|زينة/, { noise: [1, 4] }, "ornamental"],
+    [/flight|fly|soar|训练|طيران|يطير|جوي/, { space: [4, 5], g: ["ra", "so"] }, "flyer"],
+    [/calm|gentle|docile|friendly|هدوء|هادء|لطيف|ودود|مسالم/, { sociability: [3, 5], difficulty: [1, 3] }, "gentle"],
+  ],
+  wants(q) { const t = this.norm(q); return this.WANT.filter(([re]) => re.test(t)); },
+
+  /* ------------------------------------------------ health vocabulary --- */
+  SYMPTOMS: [
+    { k: "breathing", en: "open-mouthed breathing, tail bobbing, wheeze, click when breathing, blue tongue",
+      ar: "تنفس بصعوبة، فتح الفم، صفير او طقطقة، ازرقاق اللسان، ذيل يتحرك مع التنفس",
+      urg: 3, cause: { en: "Air-sac mite, mycoplasma, aspergillosis, cold that reached the lungs, egg pressure on the lungs.",
+        ar: "سعال الهواء (الأكياس الهوائية)، الميكوبلازما، فطريات الأسبرچيلس، برد نزل للرئتين، ضغط البيضة على الرئة." },
+      act: { en: "Keep the bird warm at 28–30 C, do not handle it, an avian vet within hours — respiratory blockage kills quickly and nebulised air is not a substitute.",
+        ar: "أبقِ الطائر دافئاً 28–30 مئوية، لا تمسكه، راجع طبيب طيور خلال ساعات؛ انسداد التنفّس قاتل سريعاً والتبخير ليس بديلاً." } },
+    { k: "eggbound", en: "straining more than a day, hard swollen belly, wide stance, leg weakness, sitting on cage floor, pressing vent",
+      ar: "حصار أكثر من يوم، بطن صلب منتفخ، وقفة واسعة، ضعف رجل، جلوس على أرض القفس، ضغط على المخرج",
+      urg: 3, cause: { en: "Egg binding, calcium or vitamin D deficiency, first clutches in young hens.",
+        ar: "احتباس البيضة، نقص كالسيوم أو فيتامين د، أول عنقات في الأنثى الصغيرة." },
+      act: { en: "Warm humid box 30 C, a drop of oil on the vent, calcium solution in water, vet the same day — do not squeeze the abdomen.",
+        ar: "صندوق دافئ رطب 30 مئوية، قطرة زيت على المخرج، محلول كالسيوم في الماء، وراجع الطبيب في نفس اليوم؛ لا تضغط البطن." } },
+    { k: "bleed", en: "bleeding, broken blood feather, wound, nail cut too short",
+      ar: "ينزف، نزيف، ريشة دم مكسورة، جرح، قص الأظافر كثيراً",
+      urg: 3, cause: { en: "Trauma, broken pin feather, over-short nail trim.", ar: "إصابة، ريشة دم مكسورة، قص الظفر لجواره الحي." },
+      act: { en: "Pinch the feather base with haemostatic powder or cornflour, press the wound 30 seconds, vet if it keeps bleeding.",
+        ar: "اضغط قاعدة الريشة بمسرق للدم أو دقيق ذرة، اضغط الجرح 30 ثانية، وراجع الطبيب إن استمر." } },
+    { k: "noteat", en: "not eating, stopped eating, refuses food, no droppings, appetite loss two days",
+      ar: "لا يأكل، يرفض الطعام، فضلات غائبة، فقد الشهية يومين",
+      urg: 3, cause: { en: "Anything serious in a small bird: infection, impaction, crop stasis, pain, toxic water.",
+        ar: "أي أمر خطير عند طائر صغير: عدوى، انسداد، ركود الحوصلة، ألم، ماء ملوث." },
+      act: { en: "Warm it, put food and water on the cage floor, check the crop empties, weigh it daily, vet within 24 hours.",
+        ar: "أدفئه، ضع الطعام والماء على أرضية القفس، تحقق أن الحوصلة تفرغ، زِنه يومياً، وراجع الطبيب خلال 24 ساعة." } },
+    { k: "diarrhea", en: "watery droppings, loose, green yellow droppings, wet vent, sticky feathers around vent",
+      ar: "فضلات مائيه، سائله، خضراء او صفراء، مخرج مبلل، ريش لاصق حول المخرج",
+      urg: 2, cause: { en: "Bacterial or protozoal infection, sudden diet change, too much greens, kidney involvement.",
+        ar: "عدوى بكتيريه أو أوليات، تغيير غذاء مفاجئ، إفراط في الخضار، أو كلى." },
+      act: { en: "Rehydrate with electrolytes, stop greens and fruit, clean perches daily, vet with a fresh sample if 48 hours pass.",
+        ar: "أعد السوائل بالأملاح، أوقف الخضار والفاكهة، نظف المجاثم يومياً، وخذ عضة فضلات طازجه للطبيب بعد يومين." } },
+    { k: "fluffed", en: "fluffed up, sitting low, sleepy, not singing, dull feathers, weight loss",
+      ar: "منفش، ريش منفش، جالس منخفض، نعسان، لا يغرد، ريش باهت، نقص وزن",
+      urg: 2, cause: { en: "The universal sign of illness in birds: infection, parasite load, cold, pain, or organ trouble.",
+        ar: "العلامة العامة للمرض عند الطيور: عدوى، طفيليات، برد، ألم، أو خلل في عضو." },
+      act: { en: "Heat to 28 C, reduce handling, weigh every morning, and see a vet — fluffed and quiet for a day is not 'resting'.",
+        ar: "ارفع الحرارة 28 مئوية، قلل Handling، زِن كل صباح، وراجع الطبيب؛ منفش وهادئ يومًا ليس «راحة»." } },
+    { k: "mites", en: "scratching, bare skin, scabs, lice, mites, crusty beak, crusty feet",
+      ar: "حكة، جلد أصلع، قشور، قمل، هوام، منقار متشقق، أقدام متقشرة",
+      urg: 1, cause: { en: "Scaly leg mite, red mite, feather mites, or feather-plucking from boredom.",
+        ar: "قمل الأقدام المتقشر، الهام الأحمر، هوام الريش، أو نتف الريش من الملل." },
+      act: { en: "Treat with a bird-safe acaricide per label, wash and sun the cage, isolate from others, vet if skin is raw.",
+        ar: "عالج بمبيد طفيليات آمن للطيور وفق النشرة، اغسل القفس وعرضه للشمس، اعزل الطائر، وراجع الطبيب إن كان الجلد ملتهباً." } },
+    { k: "crop", en: "crop not emptying, sour smell from mouth, regurgitating, swelling on neck",
+      ar: "الحوصلة لا تفرغ، رائحة فم حمضية، رجعة، انتفاخ الرقبة",
+      urg: 2, cause: { en: "Crop stasis, sour crop (yeast), bacterial infection, impaction.", ar: "ركود الحوصلة، الحوصلة الحامضة (خميرة)، عدوى بكتيريه، انضغاط." },
+      act: { en: "Stop solid food for 12 hours, warm water, vet — force-feeding an impacted crop makes it worse.",
+        ar: "أوقف الطعام الصلب 12 ساعة، ماء دافئ، وراجع الطبيب؛ الإكراه على الطعام في الانضغاط يزيده." } },
+    { k: "nerve", en: "twisting neck, staggering, falling off perch, seizure, circling",
+      ar: "التواء الرقبة، ترنح، يسقط من المجثم، تشنج، دوران، رقبة ملتوية",
+      urg: 3, cause: { en: "Newcastle/paramyxo, toxoplasmosis, head injury, deficiency.", ar: "نيوكاسل/باراميكسو، توكسوبلازما، إصابة رأس، نقص فيتامين." },
+      act: { en: "Padded low perch, quiet dark box, vet immediately; isolate other birds.",
+        ar: "مجثم واطئ مرفف، صندوق هادئ مظلم، طبيب فوراً، واعزل بقية الطيور." } },
+    { k: "limp", en: "not standing, lame, swollen joint, limping, foot sore, bumblefoot",
+      ar: "لا يقف، عرج، مفصل منتفخ، وجع القدم، دودة القدم",
+      urg: 2, cause: { en: "Bumblefoot from dirty or narrow perches, injury, gout.", ar: "دماملة من مجثم متسخ أو ضيق، إصابة، نقرس." },
+      act: { en: "Replace perch with soft rope, warm foot bath, clean and cover the foot daily, vet if there is a hard lump.",
+        ar: "بدّل المجثم بحبل ناعم، حمام قدم دافئ، نظف وغطِّ القدم يومياً، وراجع الطبيب إن ظهر كتلة صلبة." } },
+    { k: "moult", en: "losing feathers in spring, pin feathers, bald patch appearing symmetrically",
+      ar: "تساقط ريش في الربيع، ريش إبرة، صلع متناظر",
+      urg: 0, cause: { en: "Normal moult; need protein and calcium.", ar: "طق طبيعي؛ يحتاج بروتين وكالسيوم." },
+      act: { en: "Do not treat it as illness: add egg-food or legume protein, keep humidity, no handling of pin feathers.",
+        ar: "لا تعامله كمرض: أضف غذاء البيض أو بروتين بقولي، حافظ على الرطوبة، ولا تلمس ريش الإبرة." } },
+    { k: "poison", en: "poison, toxic, ate chocolate, avocado, onion, garlic, xylitol, Teflon, aerosol",
+      ar: "تسمم، أكل شوكولاته، أفوكادو، بصل، ثوم، زيليتول، تيفال، بخاخ",
+      urg: 3, cause: { en: "Avian toxins: avocado, chocolate, onion, xylitol, heated PTFE fumes, aerosols, lead, zinc.",
+        ar: "سموم الطيور: الأفوكادو، الشوكولاته، البصل، الزيليتول، أبخرة التيفال الساخن، البخاخات، الرصاص، الزنك." },
+      act: { en: "Remove the source, fresh air, keep warm, avian vet the same hour — do not induce vomiting at home.",
+        ar: "أبعد المصدر، هواء نقي، أبقه دافئاً، طبيب الطيور في نفس الساعة؛ لا تحث على القيء في البيت." } },
+    { k: "heat", en: "panting in heat, wings spread, weak in sun, hot car",
+      ar: "لهثان في الحر، نشر الجناحين، إعياء في الشمس، سيارة حارة",
+      urg: 3, cause: { en: "Heat stroke; birds above 35 C with no shade.", ar: "ضربة حر؛ الطيور فوق 35 مئوية بلا ظل." },
+      act: { en: "Move to shade, mist legs and wings with cool (not iced) water, fan the air, vet if it is still panting after ten minutes.",
+        ar: "انقله للظل، رش ساقيه وجناحيه بماء بارد (غير مثلج)، مروّج الهواء، وراجع الطبيب إن استمر اللهثان عشر دقائق." } },
+  ],
+  /* Arabic clitics (ال و ب ل) are folded off both sides, and a two-word sign
+     must appear whole: that is what keeps "ماذا يأكل؟" (what does it eat) from
+     reading as "لا يأكل" (not eating), while "ولا يأكل" still counts.
+     Three-word signs match on their distinctive word so that "open-mouthed
+     breathing" is found from "my bird is breathing hard". */
+  NEG: ["لا", "ليس", "لم", "لن", "غير", "بدون", "انعدام", "فقد", "not", "no", "never", "refuses", "stopped", "without", "cannot", "cant", "loss", "absent"],
+  /* Only the definite-article cluster and the conjunction و are stripped:
+     bare ب/ل/ف are part of real words here ("ببغاء" is a parrot, not "by-parrot") */
+  stripAr(w) { return w.replace(/^(وال|بال|فال|لل|ال|و)/, ""); },
+  toks(s) {
+    return this.norm(s).split(" ").map(x => this.stripAr(x)).filter(x => x.length > 1 && !this.STOP.has(x));
+  },
+  hits(t) {
+    /* t arrives already normalised from local(); re-normalising is a no-op for
+       a plain word, so a raw string passed directly still compares correctly */
+    const qset = new Set(this.toks(this.norm(t)));
+    const out = [];
+    for (const s of this.SYMPTOMS) {
+      let n = 0;
+      [s.en, s.ar].forEach(txt => String(txt).split(/[,;،؛]+/).forEach(p => {
+        const ws = this.toks(p);
+        if (!ws.length) return;
+        const present = ws.filter(w => qset.has(w));
+        const neg = ws.filter(w => this.NEG.includes(w));
+        const need = neg.length ? ws.length : (ws.length >= 3 ? 1 : ws.length);
+        const longest = present.length ? Math.max.apply(null, present.map(w => w.length)) : 0;
+        /* a three-word sign like "falling off perch" must not fire on the noun
+           "perch" alone, while a one-word sign like "ينزف" is enough by itself */
+        const min = ws.length === 1 ? 4 : 6;
+        if (present.length >= need && (need > 1 || longest >= min)) n++;
+      }));
+      if (n) out.push([s, n]);
+    }
+    return out.sort((a, b) => b[1] - a[1]).slice(0, 3);
+  },
+
+  /* ------------------------------------------------- whose health is it? --- */
+  aboutBird(q) {
+    const t = this.norm(q);
+    const mine = store.birds.all();
+    return mine.find(b => b.nick && t.includes(this.norm(b.nick))) || (mine.length === 1 ? mine[0] : null) || null;
+  },
+  trend(uid) {
+    const w = store.weights.all().filter(x => x.birdId === uid).map(x => num(x.grams)).filter(v => v > 0);
+    if (w.length < 2) return null;
+    const last = w[0], first = w[w.length - 1];
+    const pct = round(100 * (last - first) / first, 1);
+    return { n: w.length, pct, last, first, dir: pct < -3 ? "down" : pct > 3 ? "up" : "flat" };
+  },
+
+  /* ------------------------------------------------------ answer pieces --- */
+  URGENCY: [
+    { cls: "info", en: "Normal, not an emergency", ar: "طبيعي وليس حالة طارئة" },
+    { cls: "info", en: "Watch and treat at home", ar: "راقبه وعالجه في البيت" },
+    { cls: "warn", en: "See an avian vet within 24–48 hours", ar: "راجع طبيب طيور خلال 24–48 ساعة" },
+    { cls: "danger", en: "Emergency — a vet today, within hours", ar: "طارئ — طبيب اليوم، خلال ساعات" },
+  ],
+  langKey() { return I18N.lang === "ar" ? "ar" : "en"; },
+  pill(r) {
+    const nm = speciesName(r) || r.sci;
+    const href = r.atlas ? "#/birds?q=" + encodeURIComponent(r.sci) : "#/bird/" + r.id;
+    return `<a class="chip" href="${href}">${esc(nm)}</a>`;
+  },
+  facts(r) {
+    const g = GROUPS[r.g];
+    const rows = [[this.bi("Scientific name", "الاسم العلمي"), esc(r.sci)]];
+    if (r.origin) rows.push([this.bi("Origin", "الموطن"), esc(r.origin)]);
+    if (r.size) rows.push([this.bi("Size", "الحجم"), esc(r.size)]);
+    if (r.life) rows.push([this.bi("Lifespan in care", "العمر في الأسر"), esc(r.life)]);
+    if (g) rows.push([this.bi("Group", "الفصائل"), esc(g.en + " " + g.ar)]);
+    if (g && g.incDays) rows.push([this.bi("Incubation", "التحضين"), g.incDays + " " + this.bi("days", "يوم")]);
+    if (g && g.foodWeight) rows.push([this.bi("Daily food, typical bird", "الطعام اليومي لطائر نموذجي"), g.foodWeight + " g"]);
+    if (r.tip) rows.push([this.bi("Feeding note", "ملاحظة تغذية"), esc(r.tip)]);
+    TRAITS.forEach(([k]) => {
+      const v = k === "longevity" ? r.longevity : r[k];
+      if (v != null) rows.push([traitLabel(k), esc(String(v) + (k === "longevity" ? " " + this.bi("yrs", "سنة") : "/5"))]);
+    });
+    return rows;
+  },
+  kv(rows) {
+    return `<div class="table-wrap"><table>${rows.map(([a, b]) => `<tr><th>${esc(a)}</th><td>${b}</td></tr>`).join("")}</table></div>`;
+  },
+
+  ansTriage(q) {
+    const t = this.norm(q), hs = this.hits(t);
+    if (!hs.length) return null;
+    const bird = this.aboutBird(q), urg = Math.max.apply(null, hs.map(x => x[0].urg)), u = this.URGENCY[urg];
+    const out = [`<div class="banner ${u.cls}"><b>${esc(u[this.langKey()])}</b></div>`];
+    out.push(`<p class="hint">${esc(this.bi("Matched signs in your words: ", "العلامات المطابقة في كلماتك: "))}` +
+      hs.map(([s]) => `<span class="chip">${esc(this.bi(s.en.split(",")[0], s.ar.split("،")[0]))}</span>`).join(" ") + `</p>`);
+    if (bird) {
+      const tw = this.trend(bird.id), recs = store.symptoms.all().filter(s => s.birdId === bird.id), sp = byId(bird.speciesId);
+      let line = `<b>${esc(bird.nick)}</b>` + (sp ? " · " + esc(speciesName(sp)) : "");
+      line += tw ? (tw.dir === "down"
+        ? this.bi(` · weight down ${Math.abs(tw.pct)}% over ${tw.n} weigh-ins (${tw.first}→${tw.last} g)`,
+            ` · الوزن نزل ${Math.abs(tw.pct)}% عبر ${tw.n} قياسات (${tw.first}→${tw.last} غ)`)
+        : tw.dir === "up"
+          ? this.bi(` · weight up ${tw.pct}% (${tw.first}→${tw.last} g)`, ` · الوزن زاد ${tw.pct}% (${tw.first}→${tw.last} غ)`)
+          : this.bi(` · weight steady around ${tw.last} g`, ` · الوزن مستقر حول ${tw.last} غ`))
+        : this.bi(" · no weight log yet — weigh it today, weight is the earliest honest signal",
+            " · لا يوجد سجل وزن — زِنه اليوم، فالوزن أول إشارة صادقة");
+      if (recs.length) line += this.bi(` · ${recs.length} symptom notes, latest: `, ` · ${recs.length} ملاحظات عرض، آخرها: `) +
+        esc(String(recs[0].text || "").slice(0, 90));
+      out.push(`<p class="hint">${line}</p>`);
+      if (tw && tw.pct <= -6 && urg < 3) out.push(`<div class="banner warn">${esc(this.bi(
+        "A 6% drop in a small bird is not a rounding error — treat it as urgent.",
+        "نزول 6% عند طائر صغير ليس خطأ حسابياً — اعتبره حالة عاجلة."))}</div>`);
+    }
+    hs.forEach(([s], i) => {
+      out.push(`<h4>${i + 1}. ${esc(this.bi(s.en.split(",")[0], s.ar.split("،")[0]))} <span class="hint">${esc(this.URGENCY[s.urg][this.langKey()])}</span></h4>`);
+      out.push(`<p><b>${esc(this.bi("What it usually means", "غالباً يعني"))}:</b> ${esc(s.cause[this.langKey()])}</p>`);
+      out.push(`<p><b>${esc(this.bi("What to do", "ماذا تفعل"))}:</b> ${esc(s.act[this.langKey()])}</p>`);
+    });
+    out.push(`<p class="hint">${esc(this.bi(
+      "Rule of thumb: a bird that looks ill has been ill for days. Waiting to see whether it improves is how keepers lose one.",
+      "قاعدة عامة: الطائر الذي يبدو مريضاً هو مريض منذ أيام. الانتظار لنرى هل يتحسن هو كيف يفقد المربّون طيورهم."))}</p>`);
+    const links = store.birds.all().slice(0, 4).map(b => `<a class="chip" href="#/my-bird/${encodeURIComponent(b.id)}">${esc(b.nick)}</a>`).join(" ");
+    if (links) out.push(`<p class="hint">${esc(this.bi("Open the bird's log: ", "افتح سجل الطائر: "))}${links}</p>`);
+    return { kind: "triage", html: out.join(""), urg };
+  },
+
+  ansRecommend(q) {
+    const ws = this.wants(q);
+    if (!ws.length) return null;
+    const scored = SPECIES.map(b => {
+      let s = 0; const why = [];
+      ws.forEach(([, patch, label]) => {
+        Object.entries(patch).forEach(([k, v]) => {
+          if (k === "g") { if (v.includes(b.g)) { s += 2; why.push(GROUPS[b.g][this.langKey()]); } }
+          else if (k === "talk") { if (b.talk) { s += 3; why.push(this.bi("mimics sound", "يقلّد الصوت")); } }
+          else if (k === "sizeMax") { if (b.sizeMax <= v) { s += 2; why.push(this.bi("under " + v + " cm", "أقل من " + v + " سم")); } }
+          else if (k === "longevity") { if (b.longevity >= v[0] && b.longevity <= v[1]) { s += 2; why.push(this.bi(b.longevity + " yrs", b.longevity + " سنة")); } }
+          else if (Array.isArray(v)) {
+            const val = b[k];
+            if (val >= v[0] && val <= v[1]) { s += 2; why.push(traitLabel(k) + " " + val + "/5"); }
+            else s -= Math.min(3, val < v[0] ? v[0] - val : val - v[1]);
+          }
+        });
+      });
+      return { b, s, why: uniq(why).slice(0, 4) };
+    }).filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 4);
+    if (!scored.length) return { kind: "recommend", html: `<p class="hint">${esc(this.bi("I read your wish as: ", "قرأت رغبتك كـ: "))}` +
+      ws.map(w => `<span class="chip">${esc(w[2])}</span>`).join(" ") + " " + esc(this.bi(
+        "but nothing in the guide fits it exactly. The wizard asks instead of guessing.",
+        "لكن لا شيء في الدليل يطابقها تماماً. المعالج يسألك بدل أن يخمّن.")) + `</p>` };
+    return { kind: "recommend", html: `<p class="hint">${esc(this.bi("Matched wish: ", "الرغبة المطابقة: "))}` +
+      ws.map(w => `<span class="chip">${esc(w[2])}</span>`).join(" ") + `</p>` +
+      scored.map(x => `<div class="row"><a href="#/bird/${x.b.id}"><b>${esc(speciesName(x.b))}</b></a>` +
+        `<span class="hint">${esc(x.why.join(" · "))}</span><span class="chip">${x.s}</span></div>`).join("") +
+      `<p class="hint">${esc(this.bi(
+        "Ranked on the trait table of the curated species only — atlas entries carry names, classification and pictures, not husbandry scores.",
+        "الترتيب على جدول صفات الأنواع المنتقاة وحدها — مدخلات الأطلس تحمل اسماً وتصنيفاً وصورة، لا درجات عناية."))}</p>` };
+  },
+
+  findSpecies(q) {
+    const t = this.norm(q);
+    const hit = SPECIES.filter(b => (b.en && t.includes(this.norm(b.en))) ||
+      (b.ar && this.norm(b.ar).length > 3 && t.includes(this.norm(b.ar))) ||
+      (b.sci && this.norm(b.sci).length > 5 && t.includes(this.norm(b.sci))));
+    if (hit.length) return hit.slice(0, 2);
+    /* clitics differ between "الببغاء" and the stored "ببغاء", so compare
+       de-prefixed name words instead of raw substrings */
+    const qset = new Set(this.toks(q));
+    const phrase = SPECIES.filter(b => [b.ar, b.en].filter(Boolean)
+      .some(n => { const ws = this.toks(n); return ws.length && ws.length <= 3 && ws.every(w => qset.has(w)); }));
+    if (phrase.length) return phrase.slice(0, 2);
+    /* "budgies" is not a substring of "budgerigar", so a shared five-letter
+       stem is tried before falling back to the semantic index */
+    const deplural = w => (w.length >= 5 && /s$/.test(w) ? w.slice(0, -1) : w);
+    const qt = this.norm(q).split(" ").filter(w => w.length > 4 && !this.STOP.has(w)).map(deplural);
+    const stem = SPECIES.filter(b => {
+      const ws = this.norm([b.en, b.ar, b.sci].filter(Boolean).join(" ")).split(" ").filter(w => w.length > 4).map(deplural);
+      return qt.some(x => ws.some(w => x.slice(0, 5) === w.slice(0, 5)));
+    });
+    if (stem.length) return stem.slice(0, 2);
+    const sem = this.semantic(q, 2).map(x => x.r).filter(Boolean);
+    const atl = Atlas.match(q, 2).filter(a => !sem.some(s => s.sci === a.sci));
+    return sem.concat(atl).slice(0, 2);
+  },
+  ansFacts(q) {
+    const rs = this.findSpecies(q);
+    if (!rs.length) return null;
+    return { kind: "facts", html: rs.map(r => `<h4>${esc(speciesName(r))} <span class="hint">${esc(r.sci)}</span></h4>` +
+      this.kv(this.facts(r)) + (r.atlas ? `<p class="hint">${esc(this.bi(
+        "Atlas entry: name, classification and picture only — husbandry numbers are not verified for it.",
+        "مدخل أطلس: اسم وتصنيف وصورة فقط — أرقام العناية غير موثّقة له."))}</p>` : "")).join("") };
+  },
+  ansCompare(q) {
+    if (!/(compare|versus|\bvs\b|difference|better than|مقارن|قارن|فرق|ايهما|أيهما|افضل من|خير من)/i.test(q)) return null;
+    const rs = this.findSpecies(q).slice(0, 2);
+    if (rs.length < 2) { const sem = this.semantic(q, 2).map(x => x.r); if (sem.length >= 2) rs.push.apply(rs, sem.slice(rs.length, 2)); }
+    if (rs.length < 2) return null;
+    const head = `<tr><th></th>${rs.map(r => `<th>${esc(speciesName(r))}</th>`).join("")}</tr>`;
+    const body = TRAITS.map(([k]) => `<tr><th>${esc(traitLabel(k))}</th>${rs.map(r =>
+      `<td>${r[k] != null ? r[k] : "—"}</td>`).join("")}</tr>`).join("");
+    const lbl = { size: ["Size", "الحجم"], life: ["Lifespan", "العمر"], origin: ["Origin", "الموطن"], tip: ["Feeding note", "ملاحظة تغذية"] };
+    const extra = Object.keys(lbl).map(f => `<tr><th>${esc(this.bi(lbl[f][0], lbl[f][1]))}</th>${rs.map(r =>
+      `<td>${esc(r[f] || "—")}</td>`).join("")}</tr>`).join("");
+    return { kind: "compare", html: `<div class="table-wrap"><table>${head}${body}${extra}</table></div>` };
+  },
+  ansSearch(q) {
+    const hits = this.semantic(q, 7);
+    if (!hits.length) return null;
+    return { kind: "search", html: `<p class="hint">${esc(this.bi(
+      "Closest matches in the data on this device, by word weight:",
+      "أقرب المطابقات في بيانات هذا الجهاز، بترجيح الكلمات:"))}</p>` +
+      hits.map(x => `<div class="row">${this.pill(x.r)}<span class="chip">${round(x.s, 2)}</span></div>`).join("") };
+  },
+  HELP() {
+    const ex = [["Why is my bird fluffed up and not eating?", "لماذا طائري منفش الريش ولا يأكل؟"],
+      ["A quiet small cheap bird for an apartment", "طائر صغير هادئ رخيص للشقة"],
+      ["How long do budgies live and what do they eat?", "كم يعيش الاسترالي وماذا يأكل؟"],
+      ["Compare canary and zebra finch", "قارن بين الكناري والزيبرا"]];
+    const pick = I18N.lang === "ar" ? 1 : 0;
+    return `<p class="hint">${esc(this.bi("Ask in your own words. Some things it answers well:", "اسلوبك مقبول. أمثلة تجيب عنها جيداً:"))}</p>` +
+      `<ul>${ex.map(e => `<li><button class="btn ghost sm qex" data-q="${esc(e[pick])}">${esc(e[pick])}</button></li>`).join("")}</ul>`;
+  },
+  /* "how long does X live, what does X eat" is a facts question even when the
+     sentence also contains a symptom word ("يأكل" matches "لا يأكل"), so the
+     fact intent is detected first and reorders the answer chain */
+  FACTINT: /(how long|lifespan|life span|what (does|do|can|should).*?(eat|feed|given)|can .*?eat|where .*?live|how big|how (much|heavy)|when .*?(breed|lay|hatch)|do they|are they|كم (يعيش|تعيش|يبلغ|تبلغ|وزن|تكلف|يستغرق)|ماذا (ياكل|يات|يطعم|يفعل)|اين (يعيش|تعيش)|متى (يتكاثر|تضع|يفقس)|هل (ياكل|يات|يتكلم|يمكن))/i,
+  factIntent(q) { return this.FACTINT.test(this.norm(q)); },
+  local(q) {
+    const chain = this.factIntent(q)
+      ? [this.ansFacts, this.ansCompare, this.ansTriage, this.ansRecommend, this.ansSearch]
+      : [this.ansTriage, this.ansRecommend, this.ansCompare, this.ansFacts, this.ansSearch];
+    for (const fn of chain) {
+      const ans = fn.call(this, q);
+      if (ans) { ans.engine = "local"; return ans; }
+    }
+    return { kind: "help", engine: "local", html: this.HELP() };
+  },
+
+  /* ------------------------------------------------ cloud bridge (opt-in) */
+  cfg() {
+    const s = store.settings;
+    return { base: (s.aiBase || "").trim().replace(/\/+$/, ""), key: (s.aiKey || "").trim(), model: (s.aiModel || "").trim() };
+  },
+  cloudOn() { const c = this.cfg(); return !!(c.base && c.model); },
+  pack(q) {
+    const bits = [], bird = this.aboutBird(q);
+    if (bird) {
+      const sp = byId(bird.speciesId), tw = this.trend(bird.id);
+      const recs = store.symptoms.all().filter(s => s.birdId === bird.id);
+      bits.push(this.bi("My bird ", "طائري ") + bird.nick + ": " +
+        (sp ? speciesName(sp) + " (" + sp.sci + ")" : this.bi("species unknown", "النوع غير معروف")) +
+        (tw ? this.bi(`, weight ${tw.first}→${tw.last} g over ${tw.n} weigh-ins`, `، الوزن ${tw.first}→${tw.last} غ عبر ${tw.n} قياسات`)
+          : this.bi(", no weight logged", ", لا وزن مسجل")) +
+        this.bi(`, ${recs.length} symptom notes`, `، ${recs.length} ملاحظات عرض`) +
+        (recs[0] ? ": " + String(recs[0].text).slice(0, 160) : ""));
+    }
+    this.semantic(q, 5).forEach(x => {
+      const r = x.r;
+      bits.push([speciesName(r) || r.sci, r.sci, r.origin, r.size, r.life, r.tip,
+        r.g ? GROUPS[r.g].en : "",
+        r.noise != null ? `noise ${r.noise}/5 difficulty ${r.difficulty}/5 cost ${r.cost}/5 sociability ${r.sociability}/5 space ${r.space}/5` : ""]
+        .filter(Boolean).join(" | "));
+    });
+    const hs = this.hits(this.norm(q));
+    if (hs.length) bits.push(this.bi("Local triage: ", "فرز محلي: ") +
+      this.URGENCY[Math.max.apply(null, hs.map(x => x[0].urg))][this.langKey()]);
+    return bits.join("\n");
+  },
+  sys(q) {
+    const L = I18N.lang === "ar"
+      ? "أنت مساعد تربية الطيور داخل دليل يعمل بلا إنترنت. أجب بالعربية في أقل من 180 كلمة، نصاً واضحاً، دون اختلاق حقائق عن الأنواع. " +
+        "استخدم كتلة الأدلة المحلية أدناه فقط؛ وما لا تغطِّه قل إنك غير متأكد منه. لا تخترع أسعاراً ولا جرعات دواء ولا أحكاماً قانونية. " +
+        "عند أي احتمال طارئ اذكر زيارة طبيب طيور وأعطِ الإجراء الآمن المؤقت. الأدلة:\n"
+      : "You are the bird-keeping assistant inside an offline-first guide. Answer in English, under 180 words, plain prose, no invented species facts. " +
+        "Rely only on the local evidence block below; where it is silent, say you are unsure. Never invent prices, drug doses or legal claims. " +
+        "For anything that could be an emergency, name an avian vet and give the safe interim step. Evidence:\n";
+    return L + this.pack(q) + "\n" + (I18N.lang === "ar" ? "سؤال المستخدم: " : "User question: ") + q;
+  },
+  async stream(q, onToken, signal) {
+    const c = this.cfg();
+    if (!c.base || !c.model) throw new Error(this.bi("No model configured in Settings.", "لم تُضبط نموذج في الإعدادات."));
+    const url = /chat\/completions$/.test(c.base) ? c.base : c.base + "/chat/completions";
+    const headers = { "Content-Type": "application/json", "Accept": "text/event-stream" };
+    if (c.key) headers["Authorization"] = "Bearer " + c.key;
+    const res = await fetch(url, {
+      method: "POST", headers, signal,
+      body: JSON.stringify({ model: c.model, stream: true, temperature: 0.3,
+        messages: [{ role: "system", content: this.sys(q) }, { role: "user", content: q }] })
+    });
+    if (!res.ok || !res.body) {
+      let txt = ""; try { txt = String(await res.text() || "").slice(0, 180); } catch { /* opaque error body */ }
+      throw new Error("HTTP " + res.status + (txt ? " — " + txt : ""));
+    }
+    const rd = res.body.getReader(), dec = new TextDecoder();
+    let buf = "", got = 0;
+    for (;;) {
+      const r = await rd.read();
+      if (r.done) break;
+      buf += dec.decode(r.value, { stream: true });
+      const lines = buf.split("\n"); buf = lines.pop();
+      for (const raw of lines) {
+        const line = raw.trim();
+        if (line.indexOf("data:") !== 0) continue;
+        const js = line.slice(5).trim();
+        if (js === "[DONE]") return got;
+        try {
+          const o = JSON.parse(js);
+          const ch = (o.choices || [])[0];
+          const d = ch && ((ch.delta && ch.delta.content) || (ch.message && ch.message.content)) || "";
+          if (d) { got += d.length; onToken(d); }
+        } catch { /* keep-alive or partial frame */ }
+      }
+    }
+    return got;
+  },
+};
+
 /* ----------------------------------------------------------- SEARCH ENGINE */
 function fuzzyScore(query, text) {
   const q = query.toLowerCase().trim(), t = (text || "").toLowerCase();
@@ -1307,10 +2521,12 @@ const app = $("#app");
 const ROUTES = [
   ["#/", "home"], ["#/birds", "browse"], ["#/bird/", "detail"], ["#/find", "wizard"],
   ["#/my-birds", "birds"], ["#/my-bird/", "bird"], ["#/sightings", "sightings"],
-  ["#/learn", "learn"], ["#/settings", "settings"],
+  ["#/learn", "learn"], ["#/atlas", "atlas"], ["#/identify", "identify"], ["#/ai", "ai"],
+  ["#/settings", "settings"],
 ];
 const NAV = [["#/", "nav_home"], ["#/birds", "nav_birds"], ["#/find", "nav_wizard"],
-  ["#/my-birds", "nav_mybirds"], ["#/sightings", "nav_sightings"], ["#/learn", "nav_learn"], ["#/settings", "nav_settings"]];
+  ["#/my-birds", "nav_mybirds"], ["#/sightings", "nav_sightings"], ["#/atlas", "nav_atlas"],
+  ["#/identify", "nav_id"], ["#/ai", "nav_ai"], ["#/learn", "nav_learn"], ["#/settings", "nav_settings"]];
 
 function renderNav() {
   $("#nav").innerHTML = NAV.map(([href, k]) => {
@@ -1375,6 +2591,16 @@ function viewHome() {
   </section>
 
   ${statCards()}
+
+  <section class="panel">
+    <h2>${esc(tr("caps_h"))}</h2>
+    <div class="grid">
+      ${[["#/atlas", "🌍", "feat_atlas", "feat_atlas_d"], ["#/identify", "🎙️", "feat_id", "feat_id_d"],
+         ["#/ai", "🤖", "feat_ai", "feat_ai_d"]]
+        .map(([href, e, t, d]) => `<div class="feat"><span style="font-size:1.7rem">${e}</span>
+          <div><b>${esc(tr(t))}</b><p>${esc(tr(d))}</p><a href="${href}">${esc(tr("open"))} →</a></div></div>`).join("")}
+    </div>
+  </section>
 
   <section class="panel">
     <div class="row" style="align-items:flex-start">
@@ -1448,7 +2674,8 @@ function viewBrowse() {
     </details>
   </section>
   <div class="row"><span class="hint" id="count"></span></div>
-  <div class="grid" id="grid"></div>`;
+  <div class="grid" id="grid"></div>
+  <div id="atPool"></div>`;
 
   const draw = () => {
     f.q = $("#q").value;
@@ -1456,6 +2683,10 @@ function viewBrowse() {
     $("#grid").innerHTML = items.length ? items.map(cardHTML).join("")
       : `<div class="empty" style="grid-column:1/-1"><b>🪶</b>${esc(tr("no_results"))}<br><span class="hint">${esc(tr("try_wide"))}</span></div>`;
     $("#count").textContent = items.length + " / " + SPECIES.length;
+    /* atlas matches stay in their own panel: they have no care traits to rank
+       or display, and mixing them into the grid would imply data we do not have */
+    $("#atPool").innerHTML = (store.settings.includeAtlas && f.q.trim() && Atlas.rows.length)
+      ? atlasList(Atlas.match(f.q.trim(), 24), tr("atlas_include")) : "";
     hydrateCards($("#grid"));
     $("#o-size").textContent = f.size[1] + " cm"; $("#o-life").textContent = f.life[1] + " yr";
     $("#o-noise").textContent = "≤" + f.noise[1]; $("#o-diff").textContent = "≤" + f.difficulty[1]; $("#o-cost").textContent = "≤" + f.cost[1];
@@ -1483,6 +2714,9 @@ function viewBrowse() {
   });
   $("#voice").onclick = () => startVoice(t => { $("#q").value = t; draw(); });
   draw(); drawSaved(); wireCatalogueClicks(app);
+  if (store.settings.includeAtlas) Atlas.load().then(rows => {
+    if (rows.length && location.hash.startsWith("#/birds")) draw();
+  });
 }
 
 function startVoice(apply) {
@@ -1496,6 +2730,7 @@ function startVoice(apply) {
 }
 
 function wireCatalogueClicks(root) {
+  on(root, "click", "[data-asight]", (e, n) => logSighting(Atlas.get(n.dataset.asight) || { sci: n.dataset.asight }));
   on(root, "click", "[data-fav]", (e, n) => {
     e.preventDefault();
     const on = toggleFav(n.dataset.fav);
@@ -1948,7 +3183,7 @@ function logSighting(species) {
     <div><label>${esc(tr("nav_birds"))}</label><select name="speciesId" required>
       <option value="">—</option>
       ${SPECIES.map(b => `<option value="${b.id}"${species && b.id === species.id ? " selected" : ""}>${esc(b.en)} · ${esc(b.sci)}</option>`).join("")}
-      ${species && !byId(species.id) ? `<option value="" selected>${esc(species.en)}</option>` : ""}</select></div>
+      ${species && !byId(species.id) ? `<option value="${esc(species.id || "")}" selected>${esc(species.en || species.sci)}</option>` : ""}</select></div>
     <div class="filters">
       <div><label>${esc(tr("s_date"))}</label><input type="date" name="date" value="${today}"></div>
       <div><label>${esc(tr("s_lat"))}</label><input type="number" step="0.0001" name="lat" id="sLat" placeholder="0.0000"></div>
@@ -1971,9 +3206,13 @@ function logSighting(species) {
     e.preventDefault();
     const fd = Object.fromEntries(new FormData(e.target));
     const file = $("#sPhoto").files[0];
+    const who = byId(fd.speciesId) || species || null;
     const row = store.sightings.add({
       speciesId: fd.speciesId || (species && species.id) || "",
-      species: (byId(fd.speciesId) || species || {}).en || "Unknown",
+      /* atlas species have no guide id, so the Latin name is what keeps the
+         sighting findable after the atlas data is deleted */
+      species: (who && (who.en || who.ar)) || (who && who.sci) || "Unknown",
+      sci: (who && who.sci) || "",
       date: fd.date ? new Date(fd.date).toISOString() : new Date().toISOString(),
       lat: fd.lat === "" ? null : num(fd.lat), lng: fd.lng === "" ? null : num(fd.lng),
       notes: fd.notes || "",
@@ -2157,8 +3396,9 @@ async function storageInfo() {
   return { used, quota, local: local * 2 };
 }
 function exportBackup() {
-  /* API keys never leave the device, even in a user-initiated backup. */
-  const settings = { ...store.settings, xenoKey: "" };
+  /* API keys never leave the device, even in a user-initiated backup: the
+     Xeno-canto key and the model key are both stripped here. */
+  const settings = { ...store.settings, xenoKey: "", aiKey: "" };
   return JSON.stringify({ app: "birds-world", version: CFG.VERSION, at: new Date().toISOString(),
     settings, favorites: Array.from(store.favs), notes: store.notes,
     visits: Array.from(store.visits), birds: store.birds.all(), sightings: store.sightings.all(),
@@ -2168,9 +3408,11 @@ function exportBackup() {
 function importBackup(text) {
   const d = JSON.parse(text);
   if (!d || d.app !== "birds-world") throw new Error("unrecognised file");
-  const keepKey = store.settings.xenoKey;
+  const keepKey = store.settings.xenoKey, keepAi = store.settings.aiKey;
   Object.assign(store.settings, d.settings || {});
   store.settings.xenoKey = d.settings && d.settings.xenoKey ? d.settings.xenoKey : keepKey;
+  store.settings.aiKey = d.settings && d.settings.aiKey ? d.settings.aiKey : keepAi;
+  AI.invalidate();
   store.favs = new Set(d.favorites || []); store.notes = d.notes || {}; store.visits = new Set(d.visits || []);
   store.birds.items = d.birds || []; store.sightings.items = d.sightings || [];
   store.tasks.items = d.tasks || []; store.weights.items = d.weights || []; store.symptoms.items = d.symptoms || [];
@@ -2205,6 +3447,24 @@ function viewSettings() {
       <div class="kv"><span>${esc(tr("last_sync"))}</span>${s.lastSync ? esc(fmtDate(new Date(s.lastSync).toISOString())) : "—"}</div>
       <div class="kv"><span>Wiki / Commons cache</span>${cachedJSON.mem.size}</div></div></section>
 
+  <section class="panel"><h2>🤖 ${esc(tr("ai_h"))}</h2>
+    <div class="filters">
+      <div><label>${esc(tr("ai_base"))}</label><input id="setAiBase" placeholder="https://api.openai.com/v1" value="${esc(s.aiBase || "")}" autocomplete="off"></div>
+      <div><label>${esc(tr("ai_model"))}</label><input id="setAiModel" placeholder="gpt-4o-mini" value="${esc(s.aiModel || "")}" autocomplete="off"></div>
+      <div><label>${esc(tr("ai_key"))}</label><input id="setAiKey" type="password" value="${esc(s.aiKey || "")}" autocomplete="off"></div>
+    </div>
+    <div class="row" style="margin-top:var(--s-3)"><button class="btn" id="setAiSave">${esc(tr("save"))}</button>
+      <button class="btn ghost" id="setAiClear">${esc(tr("clear"))}</button></div>
+    <p class="hint">${esc(tr("ai_cloud_hint"))} ${esc(tr("ai_strip"))}</p></section>
+
+  <section class="panel"><h2>🌍 ${esc(tr("atlas_h"))}</h2>
+    <label class="inline"><input type="checkbox" id="setAtlasInc" ${s.includeAtlas ? "checked" : ""}> ${esc(tr("atlas_include"))}</label>
+    <div class="row" style="margin-top:var(--s-3)"><label style="min-width:150px">${esc(tr("atlas_cap"))}</label>
+      <div class="rng"><input type="range" id="setAtlasCap" min="200" max="${CFG.ATLAS.maxCap}" step="200" value="${s.atlasCap || CFG.ATLAS.defaultCap}">
+        <output id="capOut">${s.atlasCap || CFG.ATLAS.defaultCap}</output></div></div>
+    <div class="row" style="margin-top:var(--s-3)"><button class="btn" id="setAtlasSave">${esc(tr("save"))}</button></div>
+    <p class="hint">${esc(tr("atlas_source"))}</p></section>
+
   <section class="panel"><h2>💾 ${esc(tr("storage"))}</h2>
     <div id="storageBox" class="hint">…</div>
     <div class="row" style="margin-top:var(--s-3)">
@@ -2228,6 +3488,23 @@ function viewSettings() {
     toast(remote.enabled() ? tr("remote_ok") : "Local mode", "ok"); viewSettings();
   };
   $("#syncNow").onclick = async () => { await remote.syncAll(); viewSettings(); };
+  $("#setAiSave").onclick = () => {
+    s.aiBase = $("#setAiBase").value.trim().replace(/\/+$/, "");
+    s.aiModel = $("#setAiModel").value.trim();
+    s.aiKey = $("#setAiKey").value.trim();
+    store.persist();
+    toast(AI.cloudOn() ? tr("ai_cloud") : tr("ai_local"), "ok"); viewSettings();
+  };
+  $("#setAiClear").onclick = () => {
+    s.aiBase = ""; s.aiKey = ""; s.aiModel = ""; store.persist();
+    AI.invalidate(); toast(tr("ai_local"), "ok"); viewSettings();
+  };
+  $("#setAtlasCap").oninput = e => { $("#capOut").textContent = e.target.value; };
+  $("#setAtlasSave").onclick = () => {
+    s.includeAtlas = $("#setAtlasInc").checked;
+    s.atlasCap = clamp(+$("#setAtlasCap").value || CFG.ATLAS.defaultCap, 200, CFG.ATLAS.maxCap);
+    store.persist(); AI.invalidate(); toast(tr("note_saved"), "ok");
+  };
   $("#expAll").onclick = () => download("birds-world-backup.json", exportBackup());
   $("#impFile").onchange = e => {
     const f = e.target.files[0]; if (!f) return;
@@ -2248,6 +3525,326 @@ function viewSettings() {
 }
 
 /* ---------------------------------------------------------------- 9. ROUTER */
+/* Atlas rows carry no care traits, so they render as a compact list and a
+   facts page of their own rather than as guide cards with invented numbers. */
+function atlasList(rows, note) {
+  if (!rows.length) return "";
+  return `<section class="panel"><h2>🌍 ${esc(tr("atlas_row"))}</h2>
+    <p class="hint">${esc(note || tr("atlas_sub"))}</p>
+    <div class="stack" style="margin-top:var(--s-3)">${rows.slice(0, CFG.MAX_CARDS * 6).map(r => `<div class="row arow">
+      ${r.img ? `<img loading="lazy" src="${esc(r.img)}" alt="" width="46" height="46" onerror="this.hidden=true" style="object-fit:cover;border-radius:8px">`
+        : `<span class="chip">${esc(tr("atlas_noimg"))}</span>`}
+      <div style="flex:1;min-width:0"><b><a href="#/atlas/${encodeURIComponent(r.sci)}">${esc(speciesName(r) || r.sci)}</a></b>
+        <div class="hint"><i>${esc(r.sci)}</i> · ${esc(r.family || "")}${r.order ? " · " + esc(r.order) : ""}</div></div>
+      <button class="btn sm ghost" data-asight="${esc(r.sci)}">📍 ${esc(tr("atlas_promote"))}</button></div>`).join("")}</div></section>`;
+}
+
+function viewAtlasSpecies(sci) {
+  const r = Atlas.get(sci);
+  if (!r) { app.innerHTML = `<div class="panel banner warn">${esc(tr("atlas_none"))}</div>`; return; }
+  document.title = (speciesName(r) || r.sci) + " — Birds World";
+  const links = [["Wikidata", "https://www.wikidata.org/wiki/" + (r.wd || ""), r.wd],
+    ["Wikipedia", "https://en.wikipedia.org/wiki/" + encodeURIComponent(r.sci), true],
+    ["GBIF", "https://www.gbif.org/species/" + r.gbif, !!r.gbif],
+    ["Commons", "https://commons.wikimedia.org/wiki/Special:Search?search=" + encodeURIComponent(r.sci), true]]
+    .filter(x => x[2]).map(([n, u]) => `<a class="chip" href="${esc(u)}" target="_blank" rel="noopener">${esc(n)} ↗</a>`).join("");
+  app.innerHTML = `<section class="panel">
+    <div class="row" style="align-items:flex-start">
+      <div class="thumb" style="width:180px;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;background:var(--surface-2);display:grid;place-items:center;font-size:3rem">
+        ${r.img ? `<img src="${esc(r.img)}" alt="" style="width:100%;height:100%;object-fit:cover">` : "🐦"}</div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:2px">${esc(speciesName(r) || r.sci)}</h2>
+        <p class="hint"><i>${esc(r.sci)}</i></p>
+        <div class="row">${links}</div>
+        <div class="row" style="margin-top:var(--s-3)">
+          <button class="btn sm" data-asight="${esc(r.sci)}">📍 ${esc(tr("atlas_promote"))}</button>
+          <a class="btn sm ghost" href="#/identify">🎙️ ${esc(tr("id_against"))}</a>
+          <a class="btn sm ghost" href="#/birds">← ${esc(tr("nav_birds"))}</a></div>
+      </div></div>
+    <p class="hint" style="margin-top:var(--s-3)">${esc(tr("atlas_source"))}</p></section>
+
+    <section class="panel"><h2>${esc(tr("atlas_tax"))}</h2>
+    <div class="kb">
+      <div class="kv"><span>${esc(tr("tax_order"))}</span><b>${esc(r.order || "—")}</b></div>
+      <div class="kv"><span>${esc(tr("tax_family"))}</span><b>${esc(r.family || "—")}</b></div>
+      <div class="kv"><span>${esc(tr("tax_genus"))}</span><b>${esc(r.genus || "—")}</b></div>
+      <div class="kv"><span>GBIF</span><b>${esc(String(r.gbif || "—"))}</b></div></div></section>`;
+  wireCatalogueClicks(app);
+}
+
+/* ------------------------------------------------------------ ATLAS VIEW */
+async function viewAtlas() {
+  document.title = tr("atlas_h") + " — Birds World";
+  await Atlas.load();
+  const st = await Atlas.stats();
+  app.innerHTML = `<section class="panel"><h2>🌍 ${esc(tr("atlas_h"))}</h2>
+    <p class="hint">${esc(tr("atlas_sub"))}</p>
+    <div class="kb" style="margin-top:var(--s-3)">
+      <div class="kv"><span>${esc(tr("atlas_have"))}</span><b id="atN">${st.n}</b></div>
+      <div class="kv"><span>${esc(tr("atlas_enrich"))}</span><b id="atAr">${st.withAr} / ${st.n}</b></div>
+      <div class="kv"><span>${esc(tr("photo"))}</span><b id="atImg">${st.withImg}</b></div>
+      <div class="kv"><span>${esc(tr("atlas_tax"))}</span><b id="atFam">${st.fams}</b></div></div>
+    <div class="row" style="margin-top:var(--s-3)">
+      <label style="min-width:150px">${esc(tr("atlas_cap"))}</label>
+      <div class="rng"><input type="range" id="atCap" min="200" max="${CFG.ATLAS.maxCap}" step="200"
+        value="${store.settings.atlasCap || CFG.ATLAS.defaultCap}"><output id="atCapOut">${store.settings.atlasCap || CFG.ATLAS.defaultCap}</output></div>
+      <button class="btn" id="atRun">⬇ ${esc(tr("atlas_start"))}</button>
+      <button class="btn ghost" id="atStop" disabled>■ ${esc(tr("atlas_stop"))}</button>
+      <span class="spacer"></span>
+      <button class="btn danger ghost" id="atClear">🗑 ${esc(tr("atlas_clear"))}</button></div>
+    <div class="bar" id="atBar" hidden><i id="atBarIn" style="width:0%"></i></div>
+    <p class="hint" id="atNote">${esc(tr("atlas_source"))}</p></section>
+
+  <section class="panel"><h2>${esc(tr("search"))}</h2>
+    <div class="row"><input id="atQ" placeholder="${esc(tr("search_ph"))}" style="flex:1;min-width:220px">
+      <span class="hint" id="atCount">${st.n ? Atlas.count() : ""}</span></div>
+    <div id="atList" class="stack">${st.n ? "" : `<div class="empty"><b>🌍</b>${esc(tr("atlas_none"))}</div>`}</div>
+    <p class="hint" style="margin-top:var(--s-3)">${esc(tr("atlas_include"))}:
+      <label class="inline"><input type="checkbox" id="atInc" ${store.settings.includeAtlas ? "checked" : ""}> ${esc(tr("yes"))}</label></p>
+    </section>`;
+
+  const note = $("#atNote"), prog = st2 => {
+    const bar = $("#atBar"), inn = $("#atBarIn");
+    if (!bar || !inn) return;
+    const p = st2.cap ? clamp(st2.pulled / st2.cap, 0, 1) : 0;
+    bar.hidden = !st2.running;
+    inn.style.width = Math.round(p * 100) + "%";
+    note.textContent = st2.running ? tr("atlas_running") + " " + st2.pulled + "/" + st2.cap +
+      (st2.fam ? " · " + st2.fam : "") : (st2.note || tr("atlas_done"));
+  };
+  $("#atCap").oninput = e => { $("#atCapOut").textContent = e.target.value; };
+  $("#atInc").onchange = e => { store.settings.includeAtlas = e.target.checked; store.persist(); AI.invalidate(); toast(tr("note_saved"), "ok"); };
+  $("#atRun").onclick = async () => {
+    $("#atRun").disabled = true; $("#atStop").disabled = false;
+    store.settings.atlasCap = +$("#atCap").value; store.persist();
+    const r = await Atlas.run({ cap: +$("#atCap").value, enrich: true, onProg: prog });
+    AI.invalidate();
+    const nEl = $("#atN");
+    if (!nEl) { toast(tr("atlas_enriched") + " " + r.added, "ok", 3600); route(); return; }
+    $("#atRun").disabled = false; $("#atStop").disabled = true;
+    toast(tr("atlas_enriched") + " " + r.added, "ok", 3600);
+    const s2 = await Atlas.stats();
+    nEl.textContent = s2.n; $("#atAr").textContent = s2.withAr + " / " + s2.n;
+    $("#atImg").textContent = s2.withImg; $("#atFam").textContent = s2.fams;
+    note.textContent = Atlas.state.note || tr("atlas_done"); $("#atBar").hidden = true;
+    draw($("#atQ").value);
+  };
+  $("#atStop").onclick = () => { Atlas.stop(); };
+  $("#atClear").onclick = async () => {
+    if (!confirmDlg(tr("atlas_clear") + "?")) return;
+    await Atlas.clear(); AI.invalidate(); toast(tr("atlas_cleared"), "info"); viewAtlas();
+  };
+  const rowsHTML = rows => rows.slice(0, 60).map(r => `<div class="row arow" data-sci="${esc(r.sci)}">
+      ${r.img ? `<img loading="lazy" src="${esc(r.img)}" alt="" width="46" height="46" onerror="this.hidden=true" style="object-fit:cover;border-radius:8px">` : `<span class="chip">${esc(tr("atlas_noimg"))}</span>`}
+      <div style="flex:1;min-width:0"><b><a href="#/atlas/${encodeURIComponent(r.sci)}">${esc(speciesName(r) || r.sci)}</a></b>
+        <div class="hint">${esc(r.sci)} · ${esc(r.family || "")}${r.order ? " · " + esc(r.order) : ""}</div></div>
+      <button class="btn sm ghost" data-sight="${esc(r.sci)}">📍 ${esc(tr("atlas_promote"))}</button></div>`).join("");
+  const draw = q => {
+    const all = Atlas.rows;
+    const list = all.length ? (q.trim() ? Atlas.match(q, 60)
+      : all.slice().sort((a, b) => String(speciesName(a) || a.sci).localeCompare(String(speciesName(b) || b.sci))).slice(0, 60)) : [];
+    $("#atList").innerHTML = list.length ? rowsHTML(list) : `<div class="empty"><b>🔍</b>${esc(tr("no_results"))}</div>`;
+    $("#atCount").textContent = String(list.length);
+  };
+  $("#atQ").oninput = e => draw(e.target.value);
+  on(app, "click", "[data-sight]", (e, n) => logSighting(Atlas.get(n.dataset.sight) || { sci: n.dataset.sight }));
+  if (Atlas.rows.length) draw("");
+}
+
+/* ------------------------------------------------------- SOUND ID VIEW */
+async function viewIdentify() {
+  document.title = tr("nav_id") + " — Birds World";
+  await Atlas.load();
+  const es = await Acoustic.entries();
+  app.innerHTML = `<section class="panel"><h2>🎙️ ${esc(tr("id_h"))}</h2>
+    <p class="hint">${esc(tr("id_sub"))}</p>
+    <div class="row" style="margin-top:var(--s-3)">
+      <button class="btn" id="idRec">🎙 ${esc(tr("id_rec"))}</button>
+      <label class="btn ghost" style="cursor:pointer">📁 ${esc(tr("id_fromfile"))}
+        <input type="file" id="idFile" accept="audio/*" hidden></label>
+      <button class="btn ghost" id="idTest">🧪 ${esc(tr("id_test"))}</button>
+      <span class="spacer"></span><span class="hint" id="idTime"></span></div>
+    <canvas id="idSpec" class="wave" height="150" aria-label="${esc(tr("id_feats"))}"></canvas>
+    <div id="idOut" class="stack" style="margin-top:var(--s-3)"></div></section>
+
+  <section class="panel"><h2>📚 ${esc(tr("id_lib"))}</h2>
+    <div class="row"><label style="min-width:130px">${esc(tr("id_scope"))}</label>
+      <select id="idScope">
+        <option value="lib">${esc(tr("id_scope_lib"))}</option>
+        <option value="fav">${esc(tr("id_scope_fav"))}</option>
+        <option value="atlas"${Atlas.rows.length ? " selected" : ""}>${esc(tr("id_scope_atlas"))}</option></select>
+      <button class="btn" id="idBuild">🧬 ${esc(tr("id_build"))}</button>
+      <button class="btn ghost" id="idStop" disabled>${esc(tr("atlas_stop"))}</button>
+      <span class="spacer"></span><button class="btn danger ghost" id="idClear">🗑 ${esc(tr("id_clearlib"))}</button></div>
+    <p class="hint">${esc(tr("id_scope_hint"))}</p>
+    <div class="bar" id="idBar" hidden><i id="idBarIn" style="width:0%"></i></div>
+    <p class="hint" id="idLibNote">${esc(tr("id_indexed"))}: <b>${es.length}</b> ·
+      ${es.reduce((a, r) => a + r.voices.length, 0)} ${esc(tr("id_lib"))}</p>
+    <div id="idLib" class="grid">${es.length ? es.map(r => `<div class="card sm">
+      <b>${esc(r.sci)}</b><div class="hint">${r.voices.length} ${esc(tr("id_indexed"))}</div>
+      <div class="row" style="margin-top:6px"><button class="btn sm ghost" data-delref="${esc(r.sci)}">🗑</button>
+        <a class="chip" href="${esc(r.voices[0].url)}" target="_blank" rel="noopener">${esc(tr("id_srclink"))}</a></div></div>`).join("")
+      : `<div class="empty"><b>🎵</b>${esc(tr("id_none"))}</div>`}</div></section>`;
+
+  const out = $("#idOut"), time = $("#idTime");
+  const say = (html, kind) => { out.innerHTML = `<div class="banner ${kind || "info"}">${html}</div>`; };
+  const show = fp => {
+    if (!fp) return;
+    say(`<b>${esc(tr("id_feats"))}</b>
+      <div class="kb">${[[tr("id_pitch"), fp.dom + " kHz"], [tr("id_shape"), fp.pMed + " kHz"],
+        [tr("id_rate2"), fp.rate], ["kHz max", fp.pMax], ["span", fp.span + "×"], ["voiced", Math.round(fp.voiced * 100) + "%"]]
+        .map(([a, b]) => `<div class="kv"><span>${esc(a)}</span><b>${esc(String(b))}</b></div>`).join("")}</div>`, "info");
+  };
+  const report = async (fp, only) => {
+    const q = Acoustic.quality(fp);
+    if (!q.ok) { say(esc(q.why), "warn"); return; }
+    show(fp);
+    const rk = await Acoustic.identify(fp, only);
+    if (!rk.length) { say(esc(tr("id_none")), "warn"); return; }
+    const best = rk[0];
+    out.insertAdjacentHTML("beforeend", `<h3>${esc(tr("id_cands"))}</h3>` + rk.slice(0, 5).map((r, i) => {
+      const sp = SPECIES.find(b => b.sci === r.sci) || Atlas.get(r.sci);
+      return `<div class="card sm"><div class="row">
+        <b style="flex:1">${i + 1}. ${esc(sp ? speciesName(sp) : r.sci)}</b>
+        <span class="chip">${r.conf}%</span><span class="hint">${esc(tr("id_conf"))} ${r.score}</span></div>
+        <div class="hint">${esc(r.sci)} · ${r.agree}/${r.voices} ${esc(tr("id_indexed"))}
+          ${sp && !sp.atlas ? `· <a href="#/bird/${sp.id}">${esc(tr("open"))}</a>` : ""}</div>
+        <div class="kb">${r.why.map(([a, b, c]) => `<div class="kv"><span>${esc(a)}</span><b>${b}%${c ? " · " + esc(c) : ""}</b></div>`).join("")}</div>
+        </div>`; }).join("") +
+      `<p class="hint">${esc(tr("id_note"))}</p>`);
+    const cv = $("#idSpec");
+    if (cv) { const v = (best.row.voices || [])[0]; if (v) drawBands(cv, fp, v.fp); }
+  };
+  $("#idRec").onclick = async () => {
+    if (!Acoustic.supported()) { say(esc(tr("id_mic_no")), "warn"); return; }
+    try {
+      const mr = await Acoustic.start();
+      $("#idRec").disabled = true;
+      let left = Math.round(CFG.VOICE.seconds * 2);
+      time.textContent = tr("id_listening") + " " + (left / 2).toFixed(1) + "s";
+      await new Promise(res => {
+        const tick = setInterval(() => {
+          left--; time.textContent = tr("id_listening") + " " + (left / 2).toFixed(1) + "s";
+          if (left <= 0) { clearInterval(tick); res(); }
+        }, 500);
+      });
+      try { mr.stop(); } catch { /* already stopped */ }
+      const buf = await Acoustic.finish();
+      $("#idRec").disabled = false; time.textContent = "";
+      if (!buf) { say(esc(tr("id_noaudio")), "warn"); return; }
+      await report(Acoustic.analyse(buf));
+    } catch (e) {
+      $("#idRec").disabled = false; time.textContent = "";
+      say(esc(String((e && e.message) || e)), "warn");
+    }
+  };
+  $("#idFile").onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const ctx = audioCtx() || new (window.AudioContext || window.webkitAudioContext)();
+      const buf = await ctx.decodeAudioData(await f.arrayBuffer());
+      await report(Acoustic.analyse(buf));
+    } catch (err) { say(esc(tr("id_noaudio") + " " + err.message), "warn"); }
+  };
+  $("#idTest").onclick = async () => {
+    const want = { freq: 2600, notes: 9, dur: 2 };
+    const fp = Acoustic.analyse(Acoustic.synth(want));
+    const wrate = round(want.notes / want.dur, 2);
+    const pass = Math.abs(fp.dom - want.freq / 1000) < 0.6 && Math.abs(fp.rate - wrate) / wrate < 0.34;
+    say(`<b>${esc(tr("id_test"))}</b> · ${esc(AI.bi("expected", "المتوقع"))} ${want.freq / 1000} kHz / ${wrate} ${esc(tr("id_rate2"))}
+      · ${esc(AI.bi("measured", "المقاس"))} ${fp.dom} kHz / ${fp.rate}<br>
+      ${esc(pass ? tr("id_test_ok") : tr("id_test_fail"))}`, pass ? "ok" : "warn");
+  };
+  $("#idBuild").onclick = async () => {
+    const scope = $("#idScope").value;
+    const list = scope === "fav" ? SPECIES.filter(b => isFav(b.id)).map(b => b.sci)
+      : scope === "atlas" ? Atlas.rows.slice(0, 40).map(r => r.sci)
+      : SPECIES.map(b => b.sci);
+    if (!list.length) { toast(tr("id_none"), "warn"); return; }
+    $("#idBuild").disabled = true; $("#idStop").disabled = false; $("#idBar").hidden = false;
+    await Acoustic.build(list, st => {
+      const inn = $("#idBarIn"), note = $("#idLibNote");
+      if (!inn || !note) return;
+      inn.style.width = Math.round(100 * st.done / Math.max(1, st.total)) + "%";
+      note.innerHTML = tr("id_building") + " " + st.done + "/" + st.total + (st.note ? " · " + esc(st.note) : "");
+    });
+    $("#idBuild").disabled = false; $("#idStop").disabled = true;
+    const bar = $("#idBar"); if (bar) bar.hidden = true;
+    /* only re-render if the user is still on this screen — the build can outlive the view */
+    if (location.hash.startsWith("#/identify")) viewIdentify();
+    else { const es2 = await Acoustic.entries(); toast(tr("id_indexed") + " " + es2.length, "ok", 3200); }
+  };
+  $("#idStop").onclick = () => { Acoustic.stopBuild(); };
+  $("#idClear").onclick = async () => {
+    if (!confirmDlg(tr("id_clearlib") + "?")) return;
+    await Acoustic.clearLibrary(); toast(tr("id_libempty"), "info"); viewIdentify();
+  };
+  on(app, "click", "[data-delref]", async (e, n) => {
+    await Acoustic.removeReference(n.dataset.delref); viewIdentify();
+  });
+}
+
+/* ------------------------------------------------------------- AI VIEW */
+const aiChat = { log: [], cancel: null };
+function viewAI() {
+  document.title = tr("ai_h") + " — Birds World";
+  const cloud = AI.cloudOn();
+  app.innerHTML = `<section class="panel"><h2>🤖 ${esc(tr("ai_h"))}</h2>
+    <p class="hint">${esc(cloud ? tr("ai_cloud_hint") : tr("ai_off"))}</p>
+    <div class="row" style="margin-top:var(--s-3)">
+      <input id="aiQ" placeholder="${esc(tr("ai_ph"))}" style="flex:1;min-width:240px" autocomplete="off">
+      <button class="btn" id="aiGo">${esc(tr("ai_send"))}</button>
+      <button class="btn ghost" id="aiReset">↺ ${esc(tr("ai_reset"))}</button></div>
+    <div class="row" style="margin-top:var(--s-2)">
+      <span class="chip">${esc(tr(cloud ? "ai_cloud" : "ai_local"))}</span>
+      ${[["ai_triage", "لماذا طائري منفش الريش ولا يأكل؟"], ["ai_recommend", "طائر صغير هادئ رخيص للشقة"],
+         ["ai_facts", "كم يعيش الببغاء الاسترالي وماذا يأكل؟"], ["ai_compare", "قارن الكناري والزيبرا"]]
+        .map(([k, q]) => `<button class="btn ghost sm qex" data-q="${esc(q)}">${esc(tr(k))}</button>`).join("")}
+      </div>
+    <div id="aiLog" class="stack" style="margin-top:var(--s-3)">${aiChat.log.length ? aiChat.log.join("") : `<div class="empty"><b>💬</b>${esc(tr("ai_empty"))}</div>`}</div>
+    </section>`;
+  const log = $("#aiLog");
+  const push = html => {
+    if (!aiChat.log.length) log.innerHTML = "";
+    aiChat.log.push(html); log.insertAdjacentHTML("beforeend", html);
+    window.scrollTo(0, document.body.scrollHeight);
+  };
+  const ask = async raw => {
+    const q = String(raw || "").trim(); if (!q) return;
+    push(`<div class="card sm"><b>🧑</b> <span>${esc(q)}</span></div>`);
+    $("#aiQ").value = "";
+    const loc = AI.local(q);
+    const src = `<span class="chip">${esc(tr(loc.kind === "triage" ? "ai_triage" : loc.kind === "recommend" ? "ai_recommend"
+      : loc.kind === "facts" ? "ai_facts" : loc.kind === "compare" ? "ai_compare" : loc.kind === "search" ? "ai_search" : "ai_local"))}</span>`;
+    if (!AI.cloudOn()) {
+      push(`<div class="card sm">${src}<div style="margin-top:6px">${loc.html}</div>
+        <p class="hint">${esc(tr("ai_strip"))}</p></div>`);
+      return;
+    }
+    const slot = document.createElement("div");
+    slot.className = "card sm";
+    slot.innerHTML = `${src}<div class="hint">${esc(tr("ai_thinking"))}</div><div class="ai-body"></div>
+      <p class="hint">${esc(tr("ai_src"))} ${esc(AI.bi("your records + ", "سجلاتك + "))}${esc(tr("atlas_h"))}.</p>`;
+    if (!aiChat.log.length) log.innerHTML = "";
+    aiChat.log.push("");
+    log.appendChild(slot);
+    const body = slot.querySelector(".aiBody");
+    const ctl = new AbortController(); aiChat.cancel = ctl;
+    let got = 0;
+    try {
+      got = await AI.stream(q, txt => { body.textContent += txt; }, ctl.signal);
+      if (!got) { body.innerHTML = loc.html; slot.querySelector(".hint").textContent = tr("ai_fail"); }
+    } catch (e) {
+      body.innerHTML = loc.html;
+      slot.querySelector(".hint").textContent = tr("ai_fail") + " — " + String((e && e.message) || e);
+    } finally { aiChat.cancel = null; }
+  };
+  $("#aiGo").onclick = () => ask($("#aiQ").value);
+  $("#aiQ").onkeydown = e => { if (e.key === "Enter") ask(e.target.value); };
+  $("#aiReset").onclick = () => { aiChat.log = []; if (aiChat.cancel) aiChat.cancel.abort(); viewAI(); };
+  on(app, "click", ".qex", (e, n) => ask(n.dataset.q));
+}
+
 function route() {
   detachAnalyser();
   const h = location.hash || "#/";
@@ -2260,12 +3857,22 @@ function route() {
     : h.startsWith("#/my-birds") ? viewBirds
     : h.startsWith("#/sightings") ? viewSightings
     : h.startsWith("#/learn") ? viewLearn
+    : h.startsWith("#/atlas/") ? () => Atlas.load().then(() => viewAtlasSpecies(decodeURIComponent(h.slice(8))))
+    : h.startsWith("#/atlas") ? viewAtlas
+    : h.startsWith("#/identify") ? viewIdentify
+    : h.startsWith("#/ai") ? viewAI
     : h.startsWith("#/settings") ? viewSettings
     : viewHome;
-  try { view(); } catch (err) {
+  /* atlas and sound-ID views await storage, so their failures arrive as a
+     rejected promise rather than a thrown one — both paths show the same guard */
+  const fail = err => {
     console.error(err);
-    app.innerHTML = `<div class="panel banner danger">Runtime error: ${esc(err.message)}</div>`;
-  }
+    app.innerHTML = `<div class="panel banner danger">Runtime error: ${esc(err && err.message || String(err))}</div>`;
+  };
+  try {
+    const r = view();
+    if (r && typeof r.catch === "function") r.catch(fail);
+  } catch (err) { fail(err); }
   renderNav(); setCompN();
   window.scrollTo(0, 0);
 }
