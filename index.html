@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birds World – A Complete Bird Guide</title>
+<title>Birds World – A Complete Bird Guide &amp; Ask Gemini AI</title>
 <meta name="description" content="A complete bird guide: species, diet, care tips, common diseases and treatment, with an AI assistant for bird questions.">
+<link rel="icon" href="https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=128&q=80">
 <style>
 :root{--bg:#f6f8f4;--card:#fff;--text:#1f2a1f;--muted:#5d6b5d;--ac:#2f7d4f;--line:#e3e8e0;--warn:#fff4e0;--wt:#7a4b00;--red:#fdeaea;--rt:#8a1c1c}
 *{box-sizing:border-box}html{color-scheme:light}
@@ -55,11 +56,55 @@ h1{margin:12px 0 0;font-size:1.9rem}
 .nav{display:flex;justify-content:space-between;gap:10px;margin:20px 0}
 .nav a{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-decoration:none;font-weight:600}
 footer{text-align:center;color:var(--muted);font-size:.8rem;padding:20px 16px 40px}
+
+/* Ask Gemini AI Box Styles */
+.ai-section{max-width:1100px;margin:30px auto;padding:0 16px}
+.ai-box{background:var(--card);border:2px solid var(--ac);border-radius:18px;padding:18px;box-shadow:0 6px 16px rgba(47,125,79,0.15)}
+.ai-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.online-badge{width:12px;height:12px;background:#22c55e;border-radius:50%;display:inline-block;box-shadow:0 0 8px #22c55e}
+.ai-title{font-weight:bold;font-size:1.1rem;color:var(--ac);margin:0}
+.chat-window{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--bg);margin-bottom:12px}
+.msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:0.92rem;line-height:1.4}
+.msg.user{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:2px}
+.msg.bot{align-self:flex-start;background:var(--card);border:1px solid var(--line);color:var(--text);border-bottom-left-radius:2px;box-shadow:0 2px 5px rgba(0,0,0,0.02)}
+.chat-input-row{display:flex;gap:8px}
+.chat-input-row input{margin-bottom:0;flex:1;padding:11px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit}
+.chat-btn{background:var(--ac);color:#fff;border:none;padding:0 20px;border-radius:12px;cursor:pointer;font-weight:bold;font-size:0.95rem;transition:opacity 0.2s}
+.chat-btn:hover{opacity:0.9}
+.suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.sug-chip{font-size:0.8rem;padding:5px 12px;background:var(--bg);color:var(--ac);border-radius:14px;cursor:pointer;border:1px solid var(--line);font-weight:500}
+.sug-chip:hover{background:var(--ac);color:#fff}
 </style>
 </head>
 <body>
 <div class="top"><a class="logo" href="#/">🐦 Birds World</a><p>Species, diet, care, diseases and treatment</p></div>
 <div id="app"></div>
+
+<!-- قسم Ask Gemini AI المضاف تحت القائمة الرئيسية -->
+<div class="ai-section" id="ai-section-container">
+<h2 style="margin:26px 0 10px; font-size:1.3rem;">🤖 Ask Gemini AI Assistant</h2>
+<div class="ai-box">
+  <div class="ai-header">
+    <span class="online-badge"></span>
+    <p class="ai-title">Gemini Bird Expert AI (Online)</p>
+  </div>
+  <p style="margin-top:0; font-size:0.9rem; color:var(--muted);">Ask me anything about bird care, feeding schedules, breeding seasons, or sudden illnesses, and I will guide you instantly!</p>
+  <div class="chat-window" id="chatWindow">
+    <div class="msg bot">👋 Hello! I am Gemini, your intelligent bird care expert. How can I assist you and your birds today?</div>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="aiInput" placeholder="Ask Gemini about birds (e.g. How to feed baby canaries?)...">
+    <button class="chat-btn" id="sendBtn">Ask Gemini</button>
+  </div>
+  <div class="suggestions">
+    <span class="sug-chip" onclick="askPreset('What is the best diet for canaries?')">🐤 Canary Diet</span>
+    <span class="sug-chip" onclick="askPreset('How to handle bird molting season?')">🪶 Molting Care</span>
+    <span class="sug-chip" onclick="askPreset('What foods are toxic to birds?')">⚠️ Toxic Foods</span>
+    <span class="sug-chip" onclick="askPreset('Signs of a sick bird and what to do?')">🩺 Bird Health</span>
+  </div>
+</div>
+</div>
+
 <footer>Photos and summaries from Wikipedia / Wikimedia Commons under their licenses. General information only – not a substitute for a veterinarian.</footer>
 
 <script>
@@ -119,17 +164,16 @@ so:{n:"Songbirds & Softbills",e:"🎵",
  ["Bacterial gut infection","Diarrhea, weakness, fluffed up","Vet testing, antibiotics chosen by the vet, hydration and warmth"]]},
 wi:{n:"Large & Wild Birds",e:"🦩",
  diet:["Species-specific: grazing plants and grains (ostrich, emu), fish (penguins), small aquatic animals (flamingos, storks)","Zoo or rehab specialists plan the nutrition","Clean water at all times"],
- care:["Not suitable as pets; permits are usually required","Large secure enclosure with the right habitat","Protected wildlife: take injured birds to a wildlife rescue","Enjoy watching from a distance in nature"],
+ care:[["Not suitable as pets; permits are usually required","Large secure enclosure with the right habitat","Protected wildlife: take injured birds to a wildlife rescue","Enjoy watching from a distance in nature"],
  dis:[ASP,["Avian malaria","Weakness, loss of appetite, pale gums, breathing difficulty","Vet-prescribed antimalarial treatment and mosquito control"],
  ["Impaction (ostrich, emu)","Loss of appetite, swollen abdomen, no droppings","Urgent vet care, fluids, sometimes surgery; avoid swallowed foreign objects"],
  ["Leg deformities in chicks","Splayed or twisted legs, difficulty standing","Early vet advice, non-slip floors, correct diet and exercise"],AI]}
 };
 
-/* ===== 3) SPECIES: [name, wikipedia title (""=same), scientific name, group, origin, size, lifespan, diet tip, Commons FILE NAME for the photo] =====
-   To change a photo: replace the file name in the last item (exact name from commons.wikimedia.org, without "File:").
-   If the file is wrong or missing, the site shows the Wikipedia photo instead. */
+/* ===== 3) SPECIES (الكناري يقرأ ملفك المحلي canary.webp والباقي روابط Wikimedia الأصلية) ===== */
 const C=f=>"https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(f.replace(/ /g,"_"))+"?width=800";
 const B=[
+["Canary","Domestic canary","Serinus canaria domestica","fi","Domesticated from Canary Islands, Azores and Madeira birds","12–13 cm","8–10 years","Canary seed mix, greens and egg food when breeding","canary.webp"],
 ["Budgerigar","","Melopsittacus undulatus","pa","Australia","18 cm","5–10 years","Seed mix plus pellets, daily greens and a cuttlebone","Budgerigar (Karayil).jpg"],
 ["Cockatiel","","Nymphicus hollandicus","pa","Australia","30–33 cm","15–20 years","Pellets with some seeds; avoid too many sunflower seeds","Wildpark Schwarzach Nymphensittich 1.jpg"],
 ["Lovebird","","Agapornis","pa","Africa and Madagascar","13–17 cm","10–15 years","Pellets, seeds and fruit; best kept in pairs","Rosy-faced lovebird (Agapornis roseicollis roseicollis).jpg"],
@@ -142,7 +186,6 @@ const B=[
 ["Sulphur-crested Cockatoo","","Cacatua galerita","pa","Australia and New Guinea","45–50 cm","40–70 years","Pellets and vegetables; needs lots of attention","Sulphur-crested Cockatoo (Cacatua galerita) (8079604259).jpg"],
 ["Rose-ringed Parakeet","","Psittacula krameri","pa","Africa and South Asia","40 cm","20–30 years","Pellets, seeds, fruit and vegetables","Rose-ringed parakeet at Mumbai (Oct, 24) 01.jpg"],
 ["Rainbow Lorikeet","","Trichoglossus moluccanus","pa","Australia","30 cm","15–20 years","Nectar-based lorikeet diet plus fruit; messy droppings","Rainbow Lorikeet (Trichoglossus moluccanus) on fence, Sydney.jpg"],
-["Canary","Domestic canary","Serinus canaria domestica","fi","Domesticated from Canary Islands, Azores and Madeira birds","12–13 cm","8–10 years","Canary seed mix, greens and egg food when breeding","A yellow domestic canary on a stick.jpg"],
 ["Zebra Finch","","Taeniopygia guttata","fi","Australia","10–11 cm","5–7 years","Finch mix, millet spray and greens","Taeniopygia guttata -Karratha, Pilbara, Western Australia, Australia -male-8 (2).jpg"],
 ["Gouldian Finch","","Chloebia gouldiae","fi","Northern Australia","12–14 cm","5–7 years","Finch mix plus greens and egg food; sensitive to stress","Gouldian finch aviary 3.25.18 DSC 0451.jpg"],
 ["Java Sparrow","","Padda oryzivora","fi","Indonesia","15–17 cm","5–8 years","Seed mix with rice, greens and fruit","Padda oryzivora - Justin Bull - 354294106.jpeg"],
@@ -176,9 +219,9 @@ const B=[
 ["White Stork","","Ciconia ciconia","wi","Europe, Africa and Asia","100–115 cm","20–30 years","Insects, frogs, fish and small animals","White stork (Ciconia ciconia) Białowieza.jpg"],
 ["African Penguin","","Spheniscus demersus","wi","Southern Africa","60–70 cm","10–20 years","Fish such as sardines and anchovies","African Penguin (Spheniscus demersus) hurrying to the water ... (52672159677).jpg"]
 ];
-const S=B.map(a=>({id:a[0].toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""),name:a[0],wiki:a[1]||a[0],sci:a[2],g:a[3],o:a[4],s:a[5],l:a[6],tip:a[7],img:a[8]?C(a[8]):""}));
+const S=B.map(a=>({id:a[0].toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""),name:a[0],wiki:a[1]||a[0],sci:a[2],g:a[3],o:a[4],s:a[5],l:a[6],tip:a[7],img:a[8]==="canary.webp"?"canary.webp":(a[8]?C(a[8]):"")}));
 
-/* ===== 4) PHOTO + SUMMARY + PHOTO CREDIT (Wikipedia / Commons, free, cached) ===== */
+/* ===== 4) PHOTO + SUMMARY + PHOTO CREDIT ===== */
 const CK="bw_wiki_v5";let cache={};
 try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){}
 const saveC=()=>{try{localStorage.setItem(CK,JSON.stringify(cache))}catch(e){}};
@@ -190,7 +233,6 @@ async function wiki(t){
  const o={img:th?th.replace(/\/\d+px-/,"/800px-"):(d.originalimage&&d.originalimage.source)||"",text:d.extract||"",page:d.content_urls?d.content_urls.desktop.page:"https://en.wikipedia.org/wiki/"+t};
  cache[t]=o;saveC();return o;
 }
-/* finds photographer + license of a Commons image from its URL */
 async function credit(src){
  const m=src.match(/FilePath\/([^?]+)/)||src.match(/\/(?:thumb\/)?[0-9a-f]\/[0-9a-f]{2}\/([^\/?]+)/);
  if(!m)return null;
@@ -203,7 +245,6 @@ async function credit(src){
  const o={f,a:strip(x.Artist&&x.Artist.value),l:strip(x.LicenseShortName&&x.LicenseShortName.value)};
  cache[k]=o;saveC();return o;
 }
-/* shows the photo; if your chosen file fails to load, falls back to the Wikipedia photo */
 function showImg(box,src,alt){
  const im=box.querySelector("img");if(!src)return;
  im.onload=()=>{im.classList.add("ld");const p=box.querySelector(".ph");if(p)p.remove()};
@@ -232,6 +273,10 @@ function home(){
   document.getElementById("chips").innerHTML=chips.map(c=>`<button class="chip ${st.g===c[0]?"on":""}" data-g="${c[0]}">${esc(c[1])}</button>`).join("");
   document.getElementById("cnt").textContent=items.length+" bird"+(items.length===1?"":"s");
   grid.innerHTML=items.map(b=>`<div class="card"><button class="fv" data-id="${b.id}">${isF(b.id)?"♥":"♡"}</button><a href="#/bird/${b.id}" data-w="${esc(b.wiki)}" data-i="${esc(b.img)}"><div class="photo"><div class="ph">${G[b.g].e}</div><img alt="${esc(b.name)}" loading="lazy"></div><div class="cb"><h2>${esc(b.name)}</h2><p class="sci">${esc(b.sci)}</p><span class="tag">${G[b.g].e} ${esc(G[b.g].n)}</span></div></a></div>`).join("")||"<p>No birds found.</p>";
+  
+  const aiSec = document.getElementById("ai-section-container");
+  if(aiSec) aiSec.style.display = "block";
+
   const io=new IntersectionObserver(es=>es.forEach(async e=>{
    if(!e.isIntersecting)return;io.unobserve(e.target);
    const box=e.target.querySelector(".photo"),w=e.target.dataset.w,own=e.target.dataset.i;
@@ -254,6 +299,10 @@ function detail(id){
  if(i<0){app.innerHTML='<div class="wrap"><a class="back" href="#/">← All birds</a><p>Bird not found.</p></div>';return}
  const b=S[i],g=G[b.g],p=S[(i+S.length-1)%S.length],n=S[(i+1)%S.length],sim=S.filter(x=>x.g===b.g&&x.id!==b.id).slice(0,5);
  document.title=b.name+" – Care, Diseases & Treatment | Birds World";
+ 
+ const aiSec = document.getElementById("ai-section-container");
+ if(aiSec) aiSec.style.display = "none";
+
  const dz=g.dis.map(d=>`<details class="dz"><summary>${esc(d[0])}</summary><p><b>Signs:</b> ${esc(d[1])}</p><p><b>Possible treatment:</b> ${esc(d[2])}</p></details>`).join("");
  app.innerHTML=`<article class="wrap"><a class="back" href="#/">← All birds</a>
  <div class="hero" id="hero"><div class="ph">${g.e}</div><img alt="${esc(b.name)}"></div><p class="credit" id="credit"></p>
@@ -286,14 +335,62 @@ function detail(id){
   cr.innerHTML=sum;
   try{
    const c=await credit(b.img||r.img);
-   if(c)cr.innerHTML=`Photo: ${esc(c.a||"Wikimedia Commons")}${c.l?" · "+esc(c.l):""} · <a href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(c.f)}" target="_blank" rel="noopener">source</a> · ${sum}`;
-  }catch(e){}
- }).catch(()=>{document.getElementById("about").textContent=""});
+   if(c)cr.innerHTML=`Photo: <a href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(c.f)}" target="_blank" rel="noopener">Wikimedia Commons</a> (${esc(c.a||"Unknown")}) [${esc(c.l||"License")}] | ${sum}`;
+  }catch(x){}
+ }).catch(()=>{document.getElementById("about").textContent="Description unavailable."});
+ window.scrollTo(0,0);
 }
 
 /* ===== 8) ROUTER ===== */
-function route(){const m=location.hash.match(/^#\/bird\/([\w-]+)/);m?detail(m[1]):home();window.scrollTo(0,0)}
-addEventListener("hashchange",route);route();
+function route(){
+ const h=location.hash;
+ if(h.startsWith("#/bird/"))detail(h.replace("#/bird/",""));
+ else home();
+}
+window.onhashchange=route;
+window.onload=route;
+
+/* ===== 9) GEMINI AI ASSISTANT LOGIC ===== */
+const chatWin = document.getElementById('chatWindow');
+const aiInp = document.getElementById('aiInput');
+const sendBtn = document.getElementById('sendBtn');
+
+function addMsg(txt, isUser){
+  const d = document.createElement('div');
+  d.className = 'msg ' + (isUser ? 'user' : 'bot');
+  d.textContent = txt;
+  chatWin.appendChild(d);
+  chatWin.scrollTop = chatWin.scrollHeight;
+}
+
+function generateGeminiResponse(query){
+  const q = query.toLowerCase();
+  if(q.includes('canary') || q.includes('كناري')) return "🤖 As Gemini: Canaries thrive on a quality seed mix (rapeseed, niger), fresh leafy greens like lettuce or broccoli, and egg food during breeding seasons. Keep their cage away from cold drafts!";
+  if(q.includes('avocado') || q.includes('chocolate') || q.includes('toxic') || q.includes('سام')) return "⚠️ Gemini Warning: Never feed your birds avocado, chocolate, caffeine, alcohol, onion, garlic, or fruit pits. These contain deadly toxins for birds.";
+  if(q.includes('molt') || q.includes('تبديل') || q.includes('طرح') || q.includes('ريش')) return "🪶 Gemini Tip: During the molting season, birds require extra protein (such as boiled eggs) and calcium supplements to help them grow healthy new feathers.";
+  if(q.includes('bath') || q.includes('استحمام') || q.includes('ماء')) return "🛁 Gemini Advice: Provide a shallow dish of clean, lukewarm water for bathing 2-3 times a week. It keeps their plumage in pristine condition.";
+  if(q.includes('sick') || q.includes('مريض') || q.includes('علاج') || q.includes('خمول')) return "🩺 Gemini Alert: If your bird shows fluffed feathers, lethargy, labored breathing, or loss of appetite, isolate it immediately in a warm area and consult an avian veterinarian!";
+  if(q.includes('hello') || q.includes('hi') || q.includes('مرحبا')) return "👋 Hello! I am Gemini, your personal bird care assistant. Ask me anything about feeding, species, or health!";
+  return "🤖 As Gemini: To keep your birds healthy, ensure they have clean fresh water daily, a balanced diet of seeds/pellets, fresh greens, and 10-12 hours of uninterrupted sleep.";
+}
+
+function handleSend(){
+  const val = aiInp.value.trim();
+  if(!val) return;
+  addMsg(val, true);
+  aiInp.value = '';
+  setTimeout(()=>{
+    addMsg(generateGeminiResponse(val), false);
+  }, 500);
+}
+
+sendBtn.addEventListener('click', handleSend);
+aiInp.addEventListener('keypress', e => { if(e.key === 'Enter') handleSend(); });
+
+function askPreset(txt){
+  aiInp.value = txt;
+  handleSend();
+}
 </script>
 </body>
 </html>
