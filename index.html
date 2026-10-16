@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birds World – Ultimate PRO++ Edition</title>
-<meta name="description" content="Ultimate professional bird guide with calculators, breeding trackers, audio players, custom notes, and voice search.">
+<title>Birds World – Complete 45 Species PRO++ Edition</title>
+<meta name="description" content="Complete professional bird guide with all 45 species, calculators, breeding trackers, audio players, custom notes, and voice search.">
 <style>
 :root{--bg:#f8fafc;--card:#ffffff;--text:#0f172a;--muted:#64748b;--ac:#10b981;--ac-hover:#059669;--line:#e2e8f0;--warn:#fef3c7;--wt:#92400e;--red:#fee2e2;--rt:#991b1b;--shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03)}
 [data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#f8fafc;--muted:#94a3b8;--ac:#34d399;--ac-hover:#10b981;--line:#334155;--warn:#451a03;--wt:#fde68a;--red:#7f1d1d;--rt:#fca5a5;--shadow:0 4px 6px -1px rgba(0,0,0,0.2)}
@@ -65,7 +65,6 @@ header{background:var(--card);border-bottom:1px solid var(--line);position:stick
 .box-section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin:12px 0;box-shadow:var(--shadow)}
 .notes-area{width:100%;height:100px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;margin-top:8px}
 
-/* Calculator & Audio & Breeding Styles */
 .calc-group, .breed-group{margin:12px 0}
 .calc-group label, .breed-group label{display:block;font-weight:600;margin-bottom:6px}
 .calc-input, .breed-input{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
@@ -80,7 +79,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:40px 20px;b
 
 <header>
  <div class="header-inner">
-  <a class="logo" href="#/">🐦 Birds World <span style="font-size:0.7rem;background:var(--ac);color:#fff;padding:2px 6px;border-radius:6px">PRO++</span></a>
+  <a class="logo" href="#/">🐦 Birds World <span style="font-size:0.7rem;background:var(--ac);color:#fff;padding:2px 6px;border-radius:6px">PRO++ (45 Species)</span></a>
   <div class="nav-actions">
    <button class="icon-btn" id="themeToggle" title="Toggle Theme">🌙</button>
   </div>
@@ -114,23 +113,56 @@ const G={
 
 const C=f=>"https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(f.replace(/ /g,"_"))+"?width=800";
 const B=[
-["Budgerigar","","Melopsittacus undulatus","pa","Australia","18 cm","5–10 years","Seed mix plus pellets, daily greens","Budgerigar (Karayil).jpg"],
-["Cockatiel","","Nymphicus hollandicus","pa","Australia","30–33 cm","15–20 years","Pellets with some seeds","Wildpark Schwarzach Nymphensittich 1.jpg"],
-["Lovebird","","Agapornis","pa","Africa and Madagascar","13–17 cm","10–15 years","Pellets, seeds and fruit","Rosy-faced lovebird (Agapornis roseicollis roseicollis).jpg"],
-["African Grey Parrot","Grey parrot","Psittacus erithacus","pa","Central Africa","33 cm","40–60 years","Pellets and calcium-rich greens","Psittacus erithacus -upper body-8c.jpg"],
-["Canary","Domestic canary","Serinus canaria domestica","fi","Canary Islands","12–13 cm","8–10 years","Canary seed mix and greens","A yellow domestic canary on a stick.jpg"],
-["Zebra Finch","","Taeniopygia guttata","fi","Australia","10–11 cm","5–7 years","Finch mix and millet spray","Taeniopygia guttata -Karratha, Pilbara, Western Australia, Australia -male-8 (2).jpg"],
-["Domestic Pigeon","","Columba livia domestica","do","Europe","30–35 cm","10–15 years","Pigeon grain mix and grit","Feral pigeon in Bowness-on-Windermere, England.jpg"],
-["Chicken","","Gallus gallus domesticus","po","Southeast Asia","40–70 cm","5–10 years","Complete layer feed","Gallus gallus domesticus LC0262.jpg"],
-["Mallard","","Anas platyrhynchos","wa","Northern Hemisphere","50–65 cm","5–10 years","Waterfowl feed and greens","Mallard 2025 11 15 02.jpg"],
-["Peregrine Falcon","","Falco peregrinus","ra","Worldwide","34–58 cm","10–15 years","Whole quail or chicks","Peregrine Falcon (male) cropped.jpg"],
-["European Robin","","Erithacus rubecula","so","Europe","14 cm","2–5 years","Insects and berries","Erithacus rubecula with cocked head.jpg"],
-["Greater Flamingo","","Phoenicopterus roseus","wi","Africa & Asia","110–150 cm","30–50 years","Algae and small aquatic animals","Flamant rose Thyna009.jpg"]
+["Budgerigar","","Melopsittacus undulatus","pa","Australia","18 cm","5–10 years","Seed mix plus pellets, daily greens and a cuttlebone","Budgerigar (Karayil).jpg"],
+["Cockatiel","","Nymphicus hollandicus","pa","Australia","30–33 cm","15–20 years","Pellets with some seeds; avoid too many sunflower seeds","Wildpark Schwarzach Nymphensittich 1.jpg"],
+["Lovebird","","Agapornis","pa","Africa and Madagascar","13–17 cm","10–15 years","Pellets, seeds and fruit; best kept in pairs","Rosy-faced lovebird (Agapornis roseicollis roseicollis).jpg"],
+["African Grey Parrot","Grey parrot","Psittacus erithacus","pa","Central Africa","33 cm","40–60 years","Pellets and calcium-rich greens; prone to low calcium","Psittacus erithacus -upper body-8c.jpg"],
+["Sun Conure","Sun parakeet","Aratinga solstitialis","pa","Northeastern South America","30 cm","25–30 years","Pellets, fruit and vegetables; very loud","Aratinga solstitialis -Jurong Bird Park -8a.jpg"],
+["Blue-and-yellow Macaw","","Ara ararauna","pa","South America","85 cm","30–50 years","Pellets, vegetables and some nuts; needs a very large space","Blue and yellow Macaw. (Ara ararauna), (9156108563).jpg"],
+["Scarlet Macaw","","Ara macao","pa","Central and South America","80–90 cm","40–50 years","Pellets, vegetables, nuts; strong loud voice","Ara-Zoo-Muenster-2013-02.jpg"],
+["Eclectus Parrot","","Eclectus roratus","pa","Solomon Islands, New Guinea, northern Australia","35 cm","30–40 years","Needs plenty of fresh fruit and vegetables","Eclectus roratus -male -perching in tree-8a.jpg"],
+["Blue-fronted Amazon","","Amazona aestiva","pa","South America","37 cm","40–60 years","Pellets and vegetables; prone to obesity","Amazona aestiva -San Francisco Zoo-8a.jpg"],
+["Sulphur-crested Cockatoo","","Cacatua galerita","pa","Australia and New Guinea","45–50 cm","40–70 years","Pellets and vegetables; needs lots of attention","Sulphur-crested Cockatoo (Cacatua galerita) (8079604259).jpg"],
+["Rose-ringed Parakeet","","Psittacula krameri","pa","Africa and South Asia","40 cm","20–30 years","Pellets, seeds, fruit and vegetables","Rose-ringed parakeet at Mumbai (Oct, 24) 01.jpg"],
+["Rainbow Lorikeet","","Trichoglossus moluccanus","pa","Australia","30 cm","15–20 years","Nectar-based lorikeet diet plus fruit; messy droppings","Rainbow Lorikeet (Trichoglossus moluccanus) on fence, Sydney.jpg"],
+["Canary","Domestic canary","Serinus canaria domestica","fi","Domesticated from Canary Islands, Azores and Madeira birds","12–13 cm","8–10 years","Canary seed mix, greens and egg food when breeding","A yellow domestic canary on a stick.jpg"],
+["Zebra Finch","","Taeniopygia guttata","fi","Australia","10–11 cm","5–7 years","Finch mix, millet spray and greens","Taeniopygia guttata -Karratha, Pilbara, Western Australia, Australia -male-8 (2).jpg"],
+["Gouldian Finch","","Chloebia gouldiae","fi","Northern Australia","12–14 cm","5–7 years","Finch mix plus greens and egg food; sensitive to stress","Gouldian finch aviary 3.25.18 DSC 0451.jpg"],
+["Java Sparrow","","Padda oryzivora","fi","Indonesia","15–17 cm","5–8 years","Seed mix with rice, greens and fruit","Padda oryzivora - Justin Bull - 354294106.jpeg"],
+["European Goldfinch","","Carduelis carduelis","fi","Europe, North Africa and western Asia","12–13 cm","5–10 years","Small seeds such as niger; wild capture may be illegal","Carduelis carduelis close up.jpg"],
+["Domestic Pigeon","","Columba livia domestica","do","Europe, North Africa and western Asia","30–35 cm","10–15 years","Pigeon grain mix, grit and clean water","Feral pigeon in Bowness-on-Windermere, England.jpg"],
+["African Collared Dove","","Streptopelia roseogrisea","do","Africa","28 cm","10–15 years","Small seed mix and grit; gentle and quiet","African Collared Dove, Timiaouine, Algeria 9.jpg"],
+["Diamond Dove","","Geopelia cuneata","do","Australia","20 cm","8–12 years","Small seeds and millet; needs a warm place","Vogel grau.JPG"],
+["Laughing Dove","","Spilopelia senegalensis","do","Africa and Middle East","25 cm","8–10 years","Small seeds and grit","Laughing dove (Spilopelia senegalensis cambayensis) 2.jpg"],
+["Chicken","","Gallus gallus domesticus","po","Domesticated from jungle fowl of Southeast Asia","40–70 cm","5–10 years","Complete layer feed plus grit and oyster shell","Gallus gallus domesticus LC0262.jpg"],
+["Japanese Quail","","Coturnix japonica","po","East Asia","17–20 cm","2–5 years","High-protein quail feed and clean water","Japanese Quail.jpg"],
+["Common Pheasant","","Phasianus colchicus","po","Asia","60–90 cm","3–5 years","Game bird feed, grain and greens","Phasianus colchicus in Tashkent botanical garden.jpg"],
+["Indian Peafowl","","Pavo cristatus","po","South Asia","100–115 cm (males longer with tail)","15–20 years","Poultry or peafowl feed, grain and greens","Indian peafowl (Pavo cristatus) male.jpg"],
+["Helmeted Guineafowl","","Numida meleagris","po","Africa","55–60 cm","10–15 years","Grain, insects and poultry feed","Numida meleagris.001 - Woburn Safari Park.JPG"],
+["Barbary Partridge","","Alectoris barbara","po","North Africa","32–34 cm","3–5 years","Grain, seeds and greens","Alectoris barbara portrait Tenerife.jpg"],
+["Mallard","","Anas platyrhynchos","wa","Northern Hemisphere","50–65 cm","5–10 years","Waterfowl feed and greens; no bread","Mallard 2025 11 15 02.jpg"],
+["Muscovy Duck","","Cairina moschata","wa","Americas","65–85 cm","8–12 years","Waterfowl pellets, greens and grain","Muscovy duck (Cairina moschata) on stone slabs.jpg"],
+["Domestic Goose","","Anser anser domestica","wa","Europe and Asia","75–90 cm","10–20 years","Grass, greens and goose feed","Boerengans (Anser anser forma domesticus).19-04-2020 (d.j.b.) 01.jpg"],
+["Mute Swan","","Cygnus olor","wa","Europe and Asia","140–160 cm","10–20 years","Aquatic plants and grass; no bread","Cygnus olor at Las Gallinas Wildlife Ponds.jpg"],
+["Peregrine Falcon","","Falco peregrinus","ra","Worldwide","34–58 cm","10–15 years","Whole quail or chicks; protected species in many places","Peregrine Falcon (male) cropped.jpg"],
+["Barn Owl","","Tyto alba","ra","Worldwide","33–39 cm","4–10 years in the wild","Whole mice, chicks and rodents","Barn Owl - Tyto alba (53521785522).jpg"],
+["Harris's Hawk","","Parabuteo unicinctus","ra","The Americas","46–59 cm","10–15 years","Whole quail, chicks and rodents","Parabuteo unicinctus 454916234.jpg"],
+["Saker Falcon","","Falco cherrug","ra","Eurasia","45–55 cm","12–20 years","Whole quail and chicks; protected species in many places","Falco cherrug portrait.jpg"],
+["Eurasian Eagle-owl","","Bubo bubo","ra","Europe, Asia and North Africa","59–75 cm","15–20 years in the wild","Whole rodents and rabbits","Eurasian eagle-owl (44034).jpg"],
+["Common Hill Myna","","Gracula religiosa","so","South and Southeast Asia","29 cm","10–15 years","Low-iron softbill pellets and fruit","Common Hill Myna in Kurseong September 2026 by Tisha Mukherjee 02.jpg"],
+["European Robin","","Erithacus rubecula","so","Europe, North Africa and western Asia","14 cm","2–5 years in the wild","Insects and berries; best watched in nature","Erithacus rubecula with cocked head.jpg"],
+["Common Nightingale","","Luscinia megarhynchos","so","Europe and Asia; winters in Africa","16 cm","2–7 years","Insects and berries; protected in many places","Luscinia megarhynchos - Common nightingale - Nachtegaal (cropped).jpg"],
+["Toco Toucan","","Ramphastos toco","so","South America","55–65 cm","15–20 years","Low-iron fruit mix with insects","Ramphastos toco 133802868.jpeg"],
+["House Sparrow","","Passer domesticus","so","Eurasia and North Africa","16 cm","3–5 years in the wild","Seeds and insects; common wild bird","House Sparrow, England - May 09.jpg"],
+["Common Ostrich","","Struthio camelus","wi","Africa","2–2.8 m","30–40 years","Grazing plants and grain; powerful kicks","Avestruz (Struthio camelus), parque nacional de Amboseli, Kenia, 2024-05-22, DD 62.jpg"],
+["Greater Flamingo","","Phoenicopterus roseus","wi","Africa, southern Europe and Asia","110–150 cm","30–50 years","Algae and small aquatic animals give its pink color","Flamant rose Thyna009.jpg"],
+["White Stork","","Ciconia ciconia","wi","Europe, Africa and Asia","100–115 cm","20–30 years","Insects, frogs, fish and small animals","White stork (Ciconia ciconia) Białowieza.jpg"],
+["African Penguin","","Spheniscus demersus","wi","Southern Africa","60–70 cm","10–20 years","Fish such as sardines and anchovies","African Penguin (Spheniscus demersus) hurrying to the water ... (52672159677).jpg"]
 ];
-const S=B.map(a=>({id:a[0].toLowerCase().replace(/[^a-z0-9]+/g,"-"),name:a[0],wiki:a[1]||a[0],sci:a[2],g:a[3],o:a[4],s:a[5],l:a[6],tip:a[7],img:a[8]?C(a[8]):""}));
+const S=B.map(a=>({id:a[0].toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""),name:a[0],wiki:a[1]||a[0],sci:a[2],g:a[3],o:a[4],s:a[5],l:a[6],tip:a[7],img:a[8]?C(a[8]):""}));
 
 /* State & Storage */
-const CK="bw_pro_v3";let cache={};
+const CK="bw_pro_v4";let cache={};
 try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){}
 const saveC=()=>{try{localStorage.setItem(CK,JSON.stringify(cache))}catch(e){}};
 async function wiki(t){
@@ -168,13 +200,13 @@ document.getElementById("themeToggle").textContent=savedTheme==="dark"?"☀️":
 /* ===== HOME PAGE ===== */
 const app=document.getElementById("app");
 function home(){
- document.title="Birds World – Ultimate PRO++";
+ document.title="Birds World – Complete 45 Species PRO++";
  const chips=[["all","All Species"],["fav","♥ Favorites"],...Object.keys(G).map(k=>[k,G[k].e+" "+G[k].n])];
  
  app.innerHTML=`
  <div class="hero-banner">
   <h1>Discover the Wonderful World of Birds</h1>
-  <p>Professional avian platform with calculators, audio player, breeding tools, and management features.</p>
+  <p>Professional avian platform with all 45 species, calculators, audio player, breeding tools, and management features.</p>
  </div>
  <main class="main-container">
   <div class="stats-grid">
@@ -185,7 +217,7 @@ function home(){
 
   <div class="control-panel">
    <div class="search-row">
-    <input id="q" class="search-input" type="search" placeholder="Search birds by name, origin or scientific name..." value="${st.q}">
+    <input id="q" class="search-input" type="search" placeholder="Search all ${S.length} birds by name, origin or scientific name..." value="${st.q}">
     <button class="btn" id="voiceBtn">🎙️ Voice</button>
    </div>
    <div class="chips" id="chips"></div>
@@ -359,7 +391,7 @@ function detail(id){
  document.getElementById("tabs").onclick=e=>{
   const t=e.target.dataset.t;if(!t)return;
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.dataset.t===t));
-  document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("on",x.id==="p-"+t));
+  document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("on",x.id===p-"+t));
  };
 
  /* Calculator Logic */
