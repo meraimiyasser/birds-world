@@ -107,4 +107,234 @@ const G={
 };
 
 const C=f=>"https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(f.replace(/ /g,"_"))+"?width=800";
-const B
+const B=[
+["Budgerigar","","Melopsittacus undulatus","pa","Australia","18 cm","5–10 years","Seed mix plus pellets, daily greens","Budgerigar (Karayil).jpg"],
+["Cockatiel","","Nymphicus hollandicus","pa","Australia","30–33 cm","15–20 years","Pellets with some seeds","Wildpark Schwarzach Nymphensittich 1.jpg"],
+["Lovebird","","Agapornis","pa","Africa and Madagascar","13–17 cm","10–15 years","Pellets, seeds and fruit","Rosy-faced lovebird (Agapornis roseicollis roseicollis).jpg"],
+["African Grey Parrot","Grey parrot","Psittacus erithacus","pa","Central Africa","33 cm","40–60 years","Pellets and calcium-rich greens","Psittacus erithacus -upper body-8c.jpg"],
+["Canary","Domestic canary","Serinus canaria domestica","fi","Canary Islands","12–13 cm","8–10 years","Canary seed mix and greens","A yellow domestic canary on a stick.jpg"],
+["Zebra Finch","","Taeniopygia guttata","fi","Australia","10–11 cm","5–7 years","Finch mix and millet spray","Taeniopygia guttata -Karratha, Pilbara, Western Australia, Australia -male-8 (2).jpg"],
+["Domestic Pigeon","","Columba livia domestica","do","Europe","30–35 cm","10–15 years","Pigeon grain mix and grit","Feral pigeon in Bowness-on-Windermere, England.jpg"],
+["Chicken","","Gallus gallus domesticus","po","Southeast Asia","40–70 cm","5–10 years","Complete layer feed","Gallus gallus domesticus LC0262.jpg"],
+["Mallard","","Anas platyrhynchos","wa","Northern Hemisphere","50–65 cm","5–10 years","Waterfowl feed and greens","Mallard 2025 11 15 02.jpg"],
+["Peregrine Falcon","","Falco peregrinus","ra","Worldwide","34–58 cm","10–15 years","Whole quail or chicks","Peregrine Falcon (male) cropped.jpg"],
+["European Robin","","Erithacus rubecula","so","Europe","14 cm","2–5 years","Insects and berries","Erithacus rubecula with cocked head.jpg"],
+["Greater Flamingo","","Phoenicopterus roseus","wi","Africa & Asia","110–150 cm","30–50 years","Algae and small aquatic animals","Flamant rose Thyna009.jpg"]
+];
+const S=B.map(a=>({id:a[0].toLowerCase().replace(/[^a-z0-9]+/g,"-"),name:a[0],wiki:a[1]||a[0],sci:a[2],g:a[3],o:a[4],s:a[5],l:a[6],tip:a[7],img:a[8]?C(a[8]):""}));
+
+/* State & Storage */
+const CK="bw_pro_v1";let cache={};
+try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){}
+const saveC=()=>{try{localStorage.setItem(CK,JSON.stringify(cache))}catch(e){}};
+async function wiki(t){
+ t=t[0]+t.slice(1).toLowerCase();
+ if(cache[t])return cache[t];
+ const r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(t.replace(/ /g,"_")));
+ if(!r.ok)throw 0;const d=await r.json();const th=d.thumbnail&&d.thumbnail.source;
+ const o={img:th?th.replace(/\/\d+px-/,"/800px-"):(d.originalimage&&d.originalimage.source)||"",text:d.extract||"",page:d.content_urls?d.content_urls.desktop.page:"https://en.wikipedia.org/wiki/"+t};
+ cache[t]=o;saveC();return o;
+}
+function showImg(box,src){
+ const im=box.querySelector("img");if(!src)return;
+ im.onload=()=>{im.classList.add("ld");const p=box.querySelector(".ph");if(p)p.remove()};
+ im.src=src;
+}
+
+let favs=[];try{favs=JSON.parse(localStorage.getItem("bw_fav_pro")||"[]")}catch(e){}
+const isF=id=>favs.includes(id);
+const toggleF=id=>{favs=isF(id)?favs.filter(x=>x!==id):[...favs,id];try{localStorage.setItem("bw_fav_pro",JSON.stringify(favs))}catch(e){}};
+
+let notes={};try{notes=JSON.parse(localStorage.getItem("bw_notes_pro")||"{}")}catch(e){}
+let st={q:"",g:"all"};
+
+/* Theme Management */
+const savedTheme=localStorage.getItem("bw_theme_pro")||"light";
+document.documentElement.setAttribute("data-theme",savedTheme);
+document.getElementById("themeToggle").onclick=()=>{
+ const next=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+ document.documentElement.setAttribute("data-theme",next);
+ localStorage.setItem("bw_theme_pro",next);
+ document.getElementById("themeToggle").textContent=next==="dark"?"☀️":"🌙";
+};
+document.getElementById("themeToggle").textContent=savedTheme==="dark"?"☀️":"🌙";
+
+/* Comparison Modal / View Handler */
+document.getElementById("compareBtn").onclick=()=>{
+ alert("⚖️ Bird Comparison Feature: You can compare species features easily from the detail pages in future updates!");
+};
+
+/* ===== HOME PAGE ===== */
+const app=document.getElementById("app");
+function home(){
+ document.title="Birds World – Professional Guide";
+ const chips=[["all","All Species"],["fav","♥ Favorites"],...Object.keys(G).map(k=>[k,G[k].e+" "+G[k].n])];
+ 
+ app.innerHTML=`
+ <div class="hero-banner">
+  <h1>Discover the Wonderful World of Birds</h1>
+  <p>Professional avian guide featuring detailed care, feeding, diagnostics, and smart management.</p>
+ </div>
+ <main class="main-container">
+  <div class="stats-grid">
+   <div class="stat-card"><h4>Total Species</h4><div class="val">${S.length}</div></div>
+   <div class="stat-card"><h4>Families</h4><div class="val">${Object.keys(G).length}</div></div>
+   <div class="stat-card"><h4>Saved Favorites</h4><div class="val">${favs.length}</div></div>
+  </div>
+
+  <div class="control-panel">
+   <div class="search-row">
+    <input id="q" class="search-input" type="search" placeholder="Search birds by name, origin or scientific name..." value="${st.q}">
+    <button class="btn" id="voiceBtn">🎙️ Voice</button>
+   </div>
+   <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+ </main>`;
+
+ const grid=document.getElementById("grid");
+ function draw(){
+  const q=st.q.toLowerCase();
+  const items=S.filter(b=>(st.g==="all"||(st.g==="fav"?isF(b.id):b.g===st.g))&&(b.name+" "+b.sci+" "+b.o).toLowerCase().includes(q));
+  
+  document.getElementById("chips").innerHTML=chips.map(c=>`<button class="chip ${st.g===c[0]?"on":""}" data-g="${c[0]}">${c[1]}</button>`).join("");
+  
+  grid.innerHTML=items.map(b=>`
+   <div class="card">
+    <button class="fv-btn" data-id="${b.id}">${isF(b.id)?"♥":"♡"}</button>
+    <a href="#/bird/${b.id}">
+     <div class="photo"><div class="ph">${G[b.g].e}</div><img alt="${b.name}" loading="lazy"></div>
+     <div class="card-body">
+      <h3>${b.name}</h3>
+      <p class="sci">${b.sci}</p>
+      <span class="tag">${G[b.g].e} ${G[b.g].n}</span>
+     </div>
+    </a>
+   </div>`).join("")||"<p style='grid-column:1/-1;text-align:center;color:var(--muted);padding:40px'>No birds found matching your search.</p>";
+
+  grid.querySelectorAll(".card>a").forEach(async a=>{
+   const href=a.getAttribute("href");
+   const id=href.split("/")[2];
+   const bird=S.find(x=>x.id===id);
+   const box=a.querySelector(".photo");
+   if(bird.img) showImg(box,bird.img);
+   else {
+    try{const r=await wiki(bird.wiki);if(r.img)showImg(box,r.img);}catch(e){}
+   }
+  });
+ }
+
+ document.getElementById("q").oninput=e=>{st.q=e.target.value;draw()};
+ document.getElementById("chips").onclick=e=>{const g=e.target.dataset.g;if(g){st.g=g;draw()}};
+ grid.onclick=e=>{
+  const fvBtn=e.target.closest(".fv-btn");
+  if(fvBtn){
+   const id=fvBtn.dataset.id;
+   toggleF(id);
+   fvBtn.textContent=isF(id)?"♥":"♡";
+   if(st.g==="fav") draw();
+  }
+ };
+
+ document.getElementById("voiceBtn").onclick=()=>{
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecognition){alert("Voice search not supported.");return;}
+  const rec=new SpeechRecognition();
+  rec.onresult=e=>{document.getElementById("q").value=e.results[0][0].transcript;st.q=e.results[0][0].transcript;draw();};
+  rec.start();
+ };
+
+ draw();
+}
+
+/* ===== DETAIL PAGE ===== */
+function detail(id){
+ const b=S.find(x=>x.id===id);
+ if(!b){app.innerHTML="<div class='wrap'><h2>Bird not found</h2><a href='#/'>Back to home</a></div>";return;}
+ const g=G[b.g];
+ const userNote=notes[id]||"";
+
+ app.innerHTML=`
+ <main class="wrap">
+  <a class="back-link" href="#/">← Back to all birds</a>
+  <div class="hero-detail" id="hero"><div class="ph">${g.e}</div><img alt="${b.name}"></div>
+  
+  <h1>${b.name}</h1>
+  <p class="sci">${b.sci} · ${g.e} ${g.n}</p>
+
+  <div class="detail-meta">
+   <div class="meta-badge">🌍 Origin: <b>${b.o}</b></div>
+   <div class="meta-badge">📏 Size: <b>${b.s}</b></div>
+   <div class="meta-badge">⏳ Lifespan: <b>${b.l}</b></div>
+  </div>
+
+  <div class="tabs" id="tabs">
+   <button class="tab on" data-t="ov">Overview</button>
+   <button class="tab" data-t="di">Feeding</button>
+   <button class="tab" data-t="ca">Care</button>
+   <button class="tab" data-t="dz">Diseases</button>
+   <button class="tab" data-t="nt">My Notes</button>
+  </div>
+
+  <div class="panel on" id="p-ov">
+   <div class="box-section"><p id="about">Loading encyclopedia details…</p></div>
+   <div class="box-section"><b>Special Diet Tip:</b> ${b.tip}</div>
+  </div>
+
+  <div class="panel" id="p-di">
+   <div class="box-section"><h3>🌾 Feeding & Diet</h3><ul>${g.diet.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+  </div>
+
+  <div class="panel" id="p-ca">
+   <div class="box-section"><h3>🏠 Care & Housing</h3><ul>${g.care.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+  </div>
+
+  <div class="panel" id="p-dz">
+   <div class="box-section"><h3>🩺 Common Health Issues</h3>
+    ${g.dis.map(d=>`<p><b>• ${d[0]}:</b>${d[1]}<br><small style="color:var(--muted)">Treatment: ${d[2]}</small></p>`).join("<hr style='border:0;border-top:1px solid var(--line);margin:10px 0'>")}
+   </div>
+  </div>
+
+  <div class="panel" id="p-nt">
+   <div class="box-section">
+    <h3>📝 Personal Notes (Saved Locally)</h3>
+    <p style="color:var(--muted);font-size:.9rem">Add your breeding, medical or personal notes for ${b.name}:</p>
+    <textarea class="notes-area" id="noteInput" placeholder="Type your notes here...">${userNote}</textarea>
+    <button class="btn" style="margin-top:10px" id="saveNoteBtn">Save Note</button>
+   </div>
+  </div>
+ </main>`;
+
+ document.getElementById("tabs").onclick=e=>{
+  const t=e.target.dataset.t;if(!t)return;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.dataset.t===t));
+  document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("on",x.id==="p-"+t));
+ };
+
+ document.getElementById("saveNoteBtn").onclick=()=>{
+  const val=document.getElementById("noteInput").value;
+  notes[id]=val;
+  try{localStorage.setItem("bw_notes_pro",JSON.stringify(notes));alert("Note saved successfully!");}catch(e){}
+ };
+
+ const hero=document.getElementById("hero");
+ if(b.img)showImg(hero,b.img);
+ wiki(b.wiki).then(r=>{
+  if(!b.img&&r.img)showImg(hero,r.img);
+  document.getElementById("about").textContent=r.text||"No description available.";
+ }).catch(()=>{document.getElementById("about").textContent="Failed to load summary."});
+}
+
+/* Router */
+function route(){
+ const h=location.hash;
+ if(h.startsWith("#/bird/"))detail(h.slice(7));
+ else home();
+ window.scrollTo(0,0);
+}
+window.onhashchange=route;
+window.onload=route;
+</script>
+</body>
+</html>
