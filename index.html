@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Birds World – Complete 45 Birds Guide PRO++</title>
-<meta name="description" content="Complete professional bird guide with all 45 bird species, diet calculator, breeding tracker, notes, and voice search.">
+<meta name="description" content="Complete professional bird guide with all 45 bird species, photo credits, diet calculator, breeding tracker, notes, and voice search.">
 <style>
 :root{--bg:#f8fafc;--card:#ffffff;--text:#0f172a;--muted:#64748b;--ac:#10b981;--ac-hover:#059669;--line:#e2e8f0;--warn:#fef3c7;--wt:#92400e;--red:#fee2e2;--rt:#991b1b;--shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03)}
 [data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#f8fafc;--muted:#94a3b8;--ac:#34d399;--ac-hover:#10b981;--line:#334155;--warn:#451a03;--wt:#fde68a;--red:#7f1d1d;--rt:#fca5a5;--shadow:0 4px 6px -1px rgba(0,0,0,0.2)}
@@ -56,6 +56,7 @@ header{background:var(--card);border-bottom:1px solid var(--line);position:stick
 .wrap{max-width:900px;margin:0 auto;padding:20px}
 .back-link{display:inline-flex;align-items:center;gap:6px;font-weight:600;margin-bottom:16px}
 .hero-detail{border-radius:20px;overflow:hidden;background:var(--line);aspect-ratio:16/9;position:relative;box-shadow:var(--shadow)}
+.credit{font-size:.78rem;color:var(--muted);margin:6px 0 14px}
 .detail-meta{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
 .meta-badge{background:var(--card);border:1px solid var(--line);padding:8px 14px;border-radius:10px;font-size:.9rem}
 .tabs{display:flex;gap:8px;overflow-x:auto;margin:20px 0 12px;background:var(--card);padding:6px;border-radius:14px;border:1px solid var(--line)}
@@ -88,7 +89,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:40px 20px;b
 
 <div id="app"></div>
 
-<footer>Birds World Professional Edition · Powered by Wikipedia & Wikimedia Commons API</footer>
+<footer>Photos and summaries from Wikipedia / Wikimedia Commons under their licenses. General information only.</footer>
 
 <script>
 /* ===== 1) SHARED DISEASE ENTRIES ===== */
@@ -112,7 +113,7 @@ const G={
  wi:{n:"Large & Wild Birds",e:"🦩",diet:["Species-specific natural diet","Clean water at all times"],care:["Protected wildlife habitat","Leave in nature or rescue centers"],dis:[ASP,["Avian malaria","Weakness, pale gums","Antimalarial treatment"],AI], foodWeight:200, incDays:30, audioQuery:"Flamingo wild bird sound"}
 };
 
-/* ===== 3) ALL 45 SPECIES DATA (FULL ORIGINAL LIST) ===== */
+/* ===== 3) ALL 45 SPECIES DATA (FULL LIST) ===== */
 const C=f=>"https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(f.replace(/ /g,"_"))+"?width=800";
 const B=[
 ["Budgerigar","","Melopsittacus undulatus","pa","Australia","18 cm","5–10 years","Seed mix plus pellets, daily greens and a cuttlebone","Budgerigar (Karayil).jpg"],
@@ -175,8 +176,8 @@ const S=B.map(a=>({
  img:a[8]?C(a[8]):""
 }));
 
-/* State & Storage */
-const CK="bw_pro_v5";let cache={};
+/* ===== 4) WIKI & CREDITS FUNCTIONS ===== */
+const CK="bw_pro_v6";let cache={};
 try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){}
 const saveC=()=>{try{localStorage.setItem(CK,JSON.stringify(cache))}catch(e){}};
 async function wiki(t){
@@ -186,6 +187,18 @@ async function wiki(t){
  if(!r.ok)throw 0;const d=await r.json();const th=d.thumbnail&&d.thumbnail.source;
  const o={img:th?th.replace(/\/\d+px-/,"/800px-"):(d.originalimage&&d.originalimage.source)||"",text:d.extract||"",page:d.content_urls?d.content_urls.desktop.page:"https://en.wikipedia.org/wiki/"+t};
  cache[t]=o;saveC();return o;
+}
+async function credit(src){
+ const m=src.match(/FilePath\/([^?]+)/)||src.match(/\/(?:thumb\/)?[0-9a-f]\/[0-9a-f]{2}\/([^\/?]+)/);
+ if(!m)return null;
+ const f=decodeURIComponent(m[1]),k="c:"+f;
+ if(cache[k])return cache[k];
+ const r=await fetch("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&format=json&origin=*&titles="+encodeURIComponent("File:"+f));
+ const d=await r.json(),p=Object.values(d.query.pages)[0],x=p.imageinfo&&p.imageinfo[0].extmetadata;
+ if(!x)return null;
+ const strip=h=>h?String(h).replace(/<[^>]*>/g,"").trim():"";
+ const o={f,a:strip(x.Artist&&x.Artist.value),l:strip(x.LicenseShortName&&x.LicenseShortName.value)};
+ cache[k]=o;saveC();return o;
 }
 function showImg(box,src){
  const im=box.querySelector("img");if(!src)return;
@@ -214,13 +227,13 @@ document.getElementById("themeToggle").textContent=savedTheme==="dark"?"☀️":
 /* ===== HOME PAGE ===== */
 const app=document.getElementById("app");
 function home(){
- document.title="Birds World – All 45 Species Guide";
+ document.title="Birds World – Complete 45 Species Guide";
  const chips=[["all","All 45 Species"],["fav","♥ Favorites"],...Object.keys(G).map(k=>[k,G[k].e+" "+G[k].n])];
  
  app.innerHTML=`
  <div class="hero-banner">
   <h1>Discover the Wonderful World of Birds</h1>
-  <p>Complete professional avian guide featuring all 45 species, calculators, audio, breeding tracking and notes.</p>
+  <p>Complete professional avian guide featuring all 45 species, photo credits, calculators, audio, breeding tracking and notes.</p>
  </div>
  <main class="main-container">
   <div class="stats-grid">
@@ -309,6 +322,7 @@ function detail(id){
  <main class="wrap">
   <a class="back-link" href="#/">← Back to all birds</a>
   <div class="hero-detail" id="hero"><div class="ph">${g.e}</div><img alt="${b.name}"></div>
+  <p class="credit" id="credit">Loading photo credits & summary…</p>
   
   <h1>${b.name}</h1>
   <p class="sci">${b.sci} · ${g.e} ${g.n}</p>
@@ -440,9 +454,21 @@ function detail(id){
 
  const hero=document.getElementById("hero");
  if(b.img)showImg(hero,b.img);
- wiki(b.wiki).then(r=>{
+ wiki(b.wiki).then(async r=>{
   if(!b.img&&r.img)showImg(hero,r.img);
   document.getElementById("about").textContent=r.text||"No description available.";
+  const cr=document.getElementById("credit");
+  const sum=`Summary: <a href="${r.page}" target="_blank" rel="noopener">Wikipedia</a>`;
+  cr.innerHTML=sum;
+  try{
+   const c=await credit(b.img||r.img);
+   if(c){
+    let txt=`Photo: `;
+    if(c.a)txt+=c.a+" ";
+    if(c.l)txt+=`(${c.l}) `;
+    cr.innerHTML=`${txt} / <a href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(c.f)}" target="_blank" rel="noopener">Wikimedia Commons</a> · ${sum}`;
+   }
+  }catch(e){}
  }).catch(()=>{document.getElementById("about").textContent="Failed to load summary."});
 }
 
