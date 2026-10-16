@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birds World – Ultimate Professional Guide</title>
-<meta name="description" content="An advanced professional bird guide with comparison tools, custom notes, voice search, and interactive features.">
+<title>Birds World – Ultimate PRO++ Edition</title>
+<meta name="description" content="Ultimate professional bird guide with calculators, breeding trackers, audio players, custom notes, and voice search.">
 <style>
 :root{--bg:#f8fafc;--card:#ffffff;--text:#0f172a;--muted:#64748b;--ac:#10b981;--ac-hover:#059669;--line:#e2e8f0;--warn:#fef3c7;--wt:#92400e;--red:#fee2e2;--rt:#991b1b;--shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03)}
 [data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#f8fafc;--muted:#94a3b8;--ac:#34d399;--ac-hover:#10b981;--line:#334155;--warn:#451a03;--wt:#fde68a;--red:#7f1d1d;--rt:#fca5a5;--shadow:0 4px 6px -1px rgba(0,0,0,0.2)}
@@ -65,6 +65,13 @@ header{background:var(--card);border-bottom:1px solid var(--line);position:stick
 .box-section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin:12px 0;box-shadow:var(--shadow)}
 .notes-area{width:100%;height:100px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;margin-top:8px}
 
+/* Calculator & Audio & Breeding Styles */
+.calc-group, .breed-group{margin:12px 0}
+.calc-group label, .breed-group label{display:block;font-weight:600;margin-bottom:6px}
+.calc-input, .breed-input{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+.calc-results, .breed-results{background:var(--bg);border:1px solid var(--line);padding:12px;border-radius:10px;margin-top:12px;font-size:.95rem}
+.audio-player-box{display:flex;align-items:center;gap:14px;background:var(--bg);padding:14px;border-radius:12px;border:1px solid var(--line);margin-top:10px}
+
 footer{text-align:center;color:var(--muted);font-size:.85rem;padding:40px 20px;border-top:1px solid var(--line);margin-top:40px}
 @media print { header, .nav-actions, .tabs, footer, .control-panel, .fv-btn { display: none !important; } body { background: #fff; color: #000; } }
 </style>
@@ -73,9 +80,8 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:40px 20px;b
 
 <header>
  <div class="header-inner">
-  <a class="logo" href="#/">🐦 Birds World <span style="font-size:0.7rem;background:var(--ac);color:#fff;padding:2px 6px;border-radius:6px">PRO</span></a>
+  <a class="logo" href="#/">🐦 Birds World <span style="font-size:0.7rem;background:var(--ac);color:#fff;padding:2px 6px;border-radius:6px">PRO++</span></a>
   <div class="nav-actions">
-   <button class="icon-btn" id="compareBtn" title="Compare Birds">⚖️</button>
    <button class="icon-btn" id="themeToggle" title="Toggle Theme">🌙</button>
   </div>
  </div>
@@ -96,14 +102,14 @@ const COC=["Coccidiosis","Diarrhea (sometimes bloody), weight loss, ruffled feat
 const MITE=["Mites and lice","Itching, scaly crusts, feather damage, restlessness","Vet-approved antiparasitic treatment; clean cage and perches"];
 
 const G={
- pa:{n:"Parrots",e:"🦜",diet:["Quality pellets as base, plus seed mix","Fresh vegetables daily and a little fruit","Fresh clean water every day"],care:["Spacious cage with room to spread wings","Daily social contact and mental stimulation","10–12 hours of dark, quiet sleep"],dis:[["PBFD","Abnormal feathers, beak changes","No cure; strict isolation"],["Psittacosis","Green/yellow droppings, eye discharge","Antibiotic course"],ASP,EB]},
- fi:{n:"Finches & Canaries",e:"🐤",diet:["Quality finch seed mix","Fresh greens and grated vegetables","Cuttlebone and grit"],care:["Wide flight cage (horizontal space)","Quiet, draft-free place","Clean air: no smoke or fumes"],dis:[["Air sac mites","Clicking breathing, tail bobbing","Antiparasitic treatment"],COC,POX,EB]},
- do:{n:"Doves & Pigeons",e:"🕊️",diet:["Pigeon grain mix (seeds, peas, wheat)","Grit and mineral supplement","Fresh water daily"],care:["Dry, ventilated loft or aviary","Clean droppings every day","Quarantine new birds"],dis:[["Canker","Yellow cheesy lesions in throat","Antiprotozoal medicine"],["Paramyxovirus","Twisted neck, tremors","Vaccination & isolation"],COC]},
- po:{n:"Poultry",e:"🐔",diet:["Complete feed matched to age","Grit and oyster shell","Clean water always"],care:["Dry, predator-proof coop","Nest boxes and dust-bathing area","Biosecurity"],dis:[["Newcastle disease","Sneezing, green diarrhea","Vaccination & isolation"],AI,COC,MITE]},
- wa:{n:"Waterfowl",e:"🦆",diet:["Waterfowl pellets or grain","Greens and aquatic plants","Water deep enough to dunk head"],care:["Clean water for swimming","Dry bedding at night","Predator protection"],dis:[["Angel wing","Wing feathers twisting outward","Splint & correct diet"],AI,BF,ASP]},
- ra:{n:"Birds of Prey",e:"🦅",diet:["Whole prey: quail, rodents","Fresh or properly thawed meat","Clean water for bathing"],care:["Spacious aviary protected from weather","Clean perches of varied texture","Experienced handler"],dis:[ASP,BF,["Frounce","Yellow lesions in mouth","Antiprotozoal medicine"]]},
- so:{n:"Songbirds",e:"🎵",diet:["Insectivore mix, fruit or seed","Low-iron food for mynahs","Fresh water and bath"],care:["Large aviary with flying space","Quiet place with minimal stress"],dis:[["Iron storage disease","Weight loss, swollen abdomen","Low-iron diet"],POX,MITE]},
- wi:{n:"Wild Birds",e:"🦩",diet:["Species-specific natural diet","Clean water at all times"],care:["Protected wildlife habitat","Leave in nature or rescue centers"],dis:[ASP,["Avian malaria","Weakness, pale gums","Antimalarial treatment"],AI]}
+ pa:{n:"Parrots",e:"🦜",diet:["Quality pellets as base, plus seed mix","Fresh vegetables daily and a little fruit","Fresh clean water every day"],care:["Spacious cage with room to spread wings","Daily social contact and mental stimulation","10–12 hours of dark, quiet sleep"],dis:[["PBFD","Abnormal feathers, beak changes","No cure; strict isolation"],["Psittacosis","Green/yellow droppings, eye discharge","Antibiotic course"],ASP,EB], foodWeight:15, incDays:21, audioQuery:"Parrots singing calling sound"},
+ fi:{n:"Finches & Canaries",e:"🐤",diet:["Quality finch seed mix","Fresh greens and grated vegetables","Cuttlebone and grit"],care:["Wide flight cage (horizontal space)","Quiet, draft-free place","Clean air: no smoke or fumes"],dis:[["Air sac mites","Clicking breathing, tail bobbing","Antiparasitic treatment"],COC,POX,EB], foodWeight:4, incDays:14, audioQuery:"Canary singing song sound"},
+ do:{n:"Doves & Pigeons",e:"🕊️",diet:["Pigeon grain mix (seeds, peas, wheat)","Grit and mineral supplement","Fresh water daily"],care:["Dry, ventilated loft or aviary","Clean droppings every day","Quarantine new birds"],dis:[["Canker","Yellow cheesy lesions in throat","Antiprotozoal medicine"],["Paramyxovirus","Twisted neck, tremors","Vaccination & isolation"],COC], foodWeight:30, incDays:18, audioQuery:"Dove cooing sound"},
+ po:{n:"Poultry",e:"🐔",diet:["Complete feed matched to age","Grit and oyster shell","Clean water always"],care:["Dry, predator-proof coop","Nest boxes and dust-bathing area","Biosecurity"],dis:[["Newcastle disease","Sneezing, green diarrhea","Vaccination & isolation"],AI,COC,MITE], foodWeight:120, incDays:21, audioQuery:"Chicken clucking crowing sound"},
+ wa:{n:"Waterfowl",e:"🦆",diet:["Waterfowl pellets or grain","Greens and aquatic plants","Water deep enough to dunk head"],care:["Clean water for swimming","Dry bedding at night","Predator protection"],dis:[["Angel wing","Wing feathers twisting outward","Splint & correct diet"],AI,BF,ASP], foodWeight:150, incDays:28, audioQuery:"Duck quack sound"},
+ ra:{n:"Birds of Prey",e:"🦅",diet:["Whole prey: quail, rodents","Fresh or properly thawed meat","Clean water for bathing"],care:["Spacious aviary protected from weather","Clean perches of varied texture","Experienced handler"],dis:[ASP,BF,["Frounce","Yellow lesions in mouth","Antiprotozoal medicine"]], foodWeight:80, incDays:30, audioQuery:"Hawk eagle screech sound"},
+ so:{n:"Songbirds",e:"🎵",diet:["Insectivore mix, fruit or seed","Low-iron food for mynahs","Fresh water and bath"],care:["Large aviary with flying space","Quiet place with minimal stress"],dis:[["Iron storage disease","Weight loss, swollen abdomen","Low-iron diet"],POX,MITE], foodWeight:6, incDays:13, audioQuery:"Nightingale bird singing song"},
+ wi:{n:"Wild Birds",e:"🦩",diet:["Species-specific natural diet","Clean water at all times"],care:["Protected wildlife habitat","Leave in nature or rescue centers"],dis:[ASP,["Avian malaria","Weakness, pale gums","Antimalarial treatment"],AI], foodWeight:200, incDays:30, audioQuery:"Flamingo wild bird sound"}
 };
 
 const C=f=>"https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(f.replace(/ /g,"_"))+"?width=800";
@@ -124,7 +130,7 @@ const B=[
 const S=B.map(a=>({id:a[0].toLowerCase().replace(/[^a-z0-9]+/g,"-"),name:a[0],wiki:a[1]||a[0],sci:a[2],g:a[3],o:a[4],s:a[5],l:a[6],tip:a[7],img:a[8]?C(a[8]):""}));
 
 /* State & Storage */
-const CK="bw_pro_v1";let cache={};
+const CK="bw_pro_v3";let cache={};
 try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){}
 const saveC=()=>{try{localStorage.setItem(CK,JSON.stringify(cache))}catch(e){}};
 async function wiki(t){
@@ -159,21 +165,16 @@ document.getElementById("themeToggle").onclick=()=>{
 };
 document.getElementById("themeToggle").textContent=savedTheme==="dark"?"☀️":"🌙";
 
-/* Comparison Modal / View Handler */
-document.getElementById("compareBtn").onclick=()=>{
- alert("⚖️ Bird Comparison Feature: You can compare species features easily from the detail pages in future updates!");
-};
-
 /* ===== HOME PAGE ===== */
 const app=document.getElementById("app");
 function home(){
- document.title="Birds World – Professional Guide";
+ document.title="Birds World – Ultimate PRO++";
  const chips=[["all","All Species"],["fav","♥ Favorites"],...Object.keys(G).map(k=>[k,G[k].e+" "+G[k].n])];
  
  app.innerHTML=`
  <div class="hero-banner">
   <h1>Discover the Wonderful World of Birds</h1>
-  <p>Professional avian guide featuring detailed care, feeding, diagnostics, and smart management.</p>
+  <p>Professional avian platform with calculators, audio player, breeding tools, and management features.</p>
  </div>
  <main class="main-container">
   <div class="stats-grid">
@@ -254,6 +255,9 @@ function detail(id){
  if(!b){app.innerHTML="<div class='wrap'><h2>Bird not found</h2><a href='#/'>Back to home</a></div>";return;}
  const g=G[b.g];
  const userNote=notes[id]||"";
+ const baseWeight=g.foodWeight||15;
+ const incDays=g.incDays||18;
+ const todayStr=new Date().toISOString().split('T')[0];
 
  app.innerHTML=`
  <main class="wrap">
@@ -271,7 +275,9 @@ function detail(id){
 
   <div class="tabs" id="tabs">
    <button class="tab on" data-t="ov">Overview</button>
-   <button class="tab" data-t="di">Feeding</button>
+   <button class="tab" data-t="di">Feeding Calc</button>
+   <button class="tab" data-t="au">Audio & Sounds</button>
+   <button class="tab" data-t="br">Breeding Tracker</button>
    <button class="tab" data-t="ca">Care</button>
    <button class="tab" data-t="dz">Diseases</button>
    <button class="tab" data-t="nt">My Notes</button>
@@ -283,7 +289,52 @@ function detail(id){
   </div>
 
   <div class="panel" id="p-di">
-   <div class="box-section"><h3>🌾 Feeding & Diet</h3><ul>${g.diet.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <div class="box-section">
+    <h3>🌾 Feeding & Diet Guidelines</h3>
+    <ul>${g.diet.map(x=>`<li>${x}</li>`).join("")}</ul>
+   </div>
+   <div class="box-section">
+    <h3>⚖️ Daily Feed & Water Calculator</h3>
+    <div class="calc-group">
+     <label for="birdCount">Number of Birds:</label>
+     <input type="number" id="birdCount" class="calc-input" value="1" min="1" max="1000">
+    </div>
+    <div class="calc-results" id="calcResults">
+     <div>• Dry Seeds / Pellets: <b><span id="resFood">${baseWeight}</span> g / day</b></div>
+     <div>• Fresh Vegetables / Greens: <b><span id="resVeg">${Math.round(baseWeight*0.4)}</span> g / day</b></div>
+     <div>• Clean Drinking Water: <b><span id="resWater">${baseWeight*2}</span> ml / day</b></div>
+    </div>
+   </div>
+  </div>
+
+  <div class="panel" id="p-au">
+   <div class="box-section">
+    <h3>🎵 Bird Calls & Singing Player</h3>
+    <p style="color:var(--muted);font-size:.9rem">Listen to natural singing and calls associated with this bird family (${g.n}):</p>
+    <div class="audio-player-box">
+     <div style="font-size:2rem">🔊</div>
+     <div style="flex:1">
+      <div style="font-weight:600">${g.n} Natural Song & Calls</div>
+      <div style="font-size:0.85rem;color:var(--muted)">Audio stream preset for simulation</div>
+     </div>
+     <a class="btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(g.audioQuery)}" target="_blank" rel="noopener">▶ Search Audio on YouTube</a>
+    </div>
+   </div>
+  </div>
+
+  <div class="panel" id="p-br">
+   <div class="box-section">
+    <h3>🗓️ Breeding & Hatching Tracker</h3>
+    <p style="color:var(--muted);font-size:.9rem">Calculate expected hatching date based on incubation period (~${incDays} days for ${g.n}).</p>
+    <div class="breed-group">
+     <label for="incStartDate">Incubation Start Date (Eggs set):</label>
+     <input type="date" id="incStartDate" class="breed-input" value="${todayStr}">
+    </div>
+    <div class="breed-results" id="breedResults">
+     <div>• Expected Hatching Date: <b id="resHatch">...</b></div>
+     <div>• Estimated Incubation Period: <b>${incDays} Days</b></div>
+    </div>
+   </div>
   </div>
 
   <div class="panel" id="p-ca">
@@ -299,8 +350,7 @@ function detail(id){
   <div class="panel" id="p-nt">
    <div class="box-section">
     <h3>📝 Personal Notes (Saved Locally)</h3>
-    <p style="color:var(--muted);font-size:.9rem">Add your breeding, medical or personal notes for ${b.name}:</p>
-    <textarea class="notes-area" id="noteInput" placeholder="Type your notes here...">${userNote}</textarea>
+    <textarea class="notes-area" id="noteInput" placeholder="Type your breeding or medical notes here...">${userNote}</textarea>
     <button class="btn" style="margin-top:10px" id="saveNoteBtn">Save Note</button>
    </div>
   </div>
@@ -311,6 +361,30 @@ function detail(id){
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.dataset.t===t));
   document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("on",x.id==="p-"+t));
  };
+
+ /* Calculator Logic */
+ const countInput=document.getElementById("birdCount");
+ if(countInput){
+  countInput.oninput=e=>{
+   const val=Math.max(1, parseInt(e.target.value)||1);
+   document.getElementById("resFood").textContent=val*baseWeight;
+   document.getElementById("resVeg").textContent=Math.round(val*baseWeight*0.4);
+   document.getElementById("resWater").textContent=val*baseWeight*2;
+  };
+ }
+
+ /* Breeding Calculator Logic */
+ const dateInput=document.getElementById("incStartDate");
+ function updateHatchDate(){
+  if(!dateInput.value)return;
+  const d=new Date(dateInput.value);
+  d.setDate(d.getDate()+incDays);
+  document.getElementById("resHatch").textContent=d.toDateString();
+ }
+ if(dateInput){
+  dateInput.onchange=updateHatchDate;
+  updateHatchDate();
+ }
 
  document.getElementById("saveNoteBtn").onclick=()=>{
   const val=document.getElementById("noteInput").value;
