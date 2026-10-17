@@ -317,8 +317,17 @@ const CFG = Object.freeze({
          wd: "https://www.wikidata.org/w/api.php",
          sparql: "https://query.wikidata.org/sparql",
          avesKey: 212,
+         /* Real recordings. Measured from the browser on 2026-10-17:
+            Commons answers keyless with CORS and carries freely licensed files
+            (many of them Xeno-canto mirrors). iNaturalist v2 filters by
+            media_type=sound but returns sounds:[] for unauthenticated calls,
+            so it only becomes a source once the user adds a read token.
+            Xeno-canto v2 is retired (404) and v3 answers 401 without a key. */
+         inat: "https://api.inaturalist.org",
+         inatSite: "https://www.inaturalist.org",
+         commonsSite: "https://commons.wikimedia.org/wiki/File:",
          thumbPx: 800, timeoutMs: 9000, sparqlTimeoutMs: 30000 },
-  ATLAS: { pageSize: 100, concurrency: 3, gapMs: 90, sparqlBatch: 60, defaultCap: 1200, maxCap: 12000 },
+  ATLAS: { pageSize: 100, concurrency: 4, gapMs: 60, sparqlBatch: 60, defaultCap: 6000, maxCap: 20000 },
   VOICE: { seconds: 6, fft: 1024, bands: [0.4, 0.8, 1.4, 2.4, 3.8, 6, 8.5, 12] },
   DB: { name: "birds-world", version: 1, media: "media" },
   get remote() { return store.settings.apiBase ? store.settings.apiBase.replace(/\/+$/, "") + "/api" : null; },
@@ -327,7 +336,7 @@ const CFG = Object.freeze({
 const KEYS = { fav: "favorites", note: "notes", visits: "visits", birds: "birds",
   sightings: "sightings", cards: "srs", score: "progress", saved: "savedSearches",
   settings: "settings", outbox: "outbox", wiki: "cache:wiki", credit: "cache:credit",
-  atlas: "atlas:meta", ai: "ai_chat" };
+  atlas: "atlas:meta", ai: "ai_chat", songs: "savedSongs", ctx: "ai_ctx" };
 
 const TRAITS = [
   ["difficulty", 1, 5, "Care difficulty"], ["noise", 1, 5, "Noise level"],
@@ -344,7 +353,7 @@ const T = {
     skip:"Skip to content", badge:"Field guide", compare:"Compare", disclaimer:"General information only — not veterinary advice. For laboured breathing, egg binding or sudden weakness, contact an avian veterinarian immediately.",
     localfirst:"Everything you save stays on this device.",
     nav_home:"Home", nav_birds:"Species", nav_wizard:"Find my bird", nav_mybirds:"My birds", nav_sightings:"Sightings", nav_learn:"Learn", nav_settings:"Settings",
-    home_title:"Discover the wonderful world of birds", home_sub:"45 species with real recordings, photo credits, care calculators, breeding tracker, individual health records, geo sightings and spaced-repetition learning — fully offline-capable.",
+    home_title:"Discover the wonderful world of birds", home_sub:"45 care guides plus a world atlas you can pull to thousands of species: real field recordings with licence and recorder, photo credits, feed and incubation calculators, individual health records, geo sightings, sound identification and spaced-repetition learning — all of it offline-capable.",
     stat_species:"Species", stat_groups:"Families", stat_fav:"Favorites", stat_seen:"Explored", stat_mine:"My birds", stat_sights:"Sightings",
     bird_of_day:"Bird of the day", open:"Open", search:"Search", search_ph:"Name, scientific name or origin…", filters:"Filters", sort:"Sort",
     voice_no:"Voice search is not supported in this browser.", voice_fail:"Voice input failed.", voice_listen:"Listening…",
@@ -352,7 +361,7 @@ const T = {
     an_block:"This recording host blocks live analysis — playback still works.", not_found:"Not found.",
     play_block:"Playback blocked by the browser.", photo_big:"Photo over 4 MB — stored, but it may fill device storage.",
     import_fail:"Import failed:", sw_update:"Update ready — reload to apply.",
-    foot_html:'Species summaries and photos from <a href="https://en.wikipedia.org/wiki/" target="_blank" rel="noopener noreferrer">Wikipedia</a> / <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> under their licenses. Recordings from <a href="https://xeno-canto.org/" target="_blank" rel="noopener noreferrer">Xeno-canto</a>.',
+    foot_html:'Species summaries and photos from <a href="https://en.wikipedia.org/wiki/" target="_blank" rel="noopener noreferrer">Wikipedia</a> / <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> under their licenses. Recordings from <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>, <a href="https://xeno-canto.org/" target="_blank" rel="noopener noreferrer">Xeno-canto</a> and, with a token, <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a> — each entry keeps its own credit.',
     feed_rule:"Rules of thumb: 10–15 % of body weight in dry food, greens at roughly 40 % of that, water at about 2× dry weight. Small, fast-metabolising birds need proportionally more.",
     net_on:"online", net_off:"offline", body_g:"Body weight",
     clear:"Clear", saved_searches:"Saved searches", save_search:"Save this search", no_results:"No species match these filters.", try_wide:"Try widening the ranges or clearing the search.",
@@ -363,8 +372,18 @@ const T = {
     calc_h:"Daily feed & water calculator", birds_count:"Number of birds", dry:"Dry food", greens:"Fresh greens", water:"Drinking water",
     breed_h:"Breeding & hatching tracker", inc_start:"Incubation start date", hatch:"Expected hatch", inc_days:"Incubation length", day_of:"Day",
     synth:"Play synthesized chirp", real:"Load real recording", search_rec:"Search recordings…", more_sounds:"More sounds", rate:"Speed",
-    xeno_need_key:"Real recordings need a free Xeno-canto API key (or a community backend that holds it). Playing a synthesized chirp meanwhile.",
-    xeno_key:"Xeno-canto API key", xeno_key_hint:"Get one at xeno-canto.org/explore/api. A key typed here is sent from this browser only; with a community backend set, requests go through it instead so the key stays private.",
+    xeno_need_key:"Add a free Xeno-canto key for the deepest catalogue — but real recordings are searched on Wikimedia Commons first, with no key.",
+    xeno_key:"Xeno-canto API key", xeno_key_hint:"Get one at xeno-canto.org/explore/api. The API v2 was retired, so a key is now mandatory for that source. A key typed here is sent from this browser only; with a community backend set, requests go through it instead so the key stays private.",
+    inat_key:"iNaturalist read token", inat_key_hint:"Measured: iNaturalist returns photo URLs but an empty sounds array for anonymous calls, so its recordings only load when a read token is present. The token stays on this device and is stripped from every backup export.",
+    song_h:"Real recordings", song_load:"Search real recordings", song_searching:"Searching Commons…", song_from:"Sources",
+    song_none:"No freely licensed recording could be reached for this species. That does not mean the bird is silent — the open catalogue simply has nothing for it. Listen manually on Xeno-canto or iNaturalist.",
+    song_found:"{n} real recordings",
+    song_exact:"name match", song_offline:"saved", song_credit:"recorder & licence", song_dl:"Save offline", song_saved:"Offline copy saved",
+    song_removed:"Offline copy deleted", song_fail:"This host refused the download (CORS). Playback still works.",
+    song_quota:"Offline storage limit reached — free some space in Settings.", song_lib:"Use in Sound ID library",
+    song_libbed:"Added to the reference library", song_off:"Offline library", song_clear:"Clear saved audio", song_mb:"MB used offline",
+    song_sources:"Active sources", song_probe:"Measure coverage", song_probe_done:"{a} of {b} sampled species returned a real recording.",
+    song_playing:"Now playing", song_live:"live",
     symtom:"Symptoms", treat:"Treatment", med_advice:"General information only — see an avian vet.",
     notes_h:"Personal notes", save:"Save", note_saved:"Note saved", unsaved:"Unsaved",
     life_list:"Life list", export_json:"Export JSON", export_csv:"Export CSV", import:"Import backup",
@@ -387,7 +406,7 @@ const T = {
     copy:"Link copied", shared:"Shared", install:"Install app",
 
     /* atlas */
-    nav_atlas:"Atlas", atlas_h:"World bird atlas", atlas_source:"Names and classification: GBIF backbone. Arabic names and photos: Wikidata and Wikimedia Commons.",
+    nav_atlas:"Atlas", atlas_h:"World bird atlas", atlas_source:"Names and classification: the GBIF backbone for class Aves. Arabic names and photos: Wikidata and Wikimedia Commons. The import walks the tree family by family — one order finishes in minutes, the whole class runs longer and can be stopped at any point. Pages already fetched are kept on this device, so a stopped import does not start over.",
     atlas_sub:"Pull the global bird checklist onto this device. Imported species join search and can be photographed, described and voice-matched.",
     atlas_scope:"Scope", atlas_all:"All birds (class Aves)", atlas_order:"One order only", atlas_cap:"Maximum species",
     atlas_start:"Start import", atlas_stop:"Stop", atlas_running:"Importing…", atlas_done:"Import finished", atlas_have:"Species stored",
@@ -426,7 +445,7 @@ const T = {
     skip:"تخطَّ إلى المحتوى", badge:"دليل ميداني", compare:"مقارنة", disclaimer:"معلومات عامة فقط وليست استشارة بيطرية. عند عسر التنفس أو احتباس البيضة أو الوهن المفاجئ راجع طبيب طيور فوراً.",
     localfirst:"كل ما تحفظه يبقى على جهازك.",
     nav_home:"الرئيسية", nav_birds:"الأنواع", nav_wizard:"ابنِ طائري", nav_mybirds:"طيوري", nav_sightings:"مشاهدات", nav_learn:"تعلّم", nav_settings:"الإعدادات",
-    home_title:"اكتشف عالم الطيور العجيب", home_sub:"٤٥ نوعاً مع تسجيلات صوتية حقيقية وحقوق الصور وحاسبات التغذية ومتابعة التفريخ وسجلات صحية فردية ومشاهدات جغرافية وتكرار متباعد — ويعمل بدون إنترنت.",
+    home_title:"اكتشف عالم الطيور العجيب", home_sub:"٤٥ دليلاً للعناية وأطلساً عالمياً تسحبه إلى آلاف الأنواع: تسجيلات ميدانية حقيقية مع الرخصة واسم المُسجِّل، وحقوق الصور، وحاسبات الغذاء والحضانة، وسجلات صحية فردية، ومشاهدات جغرافية، وتعرّف على الأصوات، وتكرار متباعد — وكل ذلك يعمل دون إنترنت.",
     stat_species:"الأنواع", stat_groups:"الفصائل", stat_fav:"المفضلة", stat_seen:"المُستكشفة", stat_mine:"طيوري", stat_sights:"المشاهدات",
     bird_of_day:"طائر اليوم", open:"افتح", search:"بحث", search_ph:"الاسم أو الاسم العلمي أو الموطن…", filters:"تصفية", sort:"ترتيب",
     voice_no:"البحث الصوتي غير مدعوم في هذا المتصفح.", voice_fail:"تعذّر إدخال الصوت.", voice_listen:"أستمع…",
@@ -434,7 +453,7 @@ const T = {
     an_block:"هذا المضيف يمنع التحليل الحي — التشغيل يعمل بشكل طبيعي.", not_found:"غير موجود.",
     play_block:"المتصفح منع تشغيل الصوت.", photo_big:"الصورة أكبر من 4 ميغابايت — حُفظت لكنها قد تملأ مساحة الجهاز.",
     import_fail:"فشل الاستيراد:", sw_update:"يوجد تحديث — أعد التحميل للتطبيق.",
-    foot_html:'ملخصات الأنواع والصور من <a href="https://en.wikipedia.org/wiki/" target="_blank" rel="noopener noreferrer">ويكيبيديا</a> / <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">ويكيميديا كومنز</a> وفق رخصها. التسجيلات الصوتية من <a href="https://xeno-canto.org/" target="_blank" rel="noopener noreferrer">Xeno-canto</a>.',
+    foot_html:'ملخصات الأنواع والصور من <a href="https://en.wikipedia.org/wiki/" target="_blank" rel="noopener noreferrer">ويكيبيديا</a> / <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">ويكيميديا كومنز</a> وفق رخصها. التسجيلات من <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">ويكيميديا كومنز</a> و<a href="https://xeno-canto.org/" target="_blank" rel="noopener noreferrer">Xeno-canto</a> ومن <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a> عند وجود رمز — وكل تسجيل يحتفظ باسم مسجِّله ورخصته.',
     feed_rule:"قواعد عامة: ١٠–١٥٪ من وزن الجسم طعامًا جافًّا، والخضروات نحو ٤٠٪ من ذلك، والماء ضعف وزن الطعام الجاف تقريبًا. الطيور الصغيرة سريعة الأيض تحتاج نسبًا أكبر.",
     net_on:"متصل", net_off:"غير متصل", body_g:"وزن الجسم",
     clear:"مسح", saved_searches:"بحوث محفوظة", save_search:"احفظ هذا البحث", no_results:"لا يوجد نوع يطابق هذه المرشحات.", try_wide:"جرّب توسيع المدى أو مسح البحث.",
@@ -445,8 +464,18 @@ const T = {
     calc_h:"حاسبة الغذاء والماء اليومية", birds_count:"عدد الطيور", dry:"غذاء جاف", greens:"خضار طازجة", water:"ماء شرب",
     breed_h:"متابعة التفريخ والفقس", inc_start:"بداية الحضانة", hatch:"تاريخ الفقس المتوقع", inc_days:"مدة الحضانة", day_of:"اليوم",
     synth:"صفارة محاكاة", real:"تحميل تسجيل حقيقي", search_rec:"جارٍ البحث عن تسجيلات…", more_sounds:"مزيد من الأصوات", rate:"السرعة",
-    xeno_need_key:"التسجيلات الحقيقية تحتاج مفتاح Xeno-canto المجاني (أو خلفية مجتمعية تحتفظ به). نشغّل الآن صفارة محاكاة.",
-    xeno_key:"مفتاح Xeno-canto", xeno_key_hint:"احصل عليه من xeno-canto.org/explore/api. المفتاح هنا يُرسل من هذا المتصفح فقط؛ وعند ضبط خلفية مجتمعية تمر الطلبات عبرها فيبقى المفتاح خاصاً.",
+    xeno_need_key:"أضِف مفتاح Xeno-canto المجاني للحصول على أعمق فهرس — لكن البحث عن التسجيلات الحقيقية يبدأ من ويكيميديا كومنز بدون أي مفتاح.",
+    xeno_key:"مفتاح Xeno-canto", xeno_key_hint:"احصل عليه من xeno-canto.org/explore/api. أُلغيت الواجهة v2 فأصبح المفتاح إلزامياً لهذا المصدر. المفتاح هنا يُرسل من هذا المتصفح فقط؛ وعند ضبط خلفية مجتمعية تمر الطلبات عبرها فيبقى المفتاح خاصاً.",
+    inat_key:"رمز قراءة iNaturalist", inat_key_hint:"قِسنا ذلك: يُرجع iNaturalist روابط الصور لكن مصفوفة أصوات فارغة للاتصالات غير الموثّقة، فلا تُحمَّل تسجيلاته إلا مع رمز قراءة. يبقى الرمز على هذا الجهاز ويُحذَف من كل نسخة احتياطية.",
+    song_h:"تسجيلات حقيقية", song_load:"ابحث عن تسجيلات حقيقية", song_searching:"جارٍ البحث في كومنز…", song_from:"المصادر",
+    song_none:"لم يُعثَر على تسجيل حرّ هذا النوع. لا يعني ذلك أن الطير صامت، بل إن الفهرس المفتوح لا يحمل شيئاً له. استمع يدوياً من Xeno-canto أو iNaturalist.",
+    song_found:"{n} تسجيلاً حقيقياً",
+    song_exact:"مطابقة الاسم", song_offline:"محفوظ", song_credit:"المُسجِّل والرخصة", song_dl:"حفظ للاستماع دون إنترنت", song_saved:"حُفظت النسخة دون إنترنت",
+    song_removed:"حُذفت النسخة المحفوظة", song_fail:"رفض هذا المضيف التنزيل (CORS). التشغيل يعمل على أي حال.",
+    song_lib:"أضِف إلى مكتبة التعرّف الصوتي", song_libbed:"أُضيف إلى المكتبة المرجعية", song_off:"مكتبة دون إنترنت",
+    song_quota:"بلغت مساحة الحفظ دون إنترنت حدها — أفرِغ مساحة من الإعدادات.", song_clear:"حذف كل الصوت المحفوظ", song_mb:"مِغابايت محفوظة",
+    song_sources:"المصادر الفعّالة", song_probe:"قِس التغطية", song_probe_done:"أعاد {a} من {b} نوعاً في العينة تسجيلاً حقيقياً.",
+    song_playing:" قيد التشغيل", song_live:"مباشر",
     symtom:"الأعراض", treat:"العلاج", med_advice:"معلومات عامة فقط — راجع طبيب طيور.",
     notes_h:"ملاحظات شخصية", save:"حفظ", note_saved:"حُفظت الملاحظة", unsaved:"غير محفوظة",
     life_list:"قائمة الحياة", export_json:"تصدير JSON", export_csv:"تصدير CSV", import:"استيراد نسخة",
@@ -469,7 +498,7 @@ const T = {
     copy:"نُسخ الرابط", shared:"تمت المشاركة", install:"تثبيت التطبيق",
 
     /* الأطلس */
-    nav_atlas:"الأطلس", atlas_h:"أطلس الطيور العالمي", atlas_source:"الأسماء والتصنيف من GBIF، والأسماء العربية والصور من Wikidata وويكيبيديا كومنز.",
+    nav_atlas:"الأطلس", atlas_h:"أطلس الطيور العالمي", atlas_source:"الأسماء والتصنيف من قاعدة GBIF لفئة الطيور، والأسماء العربية والصور من Wikidata وويكيميديا كومنز. يسير الاستيراد عائلة تلو الأخرى: رتبة واحدة تكفي دقائق، والفئة كاملة تستغرق وقتاً أطول ويمكن إيقافها في أي لحظة. الصفحات المسحوبة تبقى على الجهاز، فلا يبدأ الاستيراد من جديد بعد الإيقاف.",
     atlas_sub:"اسحب قائمة الطيور العالمية إلى هذا الجهاز. الأنواع المستوردة تدخل في البحث وتقبل الصور والوصف والمقارنة الصوتية.",
     atlas_scope:"النطاق", atlas_all:"كل الطيور (فئة الطيور)", atlas_order:"رتبة واحدة فقط", atlas_cap:"أقصى عدد للأنواع",
     atlas_start:"ابدأ الاستيراد", atlas_stop:"إيقاف", atlas_running:"جارٍ الاستيراد…", atlas_done:"اكتمل الاستيراد", atlas_have:"الأنواع المخزّنة",
@@ -792,7 +821,11 @@ class Collection {
 
 const store = {
   settings: Object.assign({ theme: "auto", accent: 162, apiBase: "", xenoKey: "", lastSync: 0, installHinted: false,
-    aiBase: "", aiKey: "", aiModel: "", includeAtlas: false, atlasCap: CFG.ATLAS.defaultCap }, lsGet(KEYS.settings, {})),
+    aiBase: "", aiKey: "", aiModel: "", includeAtlas: false, atlasCap: CFG.ATLAS.defaultCap,
+    /* iNaturalist hides sound file URLs behind authentication (measured), so a
+       read token is what turns it into a usable recording source. Tokens and
+       keys never leave this device and are stripped from every backup export. */
+    inatToken: "", songSource: "auto", aiSpeak: false, songMaxMb: 220, atlasOrder: "" }, lsGet(KEYS.settings, {})),
   favs: new Set(lsGet(KEYS.fav, [])),
   notes: lsGet(KEYS.note, {}),
   visits: new Set(lsGet(KEYS.visits, [])),
@@ -989,7 +1022,264 @@ async function xenoRecordings(b, qty = 6) {
   })).filter(r => r.file);
 }
 
-/* ------------------------------------------------------------- ATLAS CATALOGUE */
+/* -------------------------------------------------- SONGS: real recordings */
+/* A species page that only plays a synthesized chirp is a chart, not a record.
+ * This module goes to the catalogues that actually hold a bird's voice and
+ * keeps the answer honest: source, licence and a link back to the recorder.
+ *
+ * Measured behaviour (browser, 2026-10-17):
+ *   Wikimedia Commons — keyless and CORS-readable, freely licensed, and rich
+ *       for wild species because many files are Xeno-canto mirrors named
+ *       "Genus species - Common Name XC123456.mp3". Thin for cage birds that
+ *       were never recorded in the field.
+ *   Xeno-canto v3     — the deepest catalogue that exists; v2 is retired
+ *       (HTTP 404) and v3 answers 401 until the user pastes a free key.
+ *   iNaturalist v2    — filters correctly by media_type=sound and returns
+ *       photos, but sounds:[] for anonymous calls: file URLs need a read
+ *       token, so it only becomes a source once the user adds one.
+ *   Internet Archive  — readable, but its bird audio is albums and podcasts
+ *       rather than per-species files: kept as a last resort only.
+ * Commons returns nothing for a quoted phrase on most names, so queries stay
+ * unquoted and relevance is decided here, in the open, on the filename. */
+const Song = {
+  fmt: /\.(mp3|m4a|aac|ogg|oga|opus|wav|flac)$/i,
+  mem: new Map(),
+  SRC: { commons: ["Wikimedia Commons", "🌐"], xeno: ["Xeno-canto", "🎙️"], inat: ["iNaturalist", "🔎"],
+         archive: ["Internet Archive", "🗄️"] },
+
+  /* Commons files spoken-pronunciation clips beside real recordings. They
+     sound like a person saying the name, which is worse than silence. */
+  isSpeech(name) {
+    const t = String(name);
+    return /^(LL-Q|[a-z]{2}(?:-[a-z]{2})?-)/.test(t) || /pronunciation|\(eng\)-|say the name/i.test(t);
+  },
+  score(item, b) {
+    const t = slug(item.file || item.title || "");
+    if (!t) return 0;
+    const parts = slug(b.sci || "").split("-"), gen = parts[0], epi = parts.slice(1).join("-");
+    let v = 0;
+    if (gen && epi && t.includes(gen + "-" + epi)) v += 5;
+    else { if (gen && t.includes(gen)) v += 2; if (epi && t.includes(epi)) v += 2; }
+    if (b.en && t.includes(slug(b.en))) v += 4;
+    else {
+      const words = String(b.en || "").toLowerCase().split(/\s+/).filter(w => w.length > 3 && slug(w));
+      v += Math.min(2, words.filter(w => t.includes(slug(w))).length);
+    }
+    if (/xc\d{4,}/.test(t)) v += 1;
+    if (this.isSpeech(item.file || item.title)) v -= 7;
+    if (/human|talking person|alarm|traffic/.test(t)) v -= 2;
+    return v;
+  },
+  /* keep only what a browser can actually play, then the trustworthy names */
+  filter(items, b, min = 2) {
+    return items.map(x => Object.assign({}, x, { conf: this.score(x, b) }))
+      .filter(x => this.fmt.test(String(x.file || x.title || "")))
+      .filter(x => x.conf >= min && !this.isSpeech(x.file || x.title))
+      .sort((a, c) => c.conf - a.conf || (a.kb || 0) - (c.kb || 0));
+  },
+  clean(html) { return String(html || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim(); },
+
+  /* --- provider 1: Wikimedia Commons, no key, the default everywhere ------- */
+  commonsUrl(q) {
+    return CFG.API.commons + "?action=query&generator=search&gsrnamespace=6&gsrlimit=20&maxlag=5" +
+      "&prop=imageinfo&iiprop=" + encodeURIComponent("url|mime|size|extmetadata") +
+      "&format=json&origin=*&gsrsearch=" + encodeURIComponent(q);
+  },
+  async commons(b) {
+    const names = [b.sci, b.en].filter(Boolean);
+    const qs = uniq(names.map(n => "filetype:audio " + n)).filter(q => q.length > 18);
+    const out = [];
+    for (const q of qs) {
+      let raw = null;
+      try { raw = await cachedJSON("songq", slug(q), this.commonsUrl(q)); } catch { raw = null; }
+      const pages = Object.values((raw && raw.query && raw.query.pages) || {});
+      for (const p of pages) {
+        const i = (p.imageinfo || [])[0] || {}, m = i.extmetadata || {};
+        const file = String(p.title || "").replace(/^File:/, "");
+        out.push({ src: "commons", file, title: file, url: i.url, mime: i.mime,
+          kb: Math.round((i.size || 0) / 1024), secs: num(i.duration, 0) || num(m.Duration && m.Duration.value, 0),
+          who: this.clean(m.Artist && m.Artist.value) || "Wikimedia contributor",
+          lic: this.clean(m.LicenseShortName && m.LicenseShortName.value) || "free licence",
+          page: CFG.API.commonsSite + encodeURIComponent(file.replace(/ /g, "_")) });
+      }
+      if (out.length >= 14) break;                 /* enough: stay polite */
+      await nap(140);
+    }
+    return this.filter(out, b);
+  },
+
+  /* --- provider 2: Xeno-canto, only with a key (v3 measures 401 without) -- */
+  async xeno(b) {
+    if (!xenoConfigured()) return [];
+    let recs = [];
+    try { recs = await xenoRecordings(b, 8); } catch { return []; }
+    return this.filter(recs.map(r => ({ src: "xeno", file: String(r.file).split("/").pop(), title: r.file,
+      url: r.file, page: r.page, who: r.who, where: r.where, when: r.date, kb: 0, secs: num(r.length, 0),
+      lic: "CC, Xeno-canto terms" })), b, 1);
+  },
+
+  /* --- provider 3: iNaturalist, needs the read token the user supplies ---- */
+  async inat(b) {
+    const tok = store.settings.inatToken;
+    if (!tok || !b.sci) return [];
+    try {
+      const tx = await req(CFG.API.inat + "/v1/taxons?q=" + encodeURIComponent(b.sci) + "&per_page=1&fields[taxons][]=id");
+      const id = tx && tx.results && tx.results[0] && tx.results[0].id;
+      if (!id) return [];
+      const u = CFG.API.inat + "/v2/observations?taxon_id=" + id + "&media_type=sound&per_page=8" +
+        "&fields[observations][]=uuid&fields[observations][]=location&fields[observations][]=observed_on" +
+        "&fields[sounds][]=file_url&fields[sounds][]=file_flags&fields[users][]=login";
+      const r = await fetch(u, { headers: { Accept: "application/json", Authorization: "Bearer " + tok } });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      const items = [];
+      for (const o of (j.results || [])) {
+        const s = (o.sounds || [])[0]; if (!s || !s.file_url) continue;
+        items.push({ src: "inat", file: String(s.file_url).split("/").pop(), title: String(s.file_url).split("/").pop(),
+          url: s.file_url.replace(/^http:/, "https:"), page: CFG.API.inatSite + "/observations/" + o.uuid,
+          who: (o.user && o.user.login) || "iNaturalist", where: o.location ? round(num(o.location.split(",")[0]), 3) + "°" : "",
+          when: o.observed_on, lic: (s.file_flags || []).join(", ") || "iNaturalist terms", kb: 0 });
+      }
+      return this.filter(items, b, 1);
+    } catch { return []; }
+  },
+
+  /* --- merge, cache, refresh --------------------------------------------- */
+  enabled() {
+    return ["commons"].concat(xenoConfigured() ? ["xeno"] : [], store.settings.inatToken ? ["inat"] : []);
+  },
+  async for(b, opts = {}) {
+    if (!b || (!b.sci && !b.en)) return [];
+    const key = slug(b.sci || b.en);
+    if (!opts.refresh && this.mem.has(key)) return this.mem.get(key);
+    const want = opts.only || this.enabled();
+    let out = [];
+    for (const src of want) {
+      const fn = this[src]; if (!fn) continue;
+      let list = [];
+      try { list = await fn.call(this, b); } catch { list = []; }
+      out = out.concat(list);
+    }
+    const seen = {};
+    out = out.filter(x => { const k = slug(x.url); if (seen[k]) return false; seen[k] = 1; return true; })
+      .sort((a, c) => c.conf - a.conf).slice(0, 14);
+    this.mem.set(key, out);
+    return out;
+  },
+  forget(sci) { const k = slug(sci); this.mem.delete(k); },
+
+  /* How much of the guide actually has a real voice today? Asked, measured,
+     answered with a number instead of a promise. */
+  async probe(n = 12, onProg) {
+    const pool = shuffle(SPECIES.slice());
+    let tested = 0, found = 0; const ex = [];
+    for (const b of pool) {
+      if (tested >= n || !pool.length) break;
+      tested++;
+      this.forget(b.sci);
+      let items = [];
+      try { items = await this.for(b, { only: ["commons"] }); } catch { items = []; }
+      if (items.length) { found++; if (ex.length < 4) ex.push(b.en || b.sci); }
+      if (onProg) onProg(tested, found);
+      await nap(130);
+    }
+    return { tested, found, ex };
+  },
+
+  /* --- offline copies: IndexedDB blob + a localStorage index -------------- */
+  bkey(url) { return "songblob:" + slug(url).slice(-72); },
+  index() { return lsGet(KEYS.songs, []); },
+  saved(url) { return this.index().find(x => x.url === url) || null; },
+  savedBytes() { return sum(this.index().map(x => x.kb || 0)) * 1024; },
+  async save(item) {
+    const blob = await req(item.url, { expect: "blob", timeout: 40000 });
+    if (!blob || !blob.size) throw new Error(tr("song_fail"));
+    const kb = Math.round(blob.size / 1024), cap = (store.settings.songMaxMb || 220) * 1024;
+    if (this.savedBytes() + kb > cap) { toast(tr("song_quota"), "warn"); return false; }
+    await idbPut(this.bkey(item.url), blob);
+    const idx = this.index();
+    idx.unshift({ url: item.url, file: item.file || item.title, kb, sci: item.sci || "", at: Date.now() });
+    lsSet(KEYS.songs, idx.slice(0, 400));
+    toast(tr("song_saved"), "ok");
+    return true;
+  },
+  async drop(url) {
+    await idbDel(this.bkey(url));
+    lsSet(KEYS.songs, this.index().filter(x => x.url !== url));
+    if (this._obj) { this._obj.forEach(u => URL.revokeObjectURL(u)); this._obj = new Map(); }
+    return true;
+  },
+  _obj: new Map(),
+  async wipeOffline() {
+    for (const x of this.index()) await idbDel(this.bkey(x.url));
+    lsSet(KEYS.songs, []);
+    this._obj.forEach(u => URL.revokeObjectURL(u));
+    this._obj = new Map();
+  },
+  async localUrl(url) {
+    if (this._obj.has(url)) return this._obj.get(url);
+    const blob = await idbGet(this.bkey(url));
+    if (!blob) return "";
+    const u = URL.createObjectURL(blob);
+    this._obj.set(url, u);
+    return u;
+  },
+  async play(item, el, wave, spec) {
+    const src = (await this.localUrl(item.url)) || item.url;
+    const go = cross => new Promise((res, rej) => {
+      if (cross) el.setAttribute("crossorigin", "anonymous"); else el.removeAttribute("crossorigin");
+      el.src = src; el.load();
+      el.play().then(() => res(true), rej);
+    });
+    /* A crossOrigin element refuses a host that withholds CORS. Losing the
+       live spectrogram is a far smaller loss than losing the bird's voice, so
+       the plain request is the fallback. */
+    try { await go(true); if (wave || spec) attachAnalyser(el, wave, spec); return true; }
+    catch { try { await go(false); return true; } catch { toast(tr("play_block"), "warn"); return false; } }
+  },
+};
+
+/* One list markup + one click path, reused by the species page, the atlas
+ * page and the sound quiz so a recording behaves identically everywhere. */
+function songMarkup(items, opts = {}) {
+  if (!items || !items.length) return "";
+  const ar = I18N.lang === "ar";
+  return items.map((r, i) => {
+    const s = Song.SRC[r.src] || [r.src, "🎧"];
+    const meta = [r.who, r.where, r.lic, r.kb ? r.kb + " KB" : "", r.secs ? round(r.secs, 0) + "s" : ""].filter(Boolean).join(" · ");
+    const off = Song.saved(r.url);
+    return `<div class="bird-item"><div class="avatar">${s[1]}</div>
+      <div style="min-width:0">
+        <b>${esc(ar ? "تسجيل حقيقي" : "Field recording")}</b>
+        <span class="chip" style="margin-inline-start:6px">${esc(s[0])}</span>
+        ${r.conf >= 5 ? `<span class="chip">${esc(tr("song_exact"))}</span>` : ""}
+        ${off ? `<span class="chip ok">⬇ ${esc(tr("song_offline"))}</span>` : ""}
+        <div class="hint" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(92vw,520px)">${esc(r.file || r.title || "")}</div>
+        <div class="hint">${esc(meta)}</div>
+        ${r.page ? `<div class="hint"><a target="_blank" rel="noopener noreferrer" href="${esc(r.page)}">${esc(tr("song_credit"))} ↗</a></div>` : ""}
+      </div>
+      <div class="row" style="flex-direction:column;gap:4px">
+        <button class="btn sm" data-song="${i}">▶</button>
+        <button class="btn sm ghost" data-dl="${i}">${off ? "🗑" : "⬇"}</button></div>
+    </div>`;
+  }).join("");
+}
+function wireSongs(host, items, el, wave, spec, after) {
+  on(host, "click", "[data-song]", async (e, n) => {
+    const r = items[+n.dataset.song]; if (!r) return;
+    e.preventDefault();
+    await Song.play(r, el, wave, spec);
+  });
+  on(host, "click", "[data-dl]", async (e, n) => {
+    const r = items[+n.dataset.dl]; if (!r) return;
+    e.preventDefault();
+    if (Song.saved(r.url)) { await Song.drop(r.url); toast(tr("song_removed"), "ok"); }
+    else { n.textContent = "…"; try { await Song.save(Object.assign({}, r)); } catch { toast(tr("song_fail"), "warn"); } }
+    if (after) after();
+  });
+}
+
+
 /* The world checklist walks the GBIF backbone (class → order → family → genus →
  * species) and enriches each family with ONE Wikidata query per 60 names, which
  * is what keeps a whole class inside a polite request budget. Imported rows carry
@@ -1042,14 +1332,23 @@ const Atlas = {
     await idbPut("atlas:meta", this.meta);
   },
 
+  /* One page of the backbone, mirrored to IndexedDB: a 6,000-species pull runs
+     for many minutes and a dropped connection or a closed tab must not mean
+     starting over — the pages already seen are answered from the device. */
+  async pageOf(taxonKey, offset) {
+    const url = CFG.API.gbif + "/species/" + taxonKey + "/children?limit=" + CFG.ATLAS.pageSize + "&offset=" + offset;
+    const ck = "gbifc:" + taxonKey + "@" + offset;
+    try { const j = await once(url, { timeout: 15000 }); idbPut(ck, { at: Date.now(), data: j }); return j; }
+    catch (e) { const hit = await idbGet(ck); if (hit) return hit.data || hit; throw e; }
+  },
+
   /* Paged children of one taxon, with one polite retry on a rate-limit. */
   async children(taxonKey) {
     const out = []; let offset = 0, retried = false;
     for (;;) {
       if (this.state.cancel) break;
-      const url = CFG.API.gbif + "/species/" + taxonKey + "/children?limit=" + CFG.ATLAS.pageSize + "&offset=" + offset;
       let page;
-      try { page = await req(url, { timeout: 15000 }); }
+      try { page = await this.pageOf(taxonKey, offset); }
       catch (e) {
         if (!retried && /429|5\d\d/.test(String(e && e.message))) { retried = true; this.state.note = tr("atlas_throttled"); await nap(2500); continue; }
         throw e;
@@ -1154,18 +1453,35 @@ const Atlas = {
           }
         }
       }
-      for (const item of queue) {
-        if (this.state.cancel || this.rows.length >= cap) break;
-        const lin = { fk: item.node.key, family: item.node.canonicalName, order: item.order, genus: "" };
-        const found = [];
-        await this.collect(item.node, lin, found, 2, cap - this.rows.length);
-        const novel = found.filter(r => !this.bySci.has(r.sci));
-        novel.forEach(r => this.adopt(r, lin.fk));
-        if (novel.length) await this.flushFam(lin.fk);
-        if (opts.enrich !== false && novel.length) await this.enrichRows(novel);
-        this.state.fam = lin.family; this.state.pulled = this.rows.length;
-        try { if (opts.onProg) opts.onProg(this.state); } catch { /* view was replaced mid-import */ }
-      }
+      /* Families are independent branches of the backbone, so they are pulled
+         through a small pool. At a 6,000-species cap the walk is the slow half
+         of the import, and GBIF answers four parallel requests happily. */
+      const pool = clamp(CFG.ATLAS.concurrency || 3, 1, 6);
+      this.state.fams = queue.length; this.state.doneFams = 0;
+      let cursor = 0;
+      const work = async () => {
+        for (;;) {
+          if (this.state.cancel || this.rows.length >= cap) return;
+          const i = cursor++;
+          if (i >= queue.length) return;
+          const item = queue[i];
+          const lin = { fk: item.node.key, family: item.node.canonicalName, order: item.order, genus: "" };
+          try {
+            const found = [];
+            await this.collect(item.node, lin, found, 2, cap - this.rows.length);
+            const novel = found.filter(r => !this.bySci.has(r.sci));
+            novel.forEach(r => this.adopt(r, lin.fk));
+            if (novel.length) await this.flushFam(lin.fk);
+            if (opts.enrich !== false && novel.length) await this.enrichRows(novel);
+          } catch (e) {
+            this.state.note = String((e && e.message) || e);
+            if (/abort|Failed to fetch|HTTP /.test(this.state.note)) this.state.note = tr("atlas_off");
+          }
+          this.state.fam = lin.family; this.state.pulled = this.rows.length; this.state.doneFams++;
+          try { if (opts.onProg) opts.onProg(this.state); } catch { /* view was replaced mid-import */ }
+        }
+      };
+      await Promise.all(Array.from({ length: pool }, () => work()));
     } catch (e) {
       this.state.note = String((e && e.message) || e);
       if (/abort|Failed to fetch|HTTP /.test(this.state.note)) this.state.note = tr("atlas_off");
@@ -1411,9 +1727,12 @@ function attachAnalyser(mediaEl, waveCv, specCv) {
   const ctx = audioCtx(); if (!ctx) return;
   detachAnalyser();
   audio.el = mediaEl; audio.blocked = false; audio.silentFrames = 0;
-  let src;
-  try { src = ctx.createMediaElementSource(mediaEl); }
-  catch { return; }
+  /* createMediaElementSource may only be called once per element. Reusing the
+     node the element already owns is what makes the second recording of a
+     session audible: a fresh call here throws, and a thrown attach used to
+     leave the element disconnected from the output after the first pause. */
+  let src = mediaEl._bwSrc && mediaEl._bwSrc.context === ctx ? mediaEl._bwSrc : null;
+  if (!src) { try { src = ctx.createMediaElementSource(mediaEl); mediaEl._bwSrc = src; } catch { return; } }
   const an = ctx.createAnalyser(); an.fftSize = 2048; an.smoothingTimeConstant = .78;
   src.connect(an); an.connect(ctx.destination);
   audio.node = src; audio.analyser = an;
@@ -1445,7 +1764,7 @@ function attachAnalyser(mediaEl, waveCv, specCv) {
         const bin = Math.floor((h - y) / h * fd.length * .5), v = fd[bin];
         col.data[y * 4] = 16 + v * .2; col.data[y * 4 + 1] = 120 + v * .7; col.data[y * 4 + 2] = 90 + v * .3; col.data[y * 4 + 3] = 255;
       }
-      c.putImageData(col, sweep, 0); c.drawImage(sc, 0, 0, w, h, -1, 0, w, h);
+      c.putImageData(col, sweep, 0); c.drawImage(specCv, 0, 0, w, h, -1, 0, w, h);
       sweep = (sweep + 1) % Math.max(1, w - 1);
     }
   };
@@ -1726,19 +2045,18 @@ const Acoustic = {
       .map(r => Object.assign({}, r, { voices: (r.voices || []).filter(v => v && v.fp && v.fp.V === this.FV) }))
       .filter(r => r.voices.length);
   },
-  /* freely licensed recordings on Commons, keyless and already cached by the SW */
+  /* freely licensed recordings, keyless on Commons by default; the same list
+     the species page shows, so what you hear and what the matcher learns are
+     never two different things */
   async candidates(sci) {
-    const url = CFG.API.commons + "?action=query&generator=search&gsrnamespace=6&gsrlimit=16&gsrsearch=" +
-      encodeURIComponent('filetype:audio "' + sci + '"') + "&prop=imageinfo&iiprop=url|mime|size&format=json&origin=*";
-    const raw = await req(url, { timeout: 14000 });
-    const pages = Object.values((raw && raw.query && raw.query.pages) || {});
-    return pages.map(p => {
-      const i = (p.imageinfo || [])[0] || {};
-      return { title: p.title, file: String(p.title).replace(/^File:/, ""), url: i.url, mime: i.mime,
-        kb: Math.round((i.size || 0) / 1024), secs: round(i.duration || 0, 1) };
-    }).filter(x => x.url && x.secs >= 6 && x.secs <= 80 && x.kb > 20 && x.kb < 4200)
-      .sort((a, b) => Math.abs(a.secs - 20) - Math.abs(b.secs - 20));
+    const b = SPECIES.find(x => x.sci === sci) || Atlas.get(sci) || { sci };
+    const items = await Song.for(b);
+    return items.filter(x => this.PLAY.test(String(x.url || x.file)))
+      .map(x => ({ file: x.file || x.title, url: x.url, mime: x.mime, kb: x.kb, secs: round(x.secs || 0, 1) }))
+      .filter(x => x.url && x.secs >= 6 && x.secs <= 140 && x.kb > 20 && x.kb < 4200)
+      .sort((a, b2) => Math.abs(a.secs - 20) - Math.abs(b2.secs - 20));
   },
+  PLAY: /\.(mp3|m4a|aac|ogg|oga|opus|wav)$/i,
   async fetchBuffer(url) {
     const blob = await req(url, { expect: "blob", timeout: 30000 });
     const ctx = audioCtx() || new (window.AudioContext || window.webkitAudioContext)();
@@ -2856,8 +3174,22 @@ function wireCatalogueClicks(root) {
     const img = n.querySelector("img");
     if (img && img.naturalWidth) { e.preventDefault(); openLightbox(img.src, speciesName(byId(n.dataset.zoom))); }
   });
-  on(root, "click", "[data-audition]", (e, n) => { const b = byId(n.dataset.audition); if (b) playChirp(GROUPS[b.g].synthPitch); });
+  if (!root._audWired) {
+    root._audWired = true;
+    on(root, "click", "[data-audition]", async (e, n) => {
+      const b = byId(n.dataset.audition); if (!b) return;
+      /* the list button plays a real voice when the session already found one
+         for this species, and the synthesized pitch only as the fallback */
+      const known = Song.mem.get(slug(b.sci)) || [];
+      if (known.length) {
+        if (!auditionAudio) auditionAudio = new Audio();
+        if (await Song.play(known[0], auditionAudio, null, null)) return;
+      }
+      playChirp(GROUPS[b.g].synthPitch);
+    });
+  }
 }
+let auditionAudio = null;
 
 /* --------------------------------------------------------------- COMPARE */
 function openCompare() {
@@ -3020,31 +3352,38 @@ function viewDetail(id) {
   $("#synth").onclick = () => playChirp(g.synthPitch);
   const player = $("#player");
   $("#rate").addEventListener("input", e => { player.playbackRate = +e.target.value; $("#rateO").textContent = (+e.target.value).toFixed(2) + "×"; });
-  $("#loadRec").onclick = async () => {
-    $("#recList").innerHTML = `<p class="hint">${esc(tr("search_rec"))}</p>`;
-    if (!xenoConfigured()) {
-      $("#recList").innerHTML = `<div class="banner warn">🎧 ${esc(tr("xeno_need_key"))}
-        <a href="#/settings">${esc(tr("settings_h"))}</a> ·
-        <a target="_blank" rel="noopener noreferrer" href="${esc(CFG.API.xenoSite + "?q=" + encodeURIComponent(b.sci))}">xeno-canto.org ↗</a></div>`;
-      playChirp(g.synthPitch);
+  const renderSongs = async keepMem => {
+    $("#recList").innerHTML = `<p class="hint">${esc(tr("song_searching"))}</p>`;
+    if (!keepMem) Song.forget(b.sci);
+    let items = [];
+    try { items = await Song.for(b); } catch { items = []; }
+    const links = `<a target="_blank" rel="noopener noreferrer" href="${esc(CFG.API.xenoSite + "?q=" + encodeURIComponent(b.sci))}">xeno-canto ↗</a> ·
+      <a target="_blank" rel="noopener noreferrer" href="${esc(CFG.API.inatSite + "/observations?q=" + encodeURIComponent(b.sci) + "&sound=type%3Acall")}" dir=ltr>iNaturalist ↗</a>`;
+    if (!items.length) {
+      $("#recList").innerHTML = `<div class="banner warn">🎧 ${esc(tr("song_none"))}<br>${links}</div>
+        <p class="hint">${esc(tr("song_from"))}: ${esc(Song.enabled().join(" · "))}</p>`;
       return;
     }
-    let recs = [];
-    try { recs = await xenoRecordings(b); } catch { recs = []; }
-    if (!recs.length) {
-      $("#recList").innerHTML = `<div class="banner warn">${esc(tr("no_results"))}</div>`;
-      playChirp(g.synthPitch); return;
-    }
-    $("#recList").innerHTML = recs.map((r, i) => `<div class="bird-item"><div class="avatar">🎧</div>
-      <div><b>${esc(r.who)}</b><br><span class="hint">${esc(r.where)} · ${esc(r.length || "?")}s · ${esc(r.date || "")}</span>
-        ${r.page ? `<div class="hint"><a target="_blank" rel="noopener noreferrer" href="${esc(r.page)}">xeno-canto #${esc(r.id)} ↗</a></div>` : ""}</div>
-      <button class="btn sm" data-play="${i}">▶</button></div>`).join("");
-    on($("#recList"), "click", "[data-play]", (e, n) => {
-      const r = recs[+n.dataset.play];
-      player.src = r.file; player.load(); player.playbackRate = +$("#rate").value;
-      player.play().then(() => attachAnalyser(player, $("#wave"), $("#spec"))).catch(() => toast(tr("play_block"), "warn"));
-    });
+    $("#recList").innerHTML = `<div class="row"><span class="chip">🎧 ${esc(tr("song_found", { n: items.length }))}</span>
+        <span class="spacer"></span><button class="btn sm ghost" id="recAgain">↻</button></div>` +
+      songMarkup(items) +
+      `<div class="row" style="margin-top:var(--s-2)">
+        <button class="btn sm" id="recLib">🧬 ${esc(tr("song_lib"))}</button>
+        <button class="btn sm ghost" id="recSynth">🔊 ${esc(tr("synth"))}</button>
+        <span class="spacer"></span>${links}</div>`;
+    wireSongs($("#recList"), items, player, $("#wave"), $("#spec"), () => renderSongs(true));
+    $("#player").addEventListener("play", () => { player.playbackRate = +$("#rate").value; });
+    $("#recAgain").onclick = () => renderSongs(false);
+    $("#recSynth").onclick = () => playChirp(g.synthPitch);
+    $("#recLib").onclick = async () => {
+      $("#recLib").textContent = "…";
+      let ok = null;
+      try { ok = await Acoustic.addReference(b.sci); } catch { ok = null; }
+      $("#recLib").textContent = "🧬 " + tr("song_lib");
+      toast(ok ? tr("song_libbed") : tr("song_fail"), ok ? "ok" : "warn");
+    };
   };
+  $("#loadRec").onclick = renderSongs;
   player.addEventListener("pause", () => detachAnalyser());
 
   /* notes with autosave */
@@ -3457,12 +3796,13 @@ function viewLearn() {
         <button class="btn sm" id="playQ">▶ ${esc(tr("synth"))}</button><span class="hint" id="qState">…</span></div>
         <div class="opts" id="qOpts" style="margin-top:var(--s-3)"></div>`;
       let recs = [];
-      try { recs = await xenoRecordings(target, 4); } catch { recs = []; }
+      try { recs = await Song.for(target); } catch { recs = []; }
       const pitch = GROUPS[target.g].synthPitch;
       if (recs.length) {
-        $("#qState").textContent = "🎧 " + recs.length;
-        $("#playQ").onclick = () => { const a = new Audio(recs[0].file); a.crossOrigin = "anonymous"; a.play().catch(() => playChirp(pitch)); };
-      } else { $("#qState").textContent = "🔊 synth"; $("#playQ").onclick = () => playChirp(pitch); }
+        $("#qState").textContent = "🎧 " + recs.length + " · " + (Song.SRC[recs[0].src] || [""])[0];
+        const q = new Audio(); q.preload = "none";
+        $("#playQ").onclick = () => { Song.play(recs[0], q, null, null).then(ok => { if (!ok) playChirp(pitch); }); };
+      } else { $("#qState").textContent = "🔊 " + tr("synth"); $("#playQ").onclick = () => playChirp(pitch); }
       $("#qOpts").innerHTML = quiz.opts.map(o => `<button class="qopt" data-opt="${o.id}">${esc(speciesName(o))}</button>`).join("");
       on($("#qOpts"), "click", "[data-opt]", (e, n) => finish(n.dataset.opt === target.id, n.dataset.opt));
     }
@@ -3505,8 +3845,8 @@ async function storageInfo() {
 }
 function exportBackup() {
   /* API keys never leave the device, even in a user-initiated backup: the
-     Xeno-canto key and the model key are both stripped here. */
-  const settings = { ...store.settings, xenoKey: "", aiKey: "" };
+     Xeno-canto key, the model key and the iNaturalist token are stripped. */
+  const settings = { ...store.settings, xenoKey: "", aiKey: "", inatToken: "" };
   return JSON.stringify({ app: "birds-world", version: CFG.VERSION, at: new Date().toISOString(),
     settings, favorites: Array.from(store.favs), notes: store.notes,
     visits: Array.from(store.visits), birds: store.birds.all(), sightings: store.sightings.all(),
@@ -3516,10 +3856,11 @@ function exportBackup() {
 function importBackup(text) {
   const d = JSON.parse(text);
   if (!d || d.app !== "birds-world") throw new Error("unrecognised file");
-  const keepKey = store.settings.xenoKey, keepAi = store.settings.aiKey;
+  const keepKey = store.settings.xenoKey, keepAi = store.settings.aiKey, keepInat = store.settings.inatToken;
   Object.assign(store.settings, d.settings || {});
   store.settings.xenoKey = d.settings && d.settings.xenoKey ? d.settings.xenoKey : keepKey;
   store.settings.aiKey = d.settings && d.settings.aiKey ? d.settings.aiKey : keepAi;
+  store.settings.inatToken = d.settings && d.settings.inatToken ? d.settings.inatToken : keepInat;
   AI.invalidate();
   store.favs = new Set(d.favorites || []); store.notes = d.notes || {}; store.visits = new Set(d.visits || []);
   store.birds.items = d.birds || []; store.sightings.items = d.sightings || [];
@@ -3555,6 +3896,18 @@ function viewSettings() {
       <div class="kv"><span>${esc(tr("last_sync"))}</span>${s.lastSync ? esc(fmtDate(new Date(s.lastSync).toISOString())) : "—"}</div>
       <div class="kv"><span>Wiki / Commons cache</span>${cachedJSON.mem.size}</div></div></section>
 
+  <section class="panel"><h2>🎧 ${esc(tr("song_h"))}</h2>
+    <div class="row"><input id="setInat" type="password" placeholder="${esc(tr("inat_key"))}" value="${esc(s.inatToken || "")}" style="flex:1;min-width:220px" autocomplete="off">
+      <button class="btn ghost" id="setInatSave">${esc(tr("save"))}</button></div>
+    <p class="hint">${esc(tr("inat_key_hint"))}</p>
+    <div class="kb" style="margin-top:var(--s-2)">
+      <div class="kv"><span>${esc(tr("song_sources"))}</span><b>${esc(Song.enabled().join(" · "))}</b></div>
+      <div class="kv"><span>${esc(tr("song_mb"))}</span><b id="songKb">${round(Song.savedBytes() / 1048576, 1)} MB · ${Song.index().length}</b></div></div>
+    <div class="row" style="margin-top:var(--s-3)">
+      <button class="btn ghost" id="songProbe">📊 ${esc(tr("song_probe"))}</button>
+      <button class="btn danger ghost" id="songWipe">🗑 ${esc(tr("song_clear"))}</button>
+      <span class="spacer"></span><span class="hint" id="songProbeOut"></span></div></section>
+
   <section class="panel"><h2>🤖 ${esc(tr("ai_h"))}</h2>
     <div class="filters">
       <div><label>${esc(tr("ai_base"))}</label><input id="setAiBase" placeholder="https://api.openai.com/v1" value="${esc(s.aiBase || "")}" autocomplete="off"></div>
@@ -3567,10 +3920,8 @@ function viewSettings() {
 
   <section class="panel"><h2>🌍 ${esc(tr("atlas_h"))}</h2>
     <label class="inline"><input type="checkbox" id="setAtlasInc" ${s.includeAtlas ? "checked" : ""}> ${esc(tr("atlas_include"))}</label>
-    <div class="row" style="margin-top:var(--s-3)"><label style="min-width:150px">${esc(tr("atlas_cap"))}</label>
-      <div class="rng"><input type="range" id="setAtlasCap" min="200" max="${CFG.ATLAS.maxCap}" step="200" value="${s.atlasCap || CFG.ATLAS.defaultCap}">
-        <output id="capOut">${s.atlasCap || CFG.ATLAS.defaultCap}</output></div></div>
-    <div class="row" style="margin-top:var(--s-3)"><button class="btn" id="setAtlasSave">${esc(tr("save"))}</button></div>
+    <div class="row" style="margin-top:var(--s-3)"><a class="btn" href="#/atlas">🌍 ${esc(tr("atlas_h"))}</a>
+      <span class="hint">${esc(tr("atlas_cap"))}: <b id="setCapOut">${s.atlasCap || CFG.ATLAS.defaultCap}</b> · ${esc(tr("atlas_have"))}: <b id="setAtN">${Atlas.count()}</b></span></div>
     <p class="hint">${esc(tr("atlas_source"))}</p></section>
 
   <section class="panel"><h2>💾 ${esc(tr("storage"))}</h2>
@@ -3596,6 +3947,17 @@ function viewSettings() {
     toast(remote.enabled() ? tr("remote_ok") : "Local mode", "ok"); viewSettings();
   };
   $("#syncNow").onclick = async () => { await remote.syncAll(); viewSettings(); };
+  $("#setInatSave").onclick = () => {
+    s.inatToken = $("#setInat").value.trim(); store.persist();
+    toast(tr("note_saved"), "ok"); viewSettings();
+  };
+  $("#songWipe").onclick = async () => { await Song.wipeOffline(); toast(tr("song_removed"), "ok"); viewSettings(); };
+  $("#songProbe").onclick = async () => {
+    const btn = $("#songProbe"); btn.disabled = true;
+    const out = await Song.probe(12, (t, f) => { $("#songProbeOut").textContent = t + "/12 · " + f; });
+    $("#songProbeOut").textContent = tr("song_probe_done", { a: out.found, b: out.tested }) + (out.ex.length ? " · " + out.ex.join(", ") : "");
+    btn.disabled = false;
+  };
   $("#setAiSave").onclick = () => {
     s.aiBase = $("#setAiBase").value.trim().replace(/\/+$/, "");
     s.aiModel = $("#setAiModel").value.trim();
@@ -3607,12 +3969,10 @@ function viewSettings() {
     s.aiBase = ""; s.aiKey = ""; s.aiModel = ""; store.persist();
     AI.invalidate(); toast(tr("ai_local"), "ok"); viewSettings();
   };
-  $("#setAtlasCap").oninput = e => { $("#capOut").textContent = e.target.value; };
-  $("#setAtlasSave").onclick = () => {
-    s.includeAtlas = $("#setAtlasInc").checked;
-    s.atlasCap = clamp(+$("#setAtlasCap").value || CFG.ATLAS.defaultCap, 200, CFG.ATLAS.maxCap);
-    store.persist(); AI.invalidate(); toast(tr("note_saved"), "ok");
+  $("#setAtlasInc").onchange = e => {
+    s.includeAtlas = e.target.checked; store.persist(); AI.invalidate(); toast(tr("note_saved"), "ok");
   };
+  Atlas.load().then(() => { const n = $("#setAtN"); if (n) n.textContent = String(Atlas.count()); }).catch(() => null);
   $("#expAll").onclick = () => download("birds-world-backup.json", exportBackup());
   $("#impFile").onchange = e => {
     const f = e.target.files[0]; if (!f) return;
@@ -3671,6 +4031,12 @@ function viewAtlasSpecies(sci) {
       </div></div>
     <p class="hint" style="margin-top:var(--s-3)">${esc(tr("atlas_source"))}</p></section>
 
+    <section class="panel"><h2>🎧 ${esc(tr("song_h"))}</h2>
+      <div class="row"><button class="btn sm" id="asRec">🎧 ${esc(tr("song_load"))}</button>
+        <a class="btn sm ghost" href="#/identify">🎙️ ${esc(tr("id_against"))}</a></div>
+      <div id="asRecList" style="margin-top:var(--s-3)"></div>
+      <audio id="asPlayer" controls crossorigin="anonymous" preload="none" style="width:100%;margin-top:var(--s-2)"></audio></section>
+
     <section class="panel"><h2>${esc(tr("atlas_tax"))}</h2>
     <div class="kb">
       <div class="kv"><span>${esc(tr("tax_order"))}</span><b>${esc(r.order || "—")}</b></div>
@@ -3678,6 +4044,21 @@ function viewAtlasSpecies(sci) {
       <div class="kv"><span>${esc(tr("tax_genus"))}</span><b>${esc(r.genus || "—")}</b></div>
       <div class="kv"><span>GBIF</span><b>${esc(String(r.gbif || "—"))}</b></div></div></section>`;
   wireCatalogueClicks(app);
+  const ap = $("#asPlayer");
+  const drawAs = async keepMem => {
+    $("#asRecList").innerHTML = `<p class="hint">${esc(tr("song_searching"))}</p>`;
+    if (!keepMem) Song.forget(r.sci);
+    let items = [];
+    try { items = await Song.for(r); } catch { items = []; }
+    if (!items.length) {
+      $("#asRecList").innerHTML = `<div class="banner warn">🎧 ${esc(tr("song_none"))}<br>
+        <a target="_blank" rel="noopener noreferrer" href="${esc(CFG.API.xenoSite + "?q=" + encodeURIComponent(r.sci))}">xeno-canto ↗</a></div>`;
+      return;
+    }
+    $("#asRecList").innerHTML = `<span class="chip">🎧 ${esc(tr("song_found", { n: items.length }))}</span>` + songMarkup(items);
+    wireSongs($("#asRecList"), items, ap, null, null, () => drawAs(true));
+  };
+  $("#asRec").onclick = () => drawAs(false);
 }
 
 /* ------------------------------------------------------------ ATLAS VIEW */
@@ -3685,6 +4066,7 @@ async function viewAtlas() {
   document.title = tr("atlas_h") + " — Birds World";
   await Atlas.load();
   const st = await Atlas.stats();
+  const cap = store.settings.atlasCap || CFG.ATLAS.defaultCap;
   app.innerHTML = `<section class="panel"><h2>🌍 ${esc(tr("atlas_h"))}</h2>
     <p class="hint">${esc(tr("atlas_sub"))}</p>
     <div class="kb" style="margin-top:var(--s-3)">
@@ -3692,12 +4074,20 @@ async function viewAtlas() {
       <div class="kv"><span>${esc(tr("atlas_enrich"))}</span><b id="atAr">${st.withAr} / ${st.n}</b></div>
       <div class="kv"><span>${esc(tr("photo"))}</span><b id="atImg">${st.withImg}</b></div>
       <div class="kv"><span>${esc(tr("atlas_tax"))}</span><b id="atFam">${st.fams}</b></div></div>
+    <div class="filters" style="margin-top:var(--s-3)">
+      <div><label for="atScope">${esc(tr("atlas_scope"))}</label>
+        <select id="atScope"><option value="all">${esc(tr("atlas_all"))}</option>
+          <option value="order"${store.settings.atlasOrder ? " selected" : ""}>${esc(tr("atlas_order"))}</option></select></div>
+      <div id="atOrderBox"${store.settings.atlasOrder ? "" : " hidden"}><label for="atOrder">${esc(tr("tax_order"))}</label>
+        <select id="atOrder"><option value="">…</option></select></div>
+      <div><label for="atCap">${esc(tr("atlas_cap"))}</label>
+        <div class="rng"><input type="range" id="atCap" min="300" max="${CFG.ATLAS.maxCap}" step="500"
+          value="${cap}"><output id="atCapOut">${cap}</output></div></div></div>
     <div class="row" style="margin-top:var(--s-3)">
-      <label style="min-width:150px">${esc(tr("atlas_cap"))}</label>
-      <div class="rng"><input type="range" id="atCap" min="200" max="${CFG.ATLAS.maxCap}" step="200"
-        value="${store.settings.atlasCap || CFG.ATLAS.defaultCap}"><output id="atCapOut">${store.settings.atlasCap || CFG.ATLAS.defaultCap}</output></div>
       <button class="btn" id="atRun">⬇ ${esc(tr("atlas_start"))}</button>
       <button class="btn ghost" id="atStop" disabled>■ ${esc(tr("atlas_stop"))}</button>
+      <button class="btn ghost" data-setcap="5000">5 000</button>
+      <button class="btn ghost" data-setcap="10000">10 000</button>
       <span class="spacer"></span>
       <button class="btn danger ghost" id="atClear">🗑 ${esc(tr("atlas_clear"))}</button></div>
     <div class="bar" id="atBar" hidden><i id="atBarIn" style="width:0%"></i></div>
@@ -3718,14 +4108,40 @@ async function viewAtlas() {
     bar.hidden = !st2.running;
     inn.style.width = Math.round(p * 100) + "%";
     note.textContent = st2.running ? tr("atlas_running") + " " + st2.pulled + "/" + st2.cap +
-      (st2.fam ? " · " + st2.fam : "") : (st2.note || tr("atlas_done"));
+      (st2.fam ? " · " + st2.fam : "") + (st2.fams ? " · " + st2.doneFams + "/" + st2.fams + " ⊞" : "")
+      : (st2.note || tr("atlas_done"));
   };
   $("#atCap").oninput = e => { $("#atCapOut").textContent = e.target.value; };
+  on(app, "click", "[data-setcap]", (e, n) => { $("#atCap").value = n.dataset.setcap; $("#atCapOut").textContent = n.dataset.setcap; });
+  /* One order at a time is how a 6,000-species atlas is reached in a sitting:
+     Psittaciformes alone is a few hundred species, and the pages already
+     fetched are answered from the device on the next run. */
+  let orderList = null;
+  const fillOrders = async () => {
+    if (orderList) return orderList;
+    $("#atOrder").innerHTML = `<option value="">…</option>`;
+    try { orderList = await Atlas.orders(); } catch { orderList = []; }
+    $("#atOrder").innerHTML = `<option value="">${esc(tr("atlas_all"))}</option>` +
+      orderList.map(o => `<option value="${esc(String(o.key))}"${store.settings.atlasOrder === String(o.key) ? " selected" : ""}>${esc(o.name)}</option>`).join("");
+    return orderList;
+  };
+  $("#atScope").onchange = async e => {
+    const one = e.target.value === "order";
+    $("#atOrderBox").hidden = !one;
+    if (one) await fillOrders();
+  };
+  $("#atOrder").onchange = e => { store.settings.atlasOrder = e.target.value; store.persist(); };
+  if ($("#atScope").value === "order") fillOrders();
   $("#atInc").onchange = e => { store.settings.includeAtlas = e.target.checked; store.persist(); AI.invalidate(); toast(tr("note_saved"), "ok"); };
   $("#atRun").onclick = async () => {
     $("#atRun").disabled = true; $("#atStop").disabled = false;
     store.settings.atlasCap = +$("#atCap").value; store.persist();
-    const r = await Atlas.run({ cap: +$("#atCap").value, enrich: true, onProg: prog });
+    const key = $("#atScope").value === "order" ? $("#atOrder").value : "";
+    const name = key && $("#atOrder").selectedOptions[0] ? $("#atOrder").selectedOptions[0].textContent : "";
+    if (key) store.settings.atlasOrder = key; else delete store.settings.atlasOrder;
+    store.persist();
+    const r = await Atlas.run({ cap: +$("#atCap").value, enrich: true, orderKey: key || undefined,
+      orderName: name || undefined, onProg: prog });
     AI.invalidate();
     const nEl = $("#atN");
     if (!nEl) { toast(tr("atlas_enriched") + " " + r.added, "ok", 3600); route(); return; }
@@ -3754,7 +4170,9 @@ async function viewAtlas() {
     $("#atList").innerHTML = list.length ? rowsHTML(list) : `<div class="empty"><b>🔍</b>${esc(tr("no_results"))}</div>`;
     $("#atCount").textContent = String(list.length);
   };
-  $("#atQ").oninput = e => draw(e.target.value);
+  /* scored against every stored species, so at a five-figure atlas the field
+     waits for the typing to stop before it walks the list */
+  $("#atQ").oninput = debounce(e => draw(e.target.value), 140);
   on(app, "click", "[data-sight]", (e, n) => logSighting(Atlas.get(n.dataset.sight) || { sci: n.dataset.sight }));
   if (Atlas.rows.length) draw("");
 }
