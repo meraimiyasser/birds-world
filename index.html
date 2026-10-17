@@ -425,6 +425,12 @@ const T = {
     ai_off:"No cloud model configured — answering from the local guide and your records.", ai_fail:"The model call failed, so this answer came from local data.",
     ai_src:"Grounded in", ai_sug:"Try asking", ai_strip:"Model keys are never written to a backup.", ai_empty:"Ask a question to start.",
     ai_triage:"Health triage", ai_recommend:"Recommendation", ai_facts:"Species facts", ai_search:"Semantic search", ai_compare:"Comparison",
+    ai_practice:"Practical numbers",
+    ai_speak:"Read aloud", ai_speak_stop:"Stop reading", ai_auto_speak:"Speak answers", ai_speak_no:"This browser has no speech engine.",
+    ai_ctx:"Context", ai_ctx_clear:"Clear context", ai_ctx_hint:"Follow-up questions reuse this species and bird until you clear it.",
+    ai_preset:"Presets fill the address and model; press Save to keep them.", ai_test:"Test connection",
+    ai_test_ok:"{ms} ms · the model answered: {echo}", ai_test_fail:"Connection failed:",
+    ai_rate:"Voice speed", ai_sample:"Sample voice",
     feat_ai:"Ask anything about your birds", feat_ai_d:"Health triage, recommendations and species facts from your own data — or a model you connect.",
     /* sound id */
     nav_id:"Sound ID", id_h:"Identify a bird from its song", id_sub:"The recording never leaves this device: analysis runs on measured pitch, note rate and band energy.",
@@ -517,6 +523,12 @@ const T = {
     ai_off:"لا يوجد نموذج سحابي — تجيب عنك قاعدة البيانات المحلية وسجلاتك.", ai_fail:"فشل الاتصال بالنموذج، لذا جاء هذا الرد من البيانات المحلية.",
     ai_src:"مبني على", ai_sug:"جرّب أن تسأل", ai_strip:"مفاتيح النموذج لا تُكتب أبداً في النسخة الاحتياطية.", ai_empty:"اطرح سؤالاً لتبدأ.",
     ai_triage:"فرز صحي", ai_recommend:"توصية", ai_facts:"بطاقة نوع", ai_search:"بحث دلالي", ai_compare:"مقارنة",
+    ai_practice:"أرقام عملية",
+    ai_speak:"استمع", ai_speak_stop:"أوقف القراءة", ai_auto_speak:"اقرأ الرد بصوت", ai_speak_no:"لا محرك نطق في هذا المتصفح.",
+    ai_ctx:"السياق", ai_ctx_clear:"امسح السياق", ai_ctx_hint:"الأسئلة التالية تستخدم هذا النوع وهذا الطائر حتى تمسح السياق.",
+    ai_preset:"الأزرار الجاهزة تملأ العنوان واسم النموذج؛ اضغط حفظ للإبقاء عليها.", ai_test:"اختبار الاتصال",
+    ai_test_ok:"{ms} م.ث · رد النموذج: {echo}", ai_test_fail:"فشل الاتصال:",
+    ai_rate:"سرعة الصوت", ai_sample:"عيّنة صوت",
     /* التعرف الصوتي */
     nav_id:"تعرّف صوتي", id_h:"تعرّف على الطائر من غنائه", id_sub:"لا يغادر التسجيل جهازك: التحليل يقيس الذروة الترددية ومعدل النغمات وتوزيع الطاقة.",
     id_rec:"سجّل", id_stoprec:"أوقف", id_listening:"أستمع…", id_again:"أعد المحاولة", id_fromfile:"استخدم ملفاً صوتياً",
@@ -825,7 +837,7 @@ const store = {
     /* iNaturalist hides sound file URLs behind authentication (measured), so a
        read token is what turns it into a usable recording source. Tokens and
        keys never leave this device and are stripped from every backup export. */
-    inatToken: "", songSource: "auto", aiSpeak: false, songMaxMb: 220, atlasOrder: "" }, lsGet(KEYS.settings, {})),
+    inatToken: "", songSource: "auto", aiSpeak: false, speakRate: 1, songMaxMb: 220, atlasOrder: "" }, lsGet(KEYS.settings, {})),
   favs: new Set(lsGet(KEYS.fav, [])),
   notes: lsGet(KEYS.note, {}),
   visits: new Set(lsGet(KEYS.visits, [])),
@@ -1309,12 +1321,25 @@ const Atlas = {
         meta.fams.forEach((f, i) => (chunks[i] || []).forEach(r => this.adopt(r, f.key)));
         this.meta.total = this.rows.length;
       }
+      if (this.rows.length) this.backfillNames();
       return this.rows;
     })().catch(() => { this._p = null; return this.rows; });
     return this._p;
   },
-  adopt(r, fk) {
-    if (!r || !r.sci || this.bySci.has(r.sci)) return;
+  /* The curated guide's Arabic name column is not finished. An import carries
+     Wikidata Arabic labels, so fill an empty curated cell only from an exact
+     scientific-name match — copied from the source, never invented here. */
+  backfillNames() {
+    let n = 0;
+    for (const b of SPECIES) {
+      if (b.ar) continue;
+      const a = this.bySci.get(b.sci);
+      if (a && a.ar && a.ar !== b.en) { b.ar = a.ar; n++; }
+    }
+    if (n && typeof AI !== "undefined") AI.invalidate();
+    return n;
+  },
+  adopt(r, fk) {    if (!r || !r.sci || this.bySci.has(r.sci)) return;
     r.atlas = true;
     this.bySci.set(r.sci, r);
     this.rows.push(r);
@@ -1473,6 +1498,7 @@ const Atlas = {
             novel.forEach(r => this.adopt(r, lin.fk));
             if (novel.length) await this.flushFam(lin.fk);
             if (opts.enrich !== false && novel.length) await this.enrichRows(novel);
+            if (novel.length) this.backfillNames();
           } catch (e) {
             this.state.note = String((e && e.message) || e);
             if (/abort|Failed to fetch|HTTP /.test(this.state.note)) this.state.note = tr("atlas_off");
@@ -1587,6 +1613,13 @@ function toggleFav(id) {
 }
 const markVisited = id => { if (!store.visits.has(id)) { store.visits.add(id); store.persist(); } };
 const noteOf = id => store.notes[id] || "";
+/* A row may come from the curated guide, the atlas import, the search index or
+   an AI answer. These pick a link and a readable name that exist for whichever
+   it is, so an assistant answer never points at a dead page. */
+const curatedOf = r => (r && !r.atlas && r.id ? byId(r.id) : null);
+const hrefFor = r => { const c = curatedOf(r); return c ? "#/bird/" + encodeURIComponent(c.id)
+  : "#/birds?q=" + encodeURIComponent(r ? (r.sci || r.en || "") : ""); };
+const nameFor = r => (r ? (speciesName(r) || r.sci || "") : "");
 
 /* ------------------------------------------------- 7b. CANVAS + AUDIO ENGINE */
 function setupCanvas(cv, cssH) {
@@ -2243,8 +2276,16 @@ const AI = {
   bi(en, ar) { return I18N.lang === "ar" ? ar : en; },
 
   /* ------------------------------------------------------------- text --- */
+  /* Arabic-Indic (٠–٩) and extended-Arabic (۰–۹) digits fold to ASCII before
+     anything else, so "٥ كغ" reads exactly like "5 kg" for the numeric parser
+     below and still indexes like a Latin word. */
+  digits(s) {
+    return String(s == null ? "" : s)
+      .replace(/[٠-٩]/g, c => String(c.charCodeAt(0) - 0x660))
+      .replace(/[۰-۹]/g, c => String(c.charCodeAt(0) - 0x6f0));
+  },
   norm(s) {
-    return String(s || "").toLowerCase()
+    return this.digits(s).toLowerCase()
       .replace(/[`\u064B-\u0652\u0670\u0640]/g, "")
       .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
       /* ي and ئ fold to a single letter, otherwise "يأكل" normalises to
@@ -2257,13 +2298,171 @@ const AI = {
     " " + "how what which why best good should would could can tell give").split(/\s+/)),
   words(s) { return this.norm(s).split(" ").map(w => this.stripAr(w)).filter(w => w.length > 1 && !this.STOP.has(w)); },
 
+  /* ---------------------------------------------- reading the numbers --- */
+  /* A keeper writes "كم يطعم ٣ طيور وزنها ٤٥ غ في الشهر؟" — one sentence with a
+     count, a body weight and a period. figures() takes every number out and
+     classifies the word glued to it, so the practical answers can do arithmetic
+     instead of reciting prose. Counts (birds, eggs, pairs) accumulate because
+     "two cocks and four hens" is six birds; measurements keep the first value,
+     which is the one people write. */
+  UNITS: [
+    ["kg", /^(kg|kgs|كغ|كيلو|كيلوغرام|كيلوغرامات)$/],
+    ["g", /^(g|gm|gms|gram|grams|غ|غم|غرام|غرامات|جرام|جرامات)$/],
+    ["cm", /^(cm|cms|سم|سنتيم|سنتيمتر|سنتيمترات)$/],
+    ["mm", /^(mm|ملم|مم)$/],
+    ["m", /^(m|meters?|meter|feet|foot|ft|متر|امتار|مترين|قدم|ارجل)$/],
+    ["days", /^(d|day|days|يوم|يومان|يومين|ايام|ایام)$/],
+    ["weeks", /^(w|week|weeks|اسبوع|اسبوعان|اسبوعين|اسابيع)$/],
+    ["months", /^(mo|month|months|شهر|شهران|شهرين|اشهر|شهور)$/],
+    ["years", /^(y|yr|yrs|year|years|سنه|سنة|سنين|سنوات|عام|اعوام|اعوام)$/],
+    ["eggs", /^(egg|eggs|بيضة|بيض|بيضان|بيضتين)$/],
+    ["birds", /^(bird|birds|طائر|طيور|طير|طائرين|عصفور|عصافير|فرد|افراد|units?)$/],
+    ["pairs", /^(pair|pairs|زوج|زوجان|زوجين|ازواج|thulay|ثلاثي)$/],
+    ["pct", /^(%|بالميه|نسبه)$/]
+  ],
+  figures(q) {
+    const s = this.digits(String(q)).replace(/[،٫]\d/g, m => "." + m[1]).replace(/٬/g, "").replace(/[,]/g, " ");
+    const out = { raw: [], kg: null, g: null, cm: null, mm: null, m: null, days: null, weeks: null, months: null, years: null, eggs: null, birds: null, pairs: null, pct: null, bare: null };
+    const add = (k, v) => {
+      if (k === "birds" || k === "eggs" || k === "pairs") out[k] = round((out[k] || 0) + v, 2);
+      else if (out[k] == null) out[k] = v;
+    };
+    const re = /(\d+(?:\.\d+)?)\s*([^\s\d.,]*)/g;
+    let mt;
+    while ((mt = re.exec(s))) {
+      const v = parseFloat(mt[1]);
+      if (!Number.isFinite(v)) continue;
+      const word = this.norm(mt[2] || "");
+      const hit = this.UNITS.find(([, rx]) => rx.test(word));
+      const k = hit ? hit[0] : (word ? null : "bare");
+      out.raw.push({ v, u: word || null, k: k || "none" });
+      if (k === "bare" && out.bare == null) out.bare = v;
+      else if (k && k !== "bare") add(k, v);
+    }
+    /* "كم غ" with no number typed is not a figure; "كم 3" with a bare 3 in a
+       food question almost always means grams, in a cage question centimetres */
+    out.grams = out.g != null ? out.g : out.kg != null ? out.kg * 1000 : null;
+    out.cmVal = out.cm != null ? out.cm : out.mm != null ? out.mm / 10 : out.m != null ? out.m * 100 : null;
+    /* a period named without a digit — "في الشهر" — still asks for one month */
+    const tn = this.norm(String(q));
+    if (out.months == null && /شهر|شهري|month/.test(tn)) out.months = 1;
+    if (out.weeks == null && out.months == null && /اسبوع|week/.test(tn)) out.weeks = 1;
+    return out;
+  },
+
+  /* ---------------------------------------- what we were just talking --- */
+  /* Follow-up questions carry no name: "وكم يحتاج من الأكل؟" only makes sense
+     against the previous answer, so the last species and the last logged bird
+     are persisted for this device and reused when a new question resolves to
+     nothing on its own. The chip in the chat shows which answer was reused. */
+  ctxGet() {
+    const c = lsGet(KEYS.ctx, null);
+    return c && typeof c === "object" ? c : null;
+  },
+  ctxSet(patch) {
+    const c = Object.assign(this.ctxGet() || {}, patch);
+    c.at = Date.now();
+    lsSet(KEYS.ctx, c);
+    return c;
+  },
+  ctxClear() { try { localStorage.removeItem(CFG.NS + ":" + KEYS.ctx); } catch { /* nothing to clear */ } },
+  ctxSpecies() {
+    const c = this.ctxGet();
+    if (!c) return null;
+    return (c.id && byId(c.id)) || (c.sci && SPECIES.find(x => x.sci === c.sci)) ||
+      (c.sci && Atlas.get ? Atlas.get(c.sci) : null) || null;
+  },
+  ctxBird() {
+    const c = this.ctxGet();
+    if (!c || !c.birdId) return null;
+    return store.birds.all().find(b => b.id === c.birdId) || null;
+  },
+  /* ------------------------------------------- market and pen names --- */
+  /* Keepers rarely write the name the guide stores. "بدجي" and "كاسكو" and
+     "زيبرا" are how the birds are bought and sold, and each of these points at
+     one scientific name so a wrong entry is checkable instead of a fuzzy guess.
+     Only names that unambiguously mean that bird are listed. */
+  ALIAS: {
+    "Melopsittacus undulatus": ["بدجي", "البدجي", "استرالي", "ببغاء استرالي", "budgie", "budgerygah"],
+    "Nymphicus hollandicus": ["كوكاتيل", "الكوكاتيل", "cockatiel"],
+    "Psittacus erithacus": ["كاسكو", "الكاسكو", "الببغاء الرمادي", "african grey", "grey parrot"],
+    "Psittacula krameri": ["رينغ نك", "الرينغ", "ببغاء مطوق", "ringneck", "ring neck"],
+    "Ara ararauna": ["الرا", "اراس", "ماكاو", "macaw", "blue and yellow"],
+    "Cacatua galerita": ["كوكاتو", "الكوكاتو", "cockatoo"],
+    "Trichoglossus moluccanus": ["لوري", "الببغاء اللوري", "lorikeet", "lorrie"],
+    "Serinus canaria domestica": ["كناري", "الكناري", "canary"],
+    "Taeniopygia guttata": ["زيبرا", "الزيبرا", "دوري مخطط", "zebra finch", "zebra"],
+    "Chloebia gouldiae": ["جولديان", "الفنش الملون", "gouldian"],
+    "Lonchura striata domestica": ["بنت الجافا", "سوسايتي", "bengalese", "society finch"],
+    "Amandava amandava": ["المنيا الحمراء", "افادافات", "avadavat", "red munia"],
+    "Poephila acuticauda": ["فنش طويل الذيل", "long tailed finch"],
+    "Columba livia": ["حمام", "الحمام", "زاجل", "pigeon"],
+    "Streptopelia capicola": ["يمام", "اليمام", "قمري", "dove"],
+    "Streptopelia risoria": ["قمرية", "اليمامة الموضوة", "barbary dove"],
+    "Geopelia cuneata": ["حمام ماسي", "diamond dove"],
+    "Gallus gallus domesticus": ["دجاج", "الدجاج", "ديك", "كتكوت", "chicken", "hen", "rooster"],
+    "Coturnix japonica": ["سمان", "السمان", "السماني", "quail"],
+    "Phasianus colchicus": ["تدرج", "التدرج", "pheasant"],
+    "Pavo cristatus": ["طاووس", "الطاووس", "peacock", "peafowl"],
+    "Numida meleagris": ["دجاج غيني", "الغينية", "guinea fowl"],
+    "Alectoris barbara": ["حجل", "الحجل", "partridge"],
+    "Anas platyrhynchos": ["بط", "البط", "بط أخضر الرأس", "duck", "mallard"],
+    "Cairina moschata": ["بط مسكوفي", "المسكوفي", "moscovy"],
+    "Anser anser": ["وز", "إوز", "الإوز", "goose", "greylag"],
+    "Branta canadensis": ["إوز كندي", "canada goose"],
+    "Cygnus olor": ["بجع", "البجع الآخرس", "swan"],
+    "Falco peregrinus": ["شاهين", "الصقر", "peregrine", "falcon"],
+    "Falco tinnunculus": ["كسترجل", "الكسترجل", "هوارة", "kestrel"],
+    "Parabuteo unicinctus": ["هاريس", "صقر هاريس", "harris hawk"],
+    "Tyto alba": ["بوم", "الهامة", "بومة الحظائر", "barn owl", "owl"],
+    "Bubo bubo": ["بومة نسرية", "eagle owl"],
+    "Acridotheres tristis": ["مينا", "المينا", "هدهد هندي", "myna", "minah"],
+    "Leiothrix lutea": ["ليوثريكس", "red billed leiothrix"],
+    "Zosterops japonicus": ["زوستروب", "عين ابيض", "white eye", "white-eye"],
+    "Fringilla coelebs": ["كمرية", "chaffinch"],
+    "Carduelis carduelis": ["حسون", "الحسون", "goldfinch"],
+    "Phoenicopterus roseus": ["نحام", "Flamingo", "flamingo"],
+    "Aptenodytes forsteri": ["بطريق", "البطريق", "penguin"],
+    "Struthio camelus": ["نعامة", "النعامة", "ostrich"],
+    "Casuarius casuarius": ["كازوار", "كاسواري", "cassowary"],
+    "Nestor notabilis": ["كيا", "kea"]
+  },
+  /* Longest alias wins: "ببغاء استرالي" must beat a stray "ببغاء", and words are
+     compared whole (clitics folded) so "البدجي" finds "بدجي". */
+  aliasHit(t) {
+    const toks = String(t).split(" ").map(x => this.stripAr(x));
+    let best = null, bestLen = 0;
+    for (const [sci, list] of Object.entries(this.ALIAS)) {
+      for (const a of list) {
+        const at = this.norm(a).split(" ").map(x => this.stripAr(x));
+        if (!at[0]) continue;
+        for (let i = 0; i + at.length <= toks.length; i++) {
+          let ok = true;
+          for (let j = 0; j < at.length; j++) if (toks[i + j] !== at[j]) { ok = false; break; }
+          if (ok && at.length > bestLen) { best = sci; bestLen = at.length; }
+        }
+      }
+    }
+    return best;
+  },
+  aliasOf(sci) { return this.ALIAS[sci] || []; },
+  ctxLabel() {
+    const parts = [], b = this.ctxBird(), r = this.ctxSpecies();
+    if (b) parts.push(this.bi("bird", "الطائر") + " " + (b.nick || b.id));
+    if (r) parts.push(this.bi("species", "النوع") + " " + speciesName(r));
+    return parts.length ? parts.join(" · ") : "";
+  },
+
   /* ------------------------------------------- semantic index (TF-IDF) --- */
   ix: null,
   invalidate() { this.ix = null; },
   corpus() {
     const rows = SPECIES.concat(Atlas.rows);
     return rows.map(r => ({ r, text: this.norm([r.en, r.ar, r.sci, r.origin, r.tip, r.habitat,
-      GROUPS[r.g] ? GROUPS[r.g].en + " " + GROUPS[r.g].ar : "", r.family, r.order].filter(Boolean).join(" ")) }));
+      GROUPS[r.g] ? GROUPS[r.g].en + " " + GROUPS[r.g].ar : "", r.family, r.order,
+      /* market names enter the index so "كاسكو" and "badجي"-style queries reach
+         the same row a scientific name does */
+      this.aliasOf ? this.aliasOf(r.sci).join(" ") : ""].filter(Boolean).join(" ")) }));
   },
   build() {
     const docs = this.corpus(), df = new Map();
@@ -2468,7 +2667,12 @@ const AI = {
   aboutBird(q) {
     const t = this.norm(q);
     const mine = store.birds.all();
-    return mine.find(b => b.nick && t.includes(this.norm(b.nick))) || (mine.length === 1 ? mine[0] : null) || null;
+    const byNick = mine.find(b => b.nick && t.includes(this.norm(b.nick)));
+    if (byNick) return byNick;
+    /* a follow-up with no name in it is about the bird we were just discussing */
+    const fromCtx = this.ctxBird();
+    if (fromCtx) return fromCtx;
+    return mine.length === 1 ? mine[0] : null;
   },
   trend(uid) {
     const w = store.weights.all().filter(x => x.birdId === uid).map(x => num(x.grams)).filter(v => v > 0);
@@ -2476,6 +2680,37 @@ const AI = {
     const last = w[0], first = w[w.length - 1];
     const pct = round(100 * (last - first) / first, 1);
     return { n: w.length, pct, last, first, dir: pct < -3 ? "down" : pct > 3 ? "up" : "flat" };
+  },
+  /* Has this keeper written about this sign before? Weight logs and old symptom
+     notes turn "watch it" into "this is the third time since March", which is
+     the difference between advice and a record. */
+  priorSigns(uid, hs) {
+    const recs = store.symptoms.all().filter(s => !uid || s.birdId === uid);
+    const out = [];
+    hs.forEach(([s]) => {
+      const vocab = new Set();
+      String(s.en + " " + s.ar).split(/[,;،؛]+/).forEach(p => this.toks(p).forEach(w => { if (w.length >= 4) vocab.add(w); }));
+      const matched = recs.filter(r => this.toks(String(r.text || "")).some(w => vocab.has(w)));
+      if (matched.length) out.push({ s, n: matched.length, latest: matched[0].at, sameBird: !!uid });
+    });
+    return out;
+  },
+  /* Cross-check the matched signs against the disease list of that bird's own
+     group: the guide already carries signs per disease, so scoring the overlap
+     is a grounded shortlist rather than a guess from the open web. */
+  groupDiseases(g, t, hs) {
+    const grp = GROUPS[g];
+    if (!grp || !grp.dis) return [];
+    const q = new Set(this.toks(t));
+    return grp.dis.map(d => {
+      const info = disText(d);
+      const vocab = new Set();
+      String(info[1]).split(/[,;،؛]+/).forEach(p => this.toks(p).forEach(w => { if (w.length >= 4) vocab.add(w); }));
+      let n = 0;
+      hs.forEach(([s]) => this.toks(String(s.en + " " + s.ar)).forEach(w => { if (vocab.has(w)) n++; }));
+      this.toks(String(info[1])).forEach(w => { if (q.has(w)) n += 0.5; });
+      return { name: info[0], signs: info[1], treat: info[2], n };
+    }).filter(x => x.n >= 2).sort((a, b) => b.n - a.n).slice(0, 3);
   },
 
   /* ------------------------------------------------------ answer pieces --- */
@@ -2538,8 +2773,7 @@ const AI = {
   },
   pill(r) {
     const nm = speciesName(r) || r.sci;
-    const href = r.atlas ? "#/birds?q=" + encodeURIComponent(r.sci) : "#/bird/" + r.id;
-    return `<a class="chip" href="${href}">${esc(nm)}</a>`;
+    return `<a class="chip" href="${hrefFor(r)}">${esc(nm)}</a>`;
   },
   facts(r) {
     const g = GROUPS[r.g];
@@ -2571,6 +2805,11 @@ const AI = {
     if (bird) {
       const tw = this.trend(bird.id), recs = store.symptoms.all().filter(s => s.birdId === bird.id), sp = byId(bird.speciesId);
       let line = `<b>${esc(bird.nick)}</b>` + (sp ? " · " + esc(speciesName(sp)) : "");
+      if (bird.sex) line += " · " + esc(this.bi(bird.sex === "M" ? "male" : "female", bird.sex === "M" ? "ذكر" : "أنثى"));
+      if (bird.acquired) {
+        const d = daysBetween(bird.acquired, dayKey());
+        if (d >= 0) line += this.bi(` · ${d} days in your care`, ` · ${d} يوماً في رعايتك`);
+      }
       line += tw ? (tw.dir === "down"
         ? this.bi(` · weight down ${Math.abs(tw.pct)}% over ${tw.n} weigh-ins (${tw.first}→${tw.last} g)`,
             ` · الوزن نزل ${Math.abs(tw.pct)}% عبر ${tw.n} قياسات (${tw.first}→${tw.last} غ)`)
@@ -2579,12 +2818,49 @@ const AI = {
           : this.bi(` · weight steady around ${tw.last} g`, ` · الوزن مستقر حول ${tw.last} غ`))
         : this.bi(" · no weight log yet — weigh it today, weight is the earliest honest signal",
             " · لا يوجد سجل وزن — زِنه اليوم، فالوزن أول إشارة صادقة");
-      if (recs.length) line += this.bi(` · ${recs.length} symptom notes, latest: `, ` · ${recs.length} ملاحظات عرض، آخرها: `) +
-        esc(String(recs[0].text || "").slice(0, 90));
+      if (recs.length) {
+        const wk = recs.filter(r => daysBetween(String(r.at || "").slice(0, 10), dayKey()) <= 7).length;
+        line += this.bi(` · ${recs.length} symptom notes`, ` · ${recs.length} ملاحظات عرض`) +
+          (wk > 1 ? this.bi(` (${wk} in the last week)`, ` (${wk} خلال الأسبوع الأخير)`) : "") +
+          this.bi(", latest: ", "، آخرها: ") + esc(String(recs[0].text || "").slice(0, 90));
+      }
       out.push(`<p class="hint">${line}</p>`);
       if (tw && tw.pct <= -6 && urg < 3) out.push(`<div class="banner warn">${esc(this.bi(
         "A 6% drop in a small bird is not a rounding error — treat it as urgent.",
         "نزول 6% عند طائر صغير ليس خطأ حسابياً — اعتبره حالة عاجلة."))}</div>`);
+    } else if (store.birds.all().length > 1) {
+      out.push(`<p class="hint">${esc(this.bi(
+        "You keep several birds — say which one by name and the answer reads that bird's own weight and symptom log.",
+        "لديك عدة طيور؛ اذكر اسم الطائر لتقرأ الإجابة سجل وزنه وعوارضه هو وحده."))}</p>`);
+    }
+    const mine = store.birds.all();
+    const sp0 = bird ? byId(bird.speciesId) : null;
+    const g0 = sp0 ? sp0.g : null;
+    const gd = g0 ? this.groupDiseases(g0, t, hs) : [];
+    if (gd.length) {
+      out.push(`<h4>${esc(this.bi("Common to this species group", "الأكثر شيوعاً في فصيلة هذا الطائر"))}</h4>`);
+      out.push(gd.map(x => `<p><b>${esc(x.name)}</b> — ${esc(this.bi("signs", "علامات"))}: ${esc(x.signs)}. ` +
+        `${esc(this.bi("handling", "العلاج"))}: ${esc(x.treat)}</p>`).join(""));
+      out.push(`<p class="hint">${esc(this.bi(
+        "Shortlisted from the guide's own disease list for this group by sign overlap — a vet confirms it with tests.",
+        "قائمة مختصرة من جدول أمراض الفصيلة في الدليل بحسب تطابق العلامات — والطبيب البيطري يؤكد بالفحص."))}</p>`);
+    }
+    const prior = this.priorSigns(bird ? bird.id : null, hs);
+    if (prior.length) {
+      out.push(`<h4>${esc(this.bi("From your own log", "من سجلّك أنت"))}</h4>`);
+      out.push(`<ul>` + prior.map(p => `<li>${esc(this.sName(p.s))} — ` +
+        esc(this.bi(`${p.n} earlier note${p.n > 1 ? "s" : ""}, latest ${fmtDate(String(p.latest || new Date().toISOString()))}`,
+          `${p.n} ملاحظات سابقة${p.n > 1 ? "" : ""}، آخرها ${fmtDate(String(p.latest || new Date().toISOString()))}`)) +
+        `</li>`).join("") + `</ul>`);
+      if (prior.length >= 2) out.push(`<p class="hint">${esc(this.bi(
+        "The same signs came back: whatever fixed it last time is worth repeating, and whatever caused it is still in the room.",
+        "العلائق عادت: ما أصلح المرة الماضية يستحق التكرار، والسبب الذي أدخلها لا يزال في المكان."))}</p>`);
+    }
+    const flock = mine.length;
+    if (flock > 1 && urg >= 2) {
+      out.push(`<div class="banner ${urg === 3 ? "danger" : "warn"}">${esc(this.bi(
+        `You log ${flock} birds: move this one out of the shared room now, keep it warm and quiet, and do not return it before 30 disease-free days.`,
+        `لديك ${flock} طيراً مسجلاً: انقل هذا الطائر من الغرفة المشتركة الآن، أبقِه دافئاً هادئاً، ولا تعده قبل ثلاثين يوماً بلا عوارض.`))}</div>`);
     }
     hs.forEach(([s], i) => {
       out.push(`<h4>${i + 1}. ${esc(this.sName(s))} <span class="hint">${esc(this.URGENCY[s.urg][this.langKey()])}</span></h4>`);
@@ -2594,9 +2870,13 @@ const AI = {
     out.push(`<p class="hint">${esc(this.bi(
       "Rule of thumb: a bird that looks ill has been ill for days. Waiting to see whether it improves is how keepers lose one.",
       "قاعدة عامة: الطائر الذي يبدو مريضاً هو مريض منذ أيام. الانتظار لنرى هل يتحسن هو كيف يفقد المربّون طيورهم."))}</p>`);
-    const links = store.birds.all().slice(0, 4).map(b => `<a class="chip" href="#/my-bird/${encodeURIComponent(b.id)}">${esc(b.nick)}</a>`).join(" ");
-    if (links) out.push(`<p class="hint">${esc(this.bi("Open the bird's log: ", "افتح سجل الطائر: "))}${links}</p>`);
-    return { kind: "triage", html: out.join(""), urg };
+    const links = (bird ? [bird] : mine).slice(0, 4).map(b => `<a class="chip" href="#/my-bird/${encodeURIComponent(b.id)}">${esc(b.nick)}</a>`).join(" ");
+    if (links) out.push(`<p class="hint">${esc(this.bi("Open the bird's log: ", "افتح سجل الطائر: "))}${links}` +
+      (sp0 ? ` · <a class="chip" href="${hrefFor(sp0)}">${esc(this.bi("the species page", "صفحة النوع"))}</a>` : ""));
+    else if (sp0) out.push(`<p class="hint">${esc(this.bi("Log this bird under My birds and the next answer reads its own weight and notes.",
+      "سجّل هذا الطائر في «طيوري» لتقرأ الإجابة التالية وزنه وملاحظاته."))} <a class="chip" href="${hrefFor(sp0)}">${esc(nameFor(sp0))}</a></p>`);
+    return { kind: "triage", html: out.join(""), urg, birdId: bird ? bird.id : null,
+      sci: sp0 ? sp0.sci : null, id: sp0 ? sp0.id : null };
   },
 
   ansRecommend(q) {
@@ -2632,8 +2912,229 @@ const AI = {
         "الترتيب على جدول صفات الأنواع المنتقاة وحدها — مدخلات الأطلس تحمل اسماً وتصنيفاً وصورة، لا درجات عناية."))}</p>` };
   },
 
+  /* --------------------------------------------- practical arithmetic --- */
+  /* A keeper's real questions are quantities, not trivia: how much food for how
+     many birds for how long, what cage, when do the eggs hatch, what does the
+     flock eat in a month, what spreads between birds. Every number computed
+     below comes from GROUPS (the guide's own husbandry figures) plus the digits
+     in the question — it is the same maths the species page calculator runs, so
+     the two can never disagree. Prices are deliberately absent: they differ by
+     country, and this app will not invent one. */
+  PRAC: [
+    /* the gap between the question word and the subject is usually a number
+       ("كم يطعم ٤ طيور"), so it is matched with . not \\D */
+    ["food", /((كم|how much|how many|quantity|amount|grams?|kilos?).{0,24}(طعام|اكل|علف|بذر|حبيبات|ياكل|يطعم|اطعم|تطعم|يحتاج|تحتاج|يكفي|feed|food|pellet|seed|eat)|(طعام|اكل|علف|feed|food)\D{0,12}(اليوم|يوم|شهر|اسبوع|daily|month|week))/],
+    ["cage", /(قفص|اقفاص|حظيره|طياره|مساحه|مقاس|مقاسات|احجام القفص|cage|aviary|coop|dimensions|bar spacing)/],
+    ["breed", /(تفريخ|تكاثر|حضانه|حضين|فقس|بيض|تعشيش|تضع البيض|هج|eegg|eggs|hatch|incubat|breed|nest|clutch|fledg|wean)/],
+    ["cost", /(تكلفه|تكلف|استهلاك|شهري|شهريا|مصروف|مصاريف|monthly|per month|running cost|consumption|كم يكفي|كم كيلو|كم كيس)/],
+    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|contagi|quarantin|infect|spread|flock|together|other birds|new bird)/]
+  ],
+  PRACNAME: {
+    food: ["Food and water", "الطعام والماء"], cage: ["Cage and space", "القفس والمساحة"],
+    breed: ["Breeding calendar", "تقويم التفريخ"], cost: ["Monthly consumption", "الاستهلاك الشهري"],
+    group: ["Keeping them together", "التجمّع والعدوى"]
+  },
+  /* Transmission route per disease name as authored in GROUPS/D, with a level:
+     3 spreads fast through the collection, 2 needs contact or shared water,
+     1 comes from the environment, 0 is not infectious at all. zo = can reach
+     the people in the room. */
+  SPREAD: {
+    "PBFD": { lvl: 3, zo: false, en: "Droppings, feather dust and shared bowls; an infected bird sheds virus for life.", ar: "الفضلات وغبار الريش والأوعية المشتركة؛ الطائر المصاب يفرز الفيروس مدى حياته." },
+    "Psittacosis": { lvl: 3, zo: true, en: "Inhaled dried droppings or feather dust; reaches humans — handle with gloves and a mask.", ar: "استنشاق فضلات أو غبار ريش جاف؛ ينتقل للإنسان — تداوله وقفازات وكمامة." },
+    "Egg binding": { lvl: 0, zo: false, en: "Not infectious — calcium, light and body condition.", ar: "غير معدٍ — كالسيوم وإضاءة وحالة جسدية." },
+    "Avian pox": { lvl: 2, zo: false, en: "Mosquito bites and contact through skin wounds; the dry form also drifts in dust.", ar: "لدغ البعوض والاحتكاك عبر جروح الجلد، والنوع الجاف ينتقل بالغبار أيضاً." },
+    "Air sac mites": { lvl: 2, zo: false, en: "Direct contact and shared perches; migrate between birds at night.", ar: "التلامس المباشر والمجاثم المشتركة؛ تنتقل بين الطيور ليلاً." },
+    "Coccidiosis": { lvl: 2, zo: false, en: "Damp litter laden with droppings; needs 1–2 days in warm wet bedding to become infective.", ar: "فرشة رطبة مليئة بالفضلات؛ تحتاج يوماً أو يومين في الدفء والرطوبة لتصبح مُعدية." },
+    "Canker (trichomonas)": { lvl: 2, zo: false, en: "Mouth-to-mouth feeding and shared drinking water; adults can carry it silently.", ar: "التغذية الفموية والماء المشترك؛ وقد يحملها البالغ بلا عوارض." },
+    "Paramyxovirus": { lvl: 3, zo: false, en: "Droppings and respiratory discharge; survives in shared water and feed.", ar: "الفضلات والإفرازات التنفسية؛ ويعيش في الماء والعلف المشترك." },
+    "Newcastle disease": { lvl: 3, zo: false, en: "Droppings, respiratory secretions, contaminated feed, boots and cages.", ar: "الفضلات والإفرازات والعلف والملابس والأقفص الملوثة." },
+    "Avian influenza": { lvl: 3, zo: true, en: "Droppings and pond water; wild waterfowl carry it silently. Report a die-off to the vet authority.", ar: "الفضلات وماء البرك؛ وتحملها الطيور المائية بلا عوارض. أبلغ الطب البيطري عن النفوق." },
+    "Mites and lice": { lvl: 2, zo: false, en: "Contact, nests and cracks in the loft; most bite humans too at night.", ar: "التلامس والأعشاش وشقوق الحظيرة؛ وأغلبها يلسع الإنسان ليلاً." },
+    "Angel wing": { lvl: 0, zo: false, en: "Not infectious — fast growth on rich feed.", ar: "غير معدٍ — نمو سريع على غذاء دسم." },
+    "Bumblefoot": { lvl: 1, zo: false, en: "From rough or dirty perches and standing droppings, not bird to bird.", ar: "من المجاثم الخشنة أو المتسخة والوقوف على الفضلات، لا من طائر لآخر." },
+    "Aspergillosis": { lvl: 1, zo: false, en: "Inhaled mould spores from damp seed, bedding or a dirty loft; not passed bird to bird.", ar: "استنشاق أبغاض العفن من بذور أو فرشة رطبة أو حظيرة متسخة؛ ولا ينتقل بين الطيور." },
+    "Frounce": { lvl: 1, zo: false, en: "From prey or feed carrying the protozoan; raptors catch it from wild birds.", ar: "من الفريسة أو العلف الحامل للطلائعيات؛ وتصيب الجوارح من الطيور البرية." },
+    "Iron storage disease": { lvl: 0, zo: false, en: "Not infectious — diet, vitamin C and species metabolism.", ar: "غير معدٍ — الغذاء وفيتامين C واستقلاب النوع." },
+    "Avian malaria": { lvl: 2, zo: false, en: "Only through mosquitoes; never directly between birds.", ar: "عبر البعوض فقط؛ ولا ينتقل مباشرة بين الطيور." }
+  },
+  /* Cage sizing is a rule of thumb, not a standard: the floor is a bird that can
+     spread its wings and fly between perches. The species' own body length sets
+     the length, the space score sets the class (cage below 4, aviary above). */
+  cageFor(r) {
+    const L = r.sizeMax || r.sizeMin || 25;
+    const five = v => Math.round(v / 5) * 5;
+    const table = { 1: [60, 40, 50], 2: [80, 50, 60], 3: [110, 60, 80] };
+    if ((r.space || 3) >= 4) {
+      const l = clamp(round(Math.max(r.space === 5 ? 3 : 2, L * 0.045), 1), 2, 12);
+      return { aviary: true, l, w: round(Math.max(1.5, l * 0.6), 1), h: round(Math.max(2, l * 0.9), 1), L };
+    }
+    const sp = clamp(r.space || 2, 1, 3), t = table[sp];
+    return { aviary: false, l: Math.max(t[0], five(L * 3)), w: Math.max(t[1], five(L * 1.6)), h: Math.max(t[2], five(L * 1.4)), L,
+      bars: L < 18 ? 1.2 : L < 35 ? 1.9 : L < 70 ? 2.5 : 3.8 };
+  },
+  ansPractice(q) {
+    const t = this.norm(q);
+    const hits = this.PRAC.filter(([, re]) => re.test(t)).map(x => x[0]);
+    if (!hits.length) return null;
+    const f = this.figures(q);
+    const bird = this.aboutBird(q);
+    const spBird = bird ? byId(bird.speciesId) : null;
+    const r = spBird || this.findSpecies(q)[0] || null;
+    const g = r ? GROUPS[r.g] : null;
+    const base = g ? g.foodWeight : 10;
+    /* figures carried from the previous question: "وكم يحتاج من الماء؟" repeats
+       the weight and the flock size the keeper already typed */
+    const cf = (this.ctxGet() || {}).fig || {};
+    const carried = f.grams == null && cf.grams != null;
+    const carriedN = f.birds == null && f.pairs == null && cf.birds != null;
+    const given = f.grams != null ? f.grams : (carried ? cf.grams : null);
+    const body = given != null ? given : (g ? base * 6 : null);
+    if (body == null && !r) return null;
+    const n = clamp(Math.round(f.pairs ? f.pairs * 2 : (f.birds != null ? f.birds : (carriedN ? cf.birds : (bird ? 1 : 1)))), 1, 20000);
+    const out = [];
+    const who = r ? `<p class="hint">${this.pill(r)}` + (bird ? ` <span class="chip">${esc(bird.nick)}</span>` : "") + `</p>` : "";
+    const kgTxt = v => v >= 1000 ? round(v / 1000, 2) + " kg" : round(v, v < 10 ? 1 : 0) + " g";
+    const grams = body == null ? null : body;
+
+    if (hits.includes("food") && grams != null) {
+      const perBird = Math.max(2, grams * 0.12);
+      const dry = round(n * perBird, 1), green = round(dry * 0.4, 1), water = n * Math.round(grams * 0.25);
+      const period = f.months ? f.months * 30 : f.weeks ? f.weeks * 7 : f.days ? f.days : 0;
+      const rows = [[this.bi("Body weight used", "وزن الطائر المستخدم"), round(grams, 1) + " " + this.bi("g", "غ") +
+        (f.grams != null ? "" : this.bi(carried ? " (from your previous question)" : " (the guide's typical bird for this group)",
+          carried ? " (من سؤالك السابق)" : " (نموذج الدليل لهذه الفصيلة)"))],
+      [this.bi("Birds counted", "عدد الطيور"), n + (carriedN ? this.bi(" (from your previous question)", " (من سؤالك السابق)") : "")]];
+      rows.push([this.bi("Dry food, all birds", "الطعام الجاف للكل"), `${dry} ` + this.bi("g/day", "غ/يوم")]);
+      rows.push([this.bi("Greens", "الخضار"), `${green} ` + this.bi("g/day", "غ/يوم")]);
+      rows.push([this.bi("Water", "الماء"), `${water} ` + this.bi("ml/day", "مل/يوم")]);
+      rows.push([this.bi("One week", "أسبوع"), kgTxt(dry * 7) + " " + this.bi("dry food", "طعام جاف")]);
+      rows.push([this.bi("One month (30 days)", "شهر (٣٠ يوماً)"), kgTxt(dry * 30) + " " + this.bi("dry food", "طعام جاف")]);
+      if (period) rows.push([this.bi("For the period you asked", "للمدة التي سألت عنها"),
+        `${period} ` + this.bi("days → ", "يوماً ← ") + kgTxt(dry * period) + this.bi(", ", "، و") + round(water * period / 1000, 1) + this.bi(" L water", " لتر ماء")]);
+      out.push(`<h4>🍚 ${esc(this.bi("Food and water", "الطعام والماء"))}</h4>` + this.kv(rows) +
+        `<p class="hint">${esc(this.bi(
+          "Rule of thumb: dry food at 12 % of body weight (10–15 % window), greens 40 % of that, water about 25 % of body weight. Weigh the dish, not the bird's appetite — leftovers tell you the true intake.",
+          "قاعدة عملية: الطعام الجاف ١٢٪ من وزن الجسم (بين ١٠ و١٥٪)، والخضار ٤٠٪ منه، والماء نحو ٢٥٪ من وزن الجسم. زِن الطبق لا شهيّة الطائر؛ فالباقي يخبرك بالأكل الحقيقي."))}</p>`);
+    }
+
+    if (hits.includes("cage")) {
+      if (!r) out.push(`<h4>📏 ${esc(this.bi("Cage and space", "القفس والمساحة"))}</h4><p class="hint">${esc(this.bi(
+        "Name the species and this answers with real centimetres — space depends on body length, not on taste.",
+        "سمِّ النوع فتُجيب هذه الفقرة بالسنتيمترات؛ فالمساحة تُحسب من طول الطائر لا من الذوق."))}</p>`);
+      else {
+        const c = this.cageFor(r);
+        const rows = c.aviary
+          ? [[this.bi("Flying enclosure", "قفص طيران"), `${c.l} × ${c.w} × ${c.h} ` + this.bi("m (L×W×H)", "م (طول×عرض×ارتفاع)")]]
+          : [[this.bi("Minimum cage", "الحد الأدنى للقفص"), `${c.l} × ${c.w} × ${c.h} ` + this.bi("cm (L×W×H)", "سم (طول×عرض×ارتفاع)")],
+            [this.bi("Bar spacing", "تباعد القضبان"), c.bars + " " + this.bi("cm", "سم")]];
+        if (n > 2 || f.pairs) rows.push([this.bi("For this many birds", "لهذا العدد"), this.bi(
+          `one enclosure per pair — a shared box makes two cocks fight and one hen stop laying`,
+          `قفص طيران لكل زوج — القفص المشترك يجعل الذكرين يتقاتلان ويجعل الأنثى تكف عن الوضع`)]);
+        rows.push([this.bi("Perches", "المجاثم"), this.bi(
+          `2 levels, ${c.aviary ? "different diameters along a flight path" : "one at each end so the bird flies between them"}`,
+          `مستويان، ${c.aviary ? "بأقطار مختلفة على مسار الطيران" : "واحد عند كل طرف ليطير الطائر بينهما"}`)]);
+        rows.push([this.bi("Placement", "الوضع"), this.bi(
+          `eye level of the room, out of draughts and kitchen fumes, with a dark quiet sleep block`,
+          `بمستوى نظر الغرفة، بعيداً عن التيارات ودخان المطبخ، مع نوم مظلم هادئ`)]);
+        out.push(`<h4>📏 ${esc(this.bi("Cage and space", "القفس والمساحة"))}</h4>` + this.kv(rows) +
+          `<p class="hint">${esc(this.bi(
+            `Derived from a body length of ${c.L} cm and the guide's space score of ${r.space || 3}/5: length ≥ 3× the bird, height enough to spread the wings. Practical floor, not a legal standard.`,
+            `مشتقة من طول جسم ${c.L} سم ودرجة المساحة ${r.space || 3}/5 في الدليل: الطول ≥ ٣ أضعاف الطائر، والارتفاع يسمح بفرد الجناحين. حدّ عملي وليس مواصفة قانونية.`))}</p>`);
+      }
+    }
+
+    if (hits.includes("breed")) {
+      if (!g) out.push(`<h4>🥚 ${esc(this.bi("Breeding calendar", "تقويم التفريخ"))}</h4><p class="hint">${esc(this.bi(
+        "Which species? Incubation length changes from 13 to 30 days across the guide.",
+        "أي نوع؟ مدة التحضين تتراوح بين ١٣ و٣٠ يوماً في هذا الدليل."))}</p>`);
+      else {
+        const dm = String(this.digits(q)).match(/(\d{4})-(\d{2})-(\d{2})/);
+        const start = dm ? `${dm[1]}-${dm[2]}-${dm[3]}` : dayKey();
+        const inc = g.incDays, day = daysBetween(start, dayKey());
+        const marks = [[0, "Egg set", "البيضة"], [Math.round(inc / 3), "Turning established", "انتظام قلب البيض"],
+          [Math.round(inc * 2 / 3), "Pipping window", "اقتراب الفقس"], [inc, "Hatch", "الفقس"],
+          [inc + 21, "Fledging (typical)", "الترييش"], [inc + 45, "Weaning checkpoint", "الفطام"]];
+        const eggs = f.eggs != null ? clamp(Math.round(f.eggs), 1, 40) : null;
+        const rows = marks.map(([d, en, ar]) => [`${d < day ? "✅" : "⏳"} ${esc(this.bi(en, ar))}`,
+          fmtDate(addDays(start, d).toISOString()) + this.bi(` · day ${d}`, ` · اليوم ${d}`)]);
+        rows.push([this.bi("Incubation for this group", "التحضين لهذه الفصيلة"), inc + " " + this.bi("days", "يوماً")]);
+        if (eggs) rows.push([this.bi("Clutch expectation", "متوقع من البيض"),
+          `${eggs} ` + this.bi("eggs → ≈", "بيضة ← ≈") + round(eggs * 0.7, 1) + this.bi(" fledged (typical 70 %)", " تفقيس (٧٠٪ عادة)")]);
+        const lead = this.bi(
+          `Counting from ${fmtDate(new Date(start).toISOString())}` + (day >= 0 ? ` — day ${Math.max(0, Math.min(day, inc))} today.` : " — that date is still ahead."),
+          `احتساباً من ${fmtDate(new Date(start).toISOString())}` + (day >= 0 ? ` — نحن في اليوم ${Math.max(0, Math.min(day, inc))}.` : " — ذلك التاريخ لم يأتِ بعد."));
+        out.push(`<h4>🥚 ${esc(this.bi("Breeding calendar", "تقويم التفريخ"))}</h4><p class="hint">` + esc(lead) + `</p>` +
+          this.kv(rows) +
+          `<p class="hint">${esc(this.bi(
+            "Dates only. Clutch size, nest box size and pairing age are not verified in this dataset, so they are not guessed here — the species page has what the guide does know.",
+            "تواريخ فقط. عدد البيض ومقاس صندوق العش وعمر الاقتران غير موثّقة في هذه البيانات فلا تُخمَّن هنا؛ صفحة النوع تحمل ما يعرفه الدليل."))}</p>`);
+      }
+    }
+
+    if (hits.includes("cost")) {
+      if (grams == null) out.push(`<h4>💰 ${esc(this.bi("Monthly consumption", "الاستهلاك الشهري"))}</h4><p class="hint">${esc(this.bi(
+        "Give the body weight or the species and the number of birds.", "اذكر وزن الطائر أو نوعه وعدد الطيور."))}</p>`);
+      else {
+        const dry = n * Math.max(2, grams * 0.12), month = dry * 30;
+        const rows = [[this.bi("Dry food per month", "الطعام الجاف في الشهر"), round(month / 1000, 2) + " " + this.bi("kg", "كغ")],
+        [this.bi("In 1 kg bags", "بأكياس الكيلوغرام"), "≈" + Math.ceil(month / 1000) + " " + this.bi("bags", "كيساً")],
+        [this.bi("In 25 kg sacks", "بأكياس الـ٢٥ كغ"), round(month / 25000, 2) + " " + this.bi("sack", "كيس")],
+        [this.bi("Water per month", "الماء في الشهر"), round(n * Math.round(grams * 0.25) * 30 / 1000, 1) + " " + this.bi("litres", "لتراً")],
+        [this.bi("Greens per month", "الخضار في الشهر"), round(month * 0.4 / 1000, 2) + " " + this.bi("kg", "كغ")]];
+        out.push(`<h4>💰 ${esc(this.bi("Monthly consumption", "الاستهلاك الشهري"))}</h4>` + this.kv(rows) +
+          `<p class="hint">${esc(this.bi(
+            `Consumption, not cost: ${n} bird${n > 1 ? "s" : ""} of ${round(grams, 0)} g at 12 % of body weight. Prices change by country and season, so the app converts them — multiply these kilograms by your local feed price.`,
+            `استهلاك لا سعر: ${n} ${round(grams, 0)} غم بـ١٢٪ من وزن الجسم. الأسعار تختلف بين البلدان والفصول، فاضرب هذه الكيلوغرامات في سعر العلف عندك.`))}</p>`);
+      }
+    }
+
+    if (hits.includes("group")) {
+      if (!r) out.push(`<h4>🦠 ${esc(this.bi("Keeping them together", "التجمّع والعدوى"))}</h4><p class="hint">${esc(this.bi(
+        "Name the species — the contagious list is written per group.", "سمِّ النوع؛ فقائمة الأمراض المعدية مكتوبة لكل فصيلة."))}</p>`);
+      else {
+        const list = GROUPS[r.g].dis || [];
+        const LVL = [["Not infectious", "غير معدٍ"], ["From the environment", "من البيئة"],
+          ["Contact and shared water", "بالملامسة والماء المشترك"], ["Spreads fast through a collection", "يسري بسرعة بين التجمّع"]];
+        const rows = list.map(d => {
+          const info = disText(d), sp = this.SPREAD[info[0]] || this.SPREAD[d[0]];
+          const lvl = sp ? clamp(sp.lvl, 0, 3) : null;
+          return `<p><b>${esc(info[0])}</b>${sp && sp.zo ? ` <span class="chip">${esc(this.bi("to humans", "للإنسان"))}</span>` : ""}
+            — ${esc(lvl == null ? this.bi("route not classified", "غير مصنّف الانتشار") : this.bi(LVL[lvl][0], LVL[lvl][1]))}. ` +
+            `${esc(sp ? sp[this.langKey()] : this.bi("The guide lists it without a transmission route.", "الدليل يذكره بلا طريقة انتشار موثقة."))}</p>`;
+        }).join("");
+        const flock = store.birds.all().length;
+        out.push(`<h4>🦠 ${esc(this.bi("Keeping them together", "التجمّع والعدوى"))}</h4>${rows}` +
+          this.kv([[this.bi("New bird", "الطائر الجديد"), this.bi("30 days in a separate room, no shared air or water, then a vet check before it joins the collection",
+            "ثلاثون يوماً في غرفة مستقلة بلا هواء أو ماء مشترك، ثم فحص بيطري قبل إدخاله التجمّع")],
+          [this.bi("Order of care", "ترتيب العناية"), this.bi("healthy birds first, sick ones last, hands and boots between every group",
+            "الطيور السليمة أولاً والمريضة أخيراً، واليدان والقدمان بين كل مجموعة")],
+          [this.bi("Quarantine the sick one", "عزل المريض"), this.bi("one cage, one cloth, one bowl set, out of the room's airflow",
+            "قفص واحد وقماشه وأوعيته، وخارج مجرى هواء الغرفة")]]) +
+          (flock > 1 ? `<p class="hint">${esc(this.bi(
+            `Your log holds ${flock} birds — a disease at level 3 here reaches all of them in days. New arrivals go into a separate room before anything else.`,
+            `سجلّك يضم ${flock} طائراً؛ وأي مرض بمستوى ٣ هنا يصلها كلها خلال أيام. الجديد يدخل غرفة منفصلة قبل كل شيء.`))}</p>` : "") +
+          `<p class="hint">${esc(this.bi(
+            "Routes are the guide's own disease notes; vaccination and medicine remain a vet's call.",
+            "طرق الانتشار هي ملاحظات الدليل عن هذه الأمراض؛ والتطعيم والدواء قرار بيطري."))}</p>`);
+      }
+    }
+
+    if (!out.length) return null;
+    return { kind: "practice", sci: r ? r.sci : null, id: r && !r.atlas ? r.id : null, birdId: bird ? bird.id : null,
+      html: who + out.join("") + `<p class="hint">${esc(this.bi(
+        "Calculated on this device from the guide's husbandry table and your figures. Ask a follow-up — the species stays in context.",
+        "حُسب على هذا الجهاز من جدول العناية في الدليل وأرقامك. تابع بالسؤال؛ يبقى النوع في السياق."))}</p>` };
+  },
+
   findSpecies(q) {
     const t = this.norm(q);
+    this._fromCtx = false; this._guessed = false;
+    /* a market name is a direct hit: resolve it before any fuzzy path */
+    const byAlias = this.aliasHit(t);
+    if (byAlias) {
+      const c = SPECIES.find(x => x.sci === byAlias) || (Atlas.get ? Atlas.get(byAlias) : null);
+      if (c) return [c];
+    }
     const hit = SPECIES.filter(b => (b.en && t.includes(this.norm(b.en))) ||
       (b.ar && this.norm(b.ar).length > 3 && t.includes(this.norm(b.ar))) ||
       (b.sci && this.norm(b.sci).length > 5 && t.includes(this.norm(b.sci))));
@@ -2657,12 +3158,32 @@ const AI = {
     if (stem.length) return stem.slice(0, 2);
     const sem = this.semantic(q, 2).map(x => x.r).filter(Boolean);
     const atl = Atlas.match(q, 2).filter(a => !sem.some(s => s.sci === a.sci));
-    return sem.concat(atl).slice(0, 2);
+    const found = sem.concat(atl).slice(0, 2);
+    /* reached only when no stored name, plural, stem or phrase matched: this is
+       a weighted guess over descriptions, not a name hit, and it is labelled as
+       one wherever it is shown */
+    if (found.length) { this._fromCtx = false; this._guessed = true; return found; }
+    /* nothing in the question names a bird: it is a follow-up about whatever the
+       last answer was about. A back-reference ("هو", "مثله", "it", "another") or a
+       bare question of two or three words reuses the topic; a long sentence with
+       no cue at all is a new subject and gets no answer rather than a wrong one. */
+    const c = this.ctxSpecies();
+    if (!c) { this._fromCtx = false; return []; }
+    const wc = this.norm(q).split(" ").filter(Boolean).length;
+    const cue = /(هو|هي|هذا|هذه|ذلك|تلك|انه|ايضا|مثله|مثلها|غيره|الاخير|الثاني|الاول|نفسه|then|it|its|this|that|they|them|another|other|same|instead|also|him|her)/i.test(this.norm(q));
+    this._fromCtx = cue || wc <= 4;
+    return this._fromCtx ? [c] : [];
   },
   ansFacts(q) {
     const rs = this.findSpecies(q);
     if (!rs.length) return null;
-    return { kind: "facts", html: rs.map(r => `<h4>${esc(speciesName(r))} <span class="hint">${esc(r.sci)}</span></h4>` +
+    const fromCtx = this._fromCtx ? `<p class="hint">${esc(this.bi(
+      "Answering about the species from the previous question — name another one to switch.",
+      "أجيب عن النوع المذكور في السؤال السابق؛ سمِّ نوعاً آخر للانتقال إليه."))}</p>` : "";
+    const guess = this._guessed ? `<p class="banner warn">${esc(this.bi(
+      "No stored name matched your words: this is the closest weighted match in the descriptions, not a name you gave. Confirm it or name the species.",
+      "لم تطابق أي تسمية محفوظة كلماتك: هذا أقرب ترجيح من الأوصاف، وليس اسماً ذكرته. تحقق منه أو سمِّ النوع."))}</p>` : "";
+    return { kind: "facts", sci: rs[0].sci, id: rs[0].atlas ? null : rs[0].id, html: fromCtx + guess + rs.map(r => `<h4>${esc(speciesName(r))} <span class="hint">${esc(r.sci)}</span></h4>` +
       this.kv(this.facts(r)) + (r.atlas ? `<p class="hint">${esc(this.bi(
         "Atlas entry: name, classification and picture only — husbandry numbers are not verified for it.",
         "مدخل أطلس: اسم وتصنيف وصورة فقط — أرقام العناية غير موثّقة له."))}</p>` : "")).join("") };
@@ -2702,18 +3223,49 @@ const AI = {
      fact intent is detected first and reorders the answer chain */
   FACTINT: /(how long|lifespan|life span|what (does|do|can|should).*?(eat|feed|given)|can .*?eat|where .*?live|how big|how (much|heavy)|when .*?(breed|lay|hatch)|do they|are they|كم (يعيش|تعيش|يبلغ|تبلغ|وزن|تكلف|يستغرق)|ماذا (ياكل|يات|يطعم|يفعل)|اين (يعيش|تعيش)|متى (يتكاثر|تضع|يفقس)|هل (ياكل|يات|يتكلم|يمكن))/i,
   factIntent(q) { return this.FACTINT.test(this.norm(q)); },
+  /* Each answer writes what it was about into the persisted context, so the next
+     sentence can be "وكم يحتاج من الأكل؟" with no name in it. Nothing is written
+     when the answer resolved no species and no bird. */
+  remember(ans, q) {
+    const patch = {};
+    if (ans.sci) patch.sci = ans.sci;
+    if (ans.id) patch.id = ans.id;
+    if (ans.birdId) patch.birdId = ans.birdId;
+    if (q) {
+      const f = this.figures(q);
+      if (f.grams != null || f.birds != null) patch.fig = { grams: f.grams, birds: f.birds };
+    }
+    if (Object.keys(patch).length) this.ctxSet(patch);
+  },
   local(q) {
     const chain = this.factIntent(q)
-      ? [this.ansFacts, this.ansCompare, this.ansTriage, this.ansRecommend, this.ansSearch]
-      : [this.ansTriage, this.ansRecommend, this.ansCompare, this.ansFacts, this.ansSearch];
+      ? [this.ansPractice, this.ansFacts, this.ansCompare, this.ansTriage, this.ansRecommend, this.ansSearch]
+      : [this.ansTriage, this.ansPractice, this.ansRecommend, this.ansCompare, this.ansFacts, this.ansSearch];
+    this._fromCtx = false;
     for (const fn of chain) {
       const ans = fn.call(this, q);
-      if (ans) { ans.engine = "local"; return ans; }
+      if (ans) { ans.engine = "local"; this.remember(ans, q); return ans; }
     }
     return { kind: "help", engine: "local", html: this.HELP() };
   },
 
   /* ------------------------------------------------ cloud bridge (opt-in) */
+  /* Every endpoint here speaks the OpenAI chat-completions shape, which is what
+     stream() above already sends. The local entries are the two servers keepers
+     run on their own machine, where no key leaves the device — both need to be
+     told to accept requests from a browser origin, so the hint says so. */
+  PRESETS: [
+    { k: "openai", base: "https://api.openai.com/v1", model: "gpt-4o-mini", key: true,
+      en: "OpenAI", ar: "OpenAI" },
+    { k: "openrouter", base: "https://openrouter.ai/api/v1", model: "openai/gpt-4o-mini", key: true,
+      en: "OpenRouter", ar: "OpenRouter" },
+    { k: "groq", base: "https://api.groq.com/openai/v1", model: "llama-3.1-8b-instant", key: true,
+      en: "Groq", ar: "Groq" },
+    { k: "ollama", base: "http://localhost:11434/v1", model: "qwen2.5:7b", key: false,
+      en: "Ollama on this machine", ar: "Ollama على هذا الجهاز" },
+    { k: "lmstudio", base: "http://localhost:1234/v1", model: "local-model", key: false,
+      en: "LM Studio", ar: "LM Studio" }
+  ],
   cfg() {
     const s = store.settings;
     return { base: (s.aiBase || "").trim().replace(/\/+$/, ""), key: (s.aiKey || "").trim(), model: (s.aiModel || "").trim() };
@@ -2732,12 +3284,21 @@ const AI = {
         (recs[0] ? ": " + String(recs[0].text).slice(0, 160) : ""));
     }
     this.semantic(q, 5).forEach(x => {
-      const r = x.r;
+      const r = x.r, rg = r.g ? GROUPS[r.g] : null;
       bits.push([speciesName(r) || r.sci, r.sci, r.origin, r.size, r.life, r.tip,
-        r.g ? GROUPS[r.g].en : "",
+        rg ? rg.en : "",
+        rg && rg.incDays ? this.bi(`incubation ${rg.incDays} days, typical daily food ${rg.foodWeight} g`, `التحضين ${rg.incDays} يوماً، والطعام اليومي النموذجي ${rg.foodWeight} غ`) : "",
         r.noise != null ? `noise ${r.noise}/5 difficulty ${r.difficulty}/5 cost ${r.cost}/5 sociability ${r.sociability}/5 space ${r.space}/5` : ""]
         .filter(Boolean).join(" | "));
     });
+    /* the cloud model sees the same running topic and the same parsed numbers the
+       local arithmetic used, so a follow-up does not restart from zero */
+    const c = this.ctxSpecies();
+    if (c) bits.push(this.bi("Topic of the previous answer on this device: ", "موضوع الإجابة السابقة على هذا الجهاز: ") +
+      [speciesName(c), c.sci].filter(Boolean).join(" / "));
+    const fg = this.figures(q);
+    if (fg.raw.length) bits.push(this.bi("Numbers written by the user: ", "الأرقام التي كتبها المستخدم: ") +
+      fg.raw.map(x => x.v + (x.u ? " " + x.u : "")).join(", "));
     const hs = this.hits(this.norm(q));
     if (hs.length) bits.push(this.bi("Local triage: ", "فرز محلي: ") +
       this.URGENCY[Math.max.apply(null, hs.map(x => x[0].urg))][this.langKey()]);
@@ -2747,9 +3308,11 @@ const AI = {
     const L = I18N.lang === "ar"
       ? "أنت مساعد تربية الطيور داخل دليل يعمل بلا إنترنت. أجب بالعربية في أقل من 180 كلمة، نصاً واضحاً، دون اختلاق حقائق عن الأنواع. " +
         "استخدم كتلة الأدلة المحلية أدناه فقط؛ وما لا تغطِّه قل إنك غير متأكد منه. لا تخترع أسعاراً ولا جرعات دواء ولا أحكاماً قانونية. " +
+        "إن كان السؤال عن كمية أكل أو مساحة قفص أو موعد فقس، احسب من الأرقام المكتوبة في السؤال ومن أرقام الدليل واذكر القاعدة المستخدمة. " +
         "عند أي احتمال طارئ اذكر زيارة طبيب طيور وأعطِ الإجراء الآمن المؤقت. الأدلة:\n"
       : "You are the bird-keeping assistant inside an offline-first guide. Answer in English, under 180 words, plain prose, no invented species facts. " +
         "Rely only on the local evidence block below; where it is silent, say you are unsure. Never invent prices, drug doses or legal claims. " +
+        "For food quantity, cage size or hatch dates, compute from the numbers the user wrote and the guide figures, and name the rule you used. " +
         "For anything that could be an emergency, name an avian vet and give the safe interim step. Evidence:\n";
     return L + this.pack(q) + "\n" + (I18N.lang === "ar" ? "سؤال المستخدم: " : "User question: ") + q;
   },
@@ -2790,6 +3353,37 @@ const AI = {
     }
     return got;
   },
+  /* One tiny non-streaming completion: proves the address resolves, the browser
+     is allowed to call it (CORS), the key is accepted and the model exists. The
+     report is what the server actually answered, never a guess. */
+  async test() {
+    const c = this.cfg();
+    if (!c.base || !c.model) throw new Error(this.bi("Base URL and model name are both required.", "يلزم عنوان النموذج واسمه معاً."));
+    const url = /chat\/completions$/.test(c.base) ? c.base : c.base + "/chat/completions";
+    const headers = { "Content-Type": "application/json" };
+    if (c.key) headers["Authorization"] = "Bearer " + c.key;
+    const t0 = Date.now();
+    let res;
+    try {
+      res = await fetch(url, { method: "POST", headers,
+        body: JSON.stringify({ model: c.model, stream: false, max_tokens: 8, temperature: 0,
+          messages: [{ role: "user", content: "Reply with exactly: ready" }] }) });
+    } catch (e) {
+      throw new Error(this.bi("The browser could not reach it — check the address, and for a local server allow this origin (OLLAMA_ORIGINS / LM Studio CORS).",
+        "لم يصل المتصفح للنموذج — راجع العنوان، ولو كان النموذج محلياً اسمح لهذا المصدر بالوصول (OLLAMA_ORIGINS أو إعداد CORS في LM Studio)."));
+    }
+    const txt = await res.text().catch(() => "");
+    if (!res.ok) {
+      const why = res.status === 401 || res.status === 403 ? this.bi("key rejected", "المفتاح مرفوض")
+        : res.status === 404 ? this.bi("model or path not found", "النموذج أو المسار غير موجود")
+        : res.status === 429 ? this.bi("rate limited", "تجاوز معدل الطلبات") : "";
+      throw new Error("HTTP " + res.status + (why ? " — " + why : "") + (txt ? " · " + String(txt).slice(0, 140) : ""));
+    }
+    let echo = "";
+    try { const o = JSON.parse(txt); const ch = (o.choices || [])[0]; echo = String((ch && ((ch.message && ch.message.content) || ch.text)) || "").trim(); }
+    catch { echo = txt.slice(0, 40); }
+    return { ms: Date.now() - t0, echo: echo.slice(0, 40), model: c.model };
+  },
 };
 
 /* ----------------------------------------------------------- SEARCH ENGINE */
@@ -2810,7 +3404,8 @@ const FILTER_DEFAULT = () => ({ g: "all", sort: "name", size: [0, 300], life: [0
 let filters = FILTER_DEFAULT();
 
 function searchSpecies(q, f = filters) {
-  const hay = b => [speciesName(b), b.en, b.ar, b.sci, b.origin, GROUPS[b.g].en, GROUPS[b.g].ar, b.tip].filter(Boolean).join(" • ");
+  const hay = b => [speciesName(b), b.en, b.ar, b.sci, b.origin, GROUPS[b.g].en, GROUPS[b.g].ar, b.tip,
+    AI.aliasOf(b.sci).join(" ")].filter(Boolean).join(" • ");
   let out = SPECIES.filter(b => {
     if (f.g === "fav" ? !isFav(b.id) : (f.g !== "all" && b.g !== f.g)) return false;
     if (b.sizeMax < f.size[0] || b.sizeMin > f.size[1]) return false;
@@ -3155,6 +3750,50 @@ function startVoice(apply) {
   try { rec.start(); toast(tr("voice_listen"), "info", 1400); } catch { /* already running */ }
 }
 
+/* --------------------------------------------------------- reading answers ---
+   Voice input above is the keeper's side; this is the guide speaking back. The
+   browser picks the Arabic voice when it has one, and an answer is flattened to
+   text through DOMParser so markup never reaches the throat. Voices load
+   asynchronously in Chrome, so an empty list is retried once after they arrive. */
+let speakWant = null;
+function htmlToText(html) {
+  try { return new DOMParser().parseFromString(String(html || ""), "text/html").body.textContent.trim(); }
+  catch { return String(html || "").replace(/<[^>]+>/g, " "); }
+}
+function speechVoices() { return window.speechSynthesis ? window.speechSynthesis.getVoices() : []; }
+function pickVoice() {
+  const vs = speechVoices();
+  if (!vs.length) return null;
+  const want = I18N.lang === "ar" ? /^ar\b|^ara/i : /^en/i;
+  return vs.find(v => want.test(String(v.lang || ""))) || null;
+}
+function speak(text) {
+  const S = window.speechSynthesis;
+  if (!S) { toast(tr("ai_speak_no"), "warn"); return false; }
+  const clean = String(text || "").replace(/\s+/g, " ").trim().slice(0, 1400);
+  if (!clean) return false;
+  S.cancel();
+  const utter = () => {
+    const u = new SpeechSynthesisUtterance(clean);
+    const v = pickVoice();
+    if (v) u.voice = v;
+    u.lang = I18N.lang === "ar" ? (v ? v.lang : "ar-SA") : (v ? v.lang : "en-GB");
+    u.rate = clamp(num(store.settings.speakRate, 1), 0.6, 1.6);
+    u.onend = u.onerror = () => { speakWant = null; };
+    S.speak(u);
+  };
+  if (speechVoices().length) utter();
+  else {
+    speakWant = utter;
+    /* Chrome reports an empty voice list until the engine finishes loading:
+       speak on that event, or on a short timer, whichever comes first */
+    S.onvoiceschanged = () => { if (speakWant) { const f = speakWant; speakWant = null; f(); } };
+    setTimeout(() => { if (speakWant) { const f = speakWant; speakWant = null; f(); } }, 600);
+  }
+  return true;
+}
+function stopSpeak() { if (window.speechSynthesis) { window.speechSynthesis.cancel(); speakWant = null; } }
+
 function wireCatalogueClicks(root) {
   on(root, "click", "[data-asight]", (e, n) => logSighting(Atlas.get(n.dataset.asight) || { sci: n.dataset.asight }));
   on(root, "click", "[data-fav]", (e, n) => {
@@ -3240,6 +3879,7 @@ function viewDetail(id) {
           <button class="btn sm ghost" onclick="window.print()">🖨️ ${esc(tr("print"))}</button>
           <button class="btn sm ghost" id="share">🔗 ${esc(tr("share"))}</button>
           <button class="btn sm ghost" id="logSighting">📍 ${esc(tr("add_sighting"))}</button>
+          <button class="btn sm ghost" id="readAloud">🔊 ${esc(tr("ai_speak"))}</button>
           <button class="btn sm" id="addBird">🪺 ${esc(tr("add_bird"))}</button>
         </div>
       </div>
@@ -3398,6 +4038,15 @@ function viewDetail(id) {
   /* actions */
   $("#addBird").onclick = () => openAddBird(b);
   $("#logSighting").onclick = () => logSighting(b);
+  $("#readAloud").onclick = () => {
+    const text = [speciesName(b), b.sci,
+      tr("origin") + ": " + AI.locVal(b.origin),
+      tr("size") + ": " + AI.locVal(b.size),
+      tr("life") + ": " + AI.locVal(b.life),
+      tr("diet_tip") + ": " + b.tip]
+      .concat(gList(b.g, "diet").slice(0, 2).map(d => "• " + d)).filter(Boolean).join(". ");
+    speak(text);
+  };
   $("#share").onclick = async () => {
     const url = location.href, text = speciesName(b) + " (" + b.sci + ") — Birds World";
     if (navigator.share) { try { await navigator.share({ title: speciesName(b), text, url }); award(2); return; } catch { return; } }
@@ -3909,13 +4558,24 @@ function viewSettings() {
       <span class="spacer"></span><span class="hint" id="songProbeOut"></span></div></section>
 
   <section class="panel"><h2>🤖 ${esc(tr("ai_h"))}</h2>
+    <div class="row" style="margin-bottom:var(--s-3)">
+      ${AI.PRESETS.map(p => `<button class="btn ghost sm" data-aip="${esc(p.k)}">${esc(I18N.lang === "ar" ? p.ar : p.en)}</button>`).join("")}
+      <span class="spacer"></span><span class="hint">${esc(tr("ai_preset"))}</span></div>
     <div class="filters">
       <div><label>${esc(tr("ai_base"))}</label><input id="setAiBase" placeholder="https://api.openai.com/v1" value="${esc(s.aiBase || "")}" autocomplete="off"></div>
       <div><label>${esc(tr("ai_model"))}</label><input id="setAiModel" placeholder="gpt-4o-mini" value="${esc(s.aiModel || "")}" autocomplete="off"></div>
       <div><label>${esc(tr("ai_key"))}</label><input id="setAiKey" type="password" value="${esc(s.aiKey || "")}" autocomplete="off"></div>
     </div>
     <div class="row" style="margin-top:var(--s-3)"><button class="btn" id="setAiSave">${esc(tr("save"))}</button>
-      <button class="btn ghost" id="setAiClear">${esc(tr("clear"))}</button></div>
+      <button class="btn ghost" id="setAiTest">🔌 ${esc(tr("ai_test"))}</button>
+      <button class="btn ghost" id="setAiClear">${esc(tr("clear"))}</button>
+      <span class="spacer"></span><span class="hint" id="setAiOut"></span></div>
+    <div class="row" style="margin-top:var(--s-3);align-items:center">
+      <label class="inline" style="margin:0"><input type="checkbox" id="setAiSpeak" ${s.aiSpeak ? "checked" : ""}> ${esc(tr("ai_auto_speak"))}</label>
+      <label class="inline" style="margin:0" for="setAiRate">${esc(tr("ai_rate"))}</label>
+      <input type="range" id="setAiRate" min="0.6" max="1.6" step="0.05" value="${clamp(num(s.speakRate, 1), 0.6, 1.6)}" style="max-width:170px">
+      <output id="setAiRateOut">${round(num(s.speakRate, 1), 2)}×</output>
+      <button class="btn ghost sm" id="setAiSay">🔊 ${esc(tr("ai_sample"))}</button></div>
     <p class="hint">${esc(tr("ai_cloud_hint"))} ${esc(tr("ai_strip"))}</p></section>
 
   <section class="panel"><h2>🌍 ${esc(tr("atlas_h"))}</h2>
@@ -3969,6 +4629,41 @@ function viewSettings() {
     s.aiBase = ""; s.aiKey = ""; s.aiModel = ""; store.persist();
     AI.invalidate(); toast(tr("ai_local"), "ok"); viewSettings();
   };
+  /* Presets only fill the fields — saving stays an explicit press, because the
+     address is where the keeper's questions are about to go. */
+  on(app, "click", "[data-aip]", (e, n) => {
+    const p = AI.PRESETS.find(x => x.k === n.dataset.aip); if (!p) return;
+    $("#setAiBase").value = p.base; $("#setAiModel").value = p.model;
+    if (!p.key) $("#setAiKey").value = "";
+    $("#setAiOut").textContent = tr("ai_preset");
+  });
+  $("#setAiTest").onclick = async () => {
+    s.aiBase = $("#setAiBase").value.trim().replace(/\/+$/, "");
+    s.aiModel = $("#setAiModel").value.trim();
+    s.aiKey = $("#setAiKey").value.trim();
+    store.persist();
+    const out = $("#setAiOut");
+    out.textContent = tr("ai_thinking");
+    try {
+      const r = await AI.test();
+      out.textContent = tr("ai_test_ok", { ms: r.ms, echo: r.echo || "—" });
+    } catch (e2) {
+      out.textContent = tr("ai_test_fail") + " " + String((e2 && e2.message) || e2);
+    }
+  };
+  $("#setAiSpeak").onchange = e => {
+    s.aiSpeak = e.target.checked; store.persist();
+    if (e.target.checked) speak(I18N.lang === "ar" ? "تم تشغيل قراءة الردود بصوت عربي." : "Answer read-aloud is on.");
+    else stopSpeak();
+  };
+  $("#setAiRate").oninput = e => {
+    s.speakRate = clamp(num(e.target.value, 1), 0.6, 1.6);
+    $("#setAiRateOut").textContent = round(s.speakRate, 2) + "×";
+  };
+  $("#setAiRate").onchange = () => store.persist();
+  $("#setAiSay").onclick = () => speak(I18N.lang === "ar"
+    ? "مرحباً. هذا صوت مساعد الطيور، يقرأ أرقام الأكل والمساحة ومواعيد الفقس."
+    : "Hello. This is the bird assistant voice. It reads food amounts, cage sizes and hatch dates.");
   $("#setAtlasInc").onchange = e => {
     s.includeAtlas = e.target.checked; store.persist(); AI.invalidate(); toast(tr("note_saved"), "ok");
   };
@@ -4311,7 +5006,9 @@ async function viewIdentify() {
 }
 
 /* ------------------------------------------------------------- AI VIEW */
-const aiChat = { log: [], cancel: null };
+const aiChat = { log: [], cancel: null, plain: [] };
+const AI_KIND_KEY = { triage: "ai_triage", recommend: "ai_recommend", facts: "ai_facts",
+  compare: "ai_compare", search: "ai_search", practice: "ai_practice" };
 function viewAI() {
   document.title = tr("ai_h") + " — Birds World";
   const cloud = AI.cloudOn();
@@ -4320,11 +5017,16 @@ function viewAI() {
     <div class="row" style="margin-top:var(--s-3)">
       <input id="aiQ" placeholder="${esc(tr("ai_ph"))}" style="flex:1;min-width:240px" autocomplete="off">
       <button class="btn" id="aiGo">${esc(tr("ai_send"))}</button>
+      <button class="btn ghost" id="aiMic" title="${esc(tr("voice_listen"))}">🎙</button>
       <button class="btn ghost" id="aiReset">↺ ${esc(tr("ai_reset"))}</button></div>
     <div class="row" style="margin-top:var(--s-2)">
       <span class="chip">${esc(tr(cloud ? "ai_cloud" : "ai_local"))}</span>
+      <label class="inline" style="margin:0"><input type="checkbox" id="aiSpeak" ${store.settings.aiSpeak ? "checked" : ""}> ${esc(tr("ai_auto_speak"))}</label>
+      <span id="aiCtx" class="row" style="margin:0"></span></div>
+    <div class="row" style="margin-top:var(--s-2)">
       ${[["ai_triage", "لماذا طائري منفش الريش ولا يأكل؟"], ["ai_recommend", "طائر صغير هادئ رخيص للشقة"],
-         ["ai_facts", "كم يعيش الببغاء الاسترالي وماذا يأكل؟"], ["ai_compare", "قارن الكناري والزيبرا"]]
+         ["ai_facts", "كم يعيش الببغاء الاسترالي وماذا يأكل؟"], ["ai_practice", "كم يطعم ٤ طيور وزنها ٤٥ غ في الشهر؟"],
+         ["ai_compare", "قارن الكناري والزيبرا"]]
         .map(([k, q]) => `<button class="btn ghost sm qex" data-q="${esc(q)}">${esc(tr(k))}</button>`).join("")}
       </div>
     <div id="aiLog" class="stack" style="margin-top:var(--s-3)">${aiChat.log.length ? aiChat.log.join("") : `<div class="empty"><b>💬</b>${esc(tr("ai_empty"))}</div>`}</div>
@@ -4335,44 +5037,81 @@ function viewAI() {
     aiChat.log.push(html); log.insertAdjacentHTML("beforeend", html);
     window.scrollTo(0, document.body.scrollHeight);
   };
+  const drawCtx = () => {
+    const host = $("#aiCtx"); if (!host) return;
+    const label = AI.ctxLabel();
+    host.innerHTML = label
+      ? `<span class="chip">🧠 ${esc(tr("ai_ctx"))}: ${esc(label)}</span><button class="btn ghost sm" data-clrctx>✕ ${esc(tr("ai_ctx_clear"))}</button>`
+      : "";
+  };
+  const spkLabel = btn => {
+    const S = window.speechSynthesis;
+    btn.textContent = S && S.speaking ? "⏹ " + tr("ai_speak_stop") : "🔊 " + tr("ai_speak");
+  };
   const ask = async raw => {
     const q = String(raw || "").trim(); if (!q) return;
     push(`<div class="card sm"><b>🧑</b> <span>${esc(q)}</span></div>`);
     $("#aiQ").value = "";
     const loc = AI.local(q);
-    const src = `<span class="chip">${esc(tr(loc.kind === "triage" ? "ai_triage" : loc.kind === "recommend" ? "ai_recommend"
-      : loc.kind === "facts" ? "ai_facts" : loc.kind === "compare" ? "ai_compare" : loc.kind === "search" ? "ai_search" : "ai_local"))}</span>`;
+    const src = `<span class="chip">${esc(tr(AI_KIND_KEY[loc.kind] || "ai_local"))}</span>`;
+    const speakBtn = i => `<button class="btn ghost sm" data-spk="${i}">🔊 ${esc(tr("ai_speak"))}</button>`;
     if (!AI.cloudOn()) {
+      const i = aiChat.plain.length;
+      aiChat.plain.push(htmlToText(loc.html));
       push(`<div class="card sm">${src}<div style="margin-top:6px">${loc.html}</div>
+        <div class="row" style="margin-top:6px">${speakBtn(i)}</div>
         <p class="hint">${esc(tr("ai_strip"))}</p></div>`);
+      if (store.settings.aiSpeak) speak(aiChat.plain[i]);
+      drawCtx();
       return;
     }
     const slot = document.createElement("div");
     slot.className = "card sm";
+    const idx = aiChat.plain.length;
+    aiChat.plain.push("");
     slot.innerHTML = `${src}<div class="hint">${esc(tr("ai_thinking"))}</div><div class="ai-body"></div>
+      <div class="row" style="margin-top:6px">${speakBtn(idx)}</div>
       <p class="hint">${esc(tr("ai_src"))} ${esc(AI.bi("your records + ", "سجلاتك + "))}${esc(tr("atlas_h"))}.</p>`;
     if (!aiChat.log.length) log.innerHTML = "";
     aiChat.log.push("");
     log.appendChild(slot);
-    const body = slot.querySelector(".aiBody");
+    const body = slot.querySelector(".ai-body");
     const ctl = new AbortController(); aiChat.cancel = ctl;
-    let got = 0;
+    let acc = "";
     try {
-      got = await AI.stream(q, txt => { body.textContent += txt; }, ctl.signal);
-      if (!got) { body.innerHTML = loc.html; slot.querySelector(".hint").textContent = tr("ai_fail"); }
+      const got = await AI.stream(q, txt => { acc += txt; body.textContent = acc; }, ctl.signal);
+      if (!got) throw new Error(AI.bi("empty response", "رد فارغ"));
+      aiChat.plain[idx] = acc;
+      slot.querySelector(".hint").textContent = "☁ " + AI.cfg().model;
     } catch (e) {
       body.innerHTML = loc.html;
+      aiChat.plain[idx] = htmlToText(loc.html);
       slot.querySelector(".hint").textContent = tr("ai_fail") + " — " + String((e && e.message) || e);
     } finally { aiChat.cancel = null; }
+    if (store.settings.aiSpeak) speak(aiChat.plain[idx]);
+    drawCtx();
   };
   $("#aiGo").onclick = () => ask($("#aiQ").value);
   $("#aiQ").onkeydown = e => { if (e.key === "Enter") ask(e.target.value); };
-  $("#aiReset").onclick = () => { aiChat.log = []; if (aiChat.cancel) aiChat.cancel.abort(); viewAI(); };
+  $("#aiMic").onclick = () => startVoice(t => { $("#aiQ").value = t; ask(t); });
+  $("#aiSpeak").onchange = e => { store.settings.aiSpeak = e.target.checked; store.persist(); if (!e.target.checked) stopSpeak(); };
+  $("#aiReset").onclick = () => { aiChat.log = []; aiChat.plain = []; if (aiChat.cancel) aiChat.cancel.abort(); stopSpeak(); AI.ctxClear(); viewAI(); };
   on(app, "click", ".qex", (e, n) => ask(n.dataset.q));
+  on(app, "click", "[data-clrctx]", () => { AI.ctxClear(); drawCtx(); });
+  on(app, "click", "[data-spk]", (e, n) => {
+    const S = window.speechSynthesis;
+    if (S && S.speaking) { stopSpeak(); $$("[data-spk]").forEach(spkLabel); return; }
+    const txt = aiChat.plain[num(n.dataset.spk, 0)] || "";
+    if (!txt) return;
+    if (speak(txt)) spkLabel(n);
+    setTimeout(() => spkLabel(n), 900);
+  });
+  drawCtx();
 }
 
 function route() {
   detachAnalyser();
+  stopSpeak();
   const h = location.hash || "#/";
   const detail = h.startsWith("#/bird/") ? h.slice(7) : null;
   const bird = h.startsWith("#/my-bird/") ? h.slice(10) : null;
