@@ -2427,24 +2427,29 @@ const AI = {
     "Casuarius casuarius": ["كازوار", "كاسواري", "cassowary"],
     "Nestor notabilis": ["كيا", "kea"]
   },
-  /* Longest alias wins: "ببغاء استرالي" must beat a stray "ببغاء", and words are
-     compared whole (clitics folded) so "البدجي" finds "بدجي". */
-  aliasHit(t) {
+  /* Longest alias wins per species: "ببغاء استرالي" must beat a stray "ببغاء", and
+     words are compared whole (clitics folded) so "البدجي" finds "بدجي". Every
+     species named in the sentence comes back in the order it appeared, which is
+     what makes "قارن بين الكناري والزيبرا" find two birds instead of one. */
+  aliasAll(t) {
     const toks = String(t).split(" ").map(x => this.stripAr(x));
-    let best = null, bestLen = 0;
+    const found = [];
     for (const [sci, list] of Object.entries(this.ALIAS)) {
+      let best = null, bestPos = -1;
       for (const a of list) {
         const at = this.norm(a).split(" ").map(x => this.stripAr(x));
         if (!at[0]) continue;
         for (let i = 0; i + at.length <= toks.length; i++) {
           let ok = true;
           for (let j = 0; j < at.length; j++) if (toks[i + j] !== at[j]) { ok = false; break; }
-          if (ok && at.length > bestLen) { best = sci; bestLen = at.length; }
+          if (ok && (!best || at.length > best || (at.length === best && bestPos > i))) { best = at.length; bestPos = i; }
         }
       }
+      if (best) found.push([sci, bestPos]);
     }
-    return best;
+    return found.sort((a, b) => a[1] - b[1]).map(x => x[0]);
   },
+  aliasHit(t) { return this.aliasAll(t)[0] || null; },
   aliasOf(sci) { return this.ALIAS[sci] || []; },
   ctxLabel() {
     const parts = [], b = this.ctxBird(), r = this.ctxSpecies();
@@ -2839,12 +2844,21 @@ const AI = {
     const gd = g0 ? this.groupDiseases(g0, t, hs) : [];
     if (gd.length) {
       out.push(`<h4>${esc(this.bi("Common to this species group", "الأكثر شيوعاً في فصيلة هذا الطائر"))}</h4>`);
-      out.push(gd.map(x => `<p><b>${esc(x.name)}</b> — ${esc(this.bi("signs", "علامات"))}: ${esc(x.signs)}. ` +
-        `${esc(this.bi("handling", "العلاج"))}: ${esc(x.treat)}</p>`).join(""));
+      out.push(gd.map(x => {
+        const dk = this.diseaseIn(x.name) || Object.keys(this.SPREAD).find(k => this.norm(k) === this.norm(x.name)) || x.name;
+        const sp = this.SPREAD[dk];
+        const lvl = sp ? clamp(sp.lvl, 0, 3) : null;
+        return `<p><b>${esc(x.name)}</b>${lvl != null && lvl >= 2 ? ` <span class="pill" style="background:var(--warn);border-color:transparent">${esc(this.bi("isolates today", "يُعزل فوراً"))}</span>` : ""} ` +
+          `— ${esc(this.bi("signs", "علامات"))}: ${esc(x.signs)}. ${esc(this.bi("handling", "العلاج"))}: ${esc(x.treat)}. ` +
+          `<span class="hint">${esc(this.bi("to the others", "للبقية"))}: ${esc(sp ? this.bi(this.DISLVL[lvl][0], this.DISLVL[lvl][1]) :
+            this.bi("not classified in the guide", "غير مصنّف في الدليل"))}</span></p>`;
+      }).join(""));
       out.push(`<p class="hint">${esc(this.bi(
         "Shortlisted from the guide's own disease list for this group by sign overlap — a vet confirms it with tests.",
         "قائمة مختصرة من جدول أمراض الفصيلة في الدليل بحسب تطابق العلامات — والطبيب البيطري يؤكد بالفحص."))}</p>`);
     }
+    const askedDis = this.diseaseIn(q);
+    if (askedDis) out.push(this.ansDisease(askedDis, sp0));
     const prior = this.priorSigns(bird ? bird.id : null, hs);
     if (prior.length) {
       out.push(`<h4>${esc(this.bi("From your own log", "من سجلّك أنت"))}</h4>`);
@@ -2927,7 +2941,7 @@ const AI = {
     ["cage", /(قفص|اقفاص|حظيره|طياره|مساحه|مقاس|مقاسات|احجام القفص|cage|aviary|coop|dimensions|bar spacing)/],
     ["breed", /(تفريخ|تكاثر|حضانه|حضين|فقس|بيض|تعشيش|تضع البيض|هج|eegg|eggs|hatch|incubat|breed|nest|clutch|fledg|wean)/],
     ["cost", /(تكلفه|تكلف|استهلاك|شهري|شهريا|مصروف|مصاريف|monthly|per month|running cost|consumption|كم يكفي|كم كيلو|كم كيس)/],
-    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|contagi|quarantin|infect|spread|flock|together|other birds|new bird)/]
+    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|\u062a\u0646\u062a\u0642\u0644|\u0627\u0646\u062a\u0642\u0627\u0644|\u0644\u0644\u0627\u0646\u0633\u0627\u0646|\u0628\u0634\u0631|\u0646\u0627\u0642\u0644|contagi|quarantin|infect|spread|flock|together|other birds|new bird|human|zoonotic|to people)/]
   ],
   PRACNAME: {
     food: ["Food and water", "الطعام والماء"], cage: ["Cage and space", "القفس والمساحة"],
@@ -2957,6 +2971,118 @@ const AI = {
     "Iron storage disease": { lvl: 0, zo: false, en: "Not infectious — diet, vitamin C and species metabolism.", ar: "غير معدٍ — الغذاء وفيتامين C واستقلاب النوع." },
     "Avian malaria": { lvl: 2, zo: false, en: "Only through mosquitoes; never directly between birds.", ar: "عبر البعوض فقط؛ ولا ينتقل مباشرة بين الطيور." }
   },
+  /* How keepers actually write a disease name, in both languages and including
+     the transliterations people copy from a vet's note. These are the only words
+     a disease is matched on: the dictionary names themselves ("داء منقار الببغاء
+     وريشه") are too generic to match a sentence against. */
+  DIS_ALIAS: {
+    "Coccidiosis": ["كوكسيديا", "كوكسيديوز", "coccidi", "coccidia"],
+    "Psittacosis": ["ببغائية", "حمى الببغاء", "psittacosis", "chlamydia", "klamydia"],
+    "PBFD": ["منقار الببغاء وريشه", "بي بي اف دي", "pbfd", "beak and feather"],
+    "Avian pox": ["جدري", "جذري", "pox", "poxy"],
+    "Avian influenza": ["انفلونزا", "إنفلونزا", "influenza", "bird flu"],
+    "Newcastle disease": ["نيوكاسل", "لاصقة", "newcastle"],
+    "Paramyxovirus": ["باراميكسو", "paramyxo"],
+    "Aspergillosis": ["اسبيرجيلس", "أسبرجيلس", "فطريات الرئة", "aspergil", "mould in the lung"],
+    "Bumblefoot": ["دملة", "دمامل", "bumblefoot", "foot sore"],
+    "Mites and lice": ["القمل", "قمل", "القراد", "لعاث", "mites", "lice", "quafsh"],
+    "Air sac mites": ["اكياس هوائية", "الأكياس الهوائية", "air sac", "syrinx mites"],
+    "Canker (trichomonas)": ["كانكر", "تريكوموناس", "canker", "trichomon"],
+    "Egg binding": ["احتباس البيضة", "تعليق البيضة", "egg binding", "stuck egg"],
+    "Angel wing": ["الجناح الملائكي", "التواء الجناح", "angel wing"],
+    "Iron storage disease": ["تراكم الحديد", "فرط الحديد", "iron storage", "hemochromatosis"],
+    "Avian malaria": ["ملاريا", "malaria"],
+    "Frounce": ["فرونس", "frounce"]
+  },
+  _disIdx: null,
+  diseaseIndex() {
+    if (this._disIdx) return this._disIdx;
+    const idx = [], keys = Object.keys(this.SPREAD);
+    const add = (txt, k) => { const n = this.norm(txt); if (n.length >= 4) idx.push([n, k]); };
+    for (const k of keys) {
+      add(k, k);
+      (this.DIS_ALIAS[k] || []).forEach(a => add(a, k));
+      const ar = typeof DIS_AR !== "undefined" && DIS_AR[k] ? DIS_AR[k][0] : null;
+      if (ar) add(ar, k);
+    }
+    /* diseases the guide lists that have no transmission note yet stay matchable:
+       answering "is X contagious" with "the guide gives no route for it" is a
+       real answer, silently ignoring the name is not */
+    for (const g of Object.keys(GROUPS)) (GROUPS[g].dis || []).forEach(d => {
+      if (!keys.includes(d[0])) { add(d[0], d[0]); const a = typeof DIS_AR !== "undefined" && DIS_AR[d[0]] ? DIS_AR[d[0]][0] : null; if (a) add(a, d[0]); }
+    });
+    this._disIdx = idx.sort((a, b) => b[0].length - a[0].length);
+    return this._disIdx;
+  },
+  diseaseIn(q) {
+    const t = this.norm(q), qs = new Set(this.toks(q));
+    for (const [n, k] of this.diseaseIndex()) {
+      if (t.includes(n)) return k;
+      const ws = this.toks(n);
+      if (ws.length > 1 && ws.length <= 3 && ws.every(w => qs.has(w))) return k;
+    }
+    return null;
+  },
+  DISLVL: [["Not infectious", "غير معدٍ"], ["From the environment", "من البيئة"],
+    ["Contact and shared water", "بالملامسة والماء المشترك"], ["Spreads fast through a collection", "يسري بسرعة بين التجمّع"]],
+  /* One disease row, used by both the named-disease answer and the flock list.
+     The level is a chip and the route its own line, so a level-0 route that
+     already opens with "not infectious" is not printed twice. */
+  disLine(dk, showSigns) {
+    const sp = this.SPREAD[dk] || null;
+    const ar = typeof DIS_AR !== "undefined" && DIS_AR[dk] ? DIS_AR[dk] : null;
+    const nm = ar ? this.bi(dk, ar[0]) : this.bi(dk, (this.DIS_ALIAS[dk] || [dk])[0]);
+    const lvl = sp ? clamp(sp.lvl, 0, 3) : null;
+    const route = sp ? sp[this.langKey()] : (showSigns && ar ? ar[1] :
+      this.bi("The guide lists this disease without a verified transmission route.", "الدليل يذكر هذا المرض بلا طريقة انتشار موثقة."));
+    const chip = lvl == null ? `<span class="pill">${esc(this.bi("route not classified", "غير مصنّف الانتشار"))}</span>` :
+      `<span class="pill"${lvl >= 3 ? ' style="background:var(--danger);color:var(--danger-fg);border-color:transparent"' :
+        lvl === 2 ? ' style="background:var(--warn);border-color:transparent"' : ""}>${esc(this.bi(this.DISLVL[lvl][0], this.DISLVL[lvl][1]))}</span>` +
+      (sp.zo ? ` <span class="pill" style="background:var(--danger);color:var(--danger-fg);border-color:transparent">${esc(this.bi("reaches humans", "ينتقل للإنسان"))}</span>` : "");
+    return `<p><b>${esc(nm)}</b> ${chip}<br><span class="hint">${esc(route)}</span></p>`;
+  },
+  ansDisease(dk, r) {
+    const sp = this.SPREAD[dk] || null, ar = typeof DIS_AR !== "undefined" && DIS_AR[dk] ? DIS_AR[dk] : null;
+    const lvl = sp ? clamp(sp.lvl, 0, 3) : null;
+    const out = [`<h4>🦠 ${esc(this.bi("This disease", "هذا المرض"))}</h4>` + this.disLine(dk, true)];
+    if (ar && ar[1]) out.push(this.kv([[this.bi("Signs the guide lists", "العوارض كما يوردها الدليل"), ar[1]],
+      [this.bi("Treatment", "العلاج"), ar[2]]]));
+    const flock = store.birds.all().length;
+    const reach = ["This guide lists no transmission route for it",
+      "No — this one is not passed between birds.",
+      "Not bird to bird: it comes from the shared environment, so fixing the environment stops it.",
+      "Yes, by contact, shared water or fouled litter — isolate the sick one and change the bowls.",
+      "Yes, fast — through air, dust or droppings. Treat the whole collection as exposed."];
+    const reachAr = ["الدليل لا يذكر طريقة انتشار لهذا المرض",
+      "لا؛ فهذا المرض لا ينتقل بين الطيور.",
+      "لا تنتقل من طائر لآخر: مصدرها البيئة المشتركة، بإصلاحها يتوقف.",
+      "نعم؛ بالملامسة أو الماء المشترك أو الفرشة الملوثة؛ اعزل المريض وغيّر الأوعية.",
+      "نعم وبسرعة؛ عبر الهواء أو الغبار أو الفضلات. اعتبر التجمّع كله مخالطاً."];
+    const lv = lvl == null ? 0 : lvl + 1;
+    const spreadWord = lvl >= 2 ?
+      this.bi("reaches them all before signs show", "يصلها كلها قبل ظهور العوارض") :
+      this.bi("does not move between birds, so the flock is not the risk", "لا ينتقل بين الطيور فالتجمّع ليس هو الخطر");
+    const mine = flock > 1 ?
+      this.bi(flock + " birds are logged here, and a level " + lv + " disease " + spreadWord + ".",
+        "سجلّك يضم " + flock + " طائراً، ومرضاً بمستوى " + lv + " " + spreadWord + ".") :
+      this.bi("One bird logged so far, so the risk is to future arrivals — every new bird still quarantines.",
+        "طائر واحد في السجل؛ الخطر على القادمين الجدد، وكل جديد يُحجر.");
+    out.push(this.kv([
+      [this.bi("Can it reach the others?", "هل يصل لباقي الطيور؟"), this.bi(reach[lv], reachAr[lv])],
+      [this.bi("Quarantine", "الحجر"), this.bi(
+        "30 days in a separate room with its own air, water and cloth; healthy birds are cared for first and the sick ones last, hands and boots between every group",
+        "ثلاثون يوماً في غرفة مستقلة بهوائها ومائها وقماشها؛ السليمة تُخدم أولاً والمريضة أخيراً، واليدان والحذاء بين كل مجموعة")],
+      [this.bi("Your collection", "تجمّعك"), mine]
+    ]));
+    const list = r && GROUPS[r.g] && GROUPS[r.g].dis ? GROUPS[r.g].dis.map(d => disText(d)[0]) : [];
+    if (list.length) {
+      const known = list.some(x => this.diseaseIn(x) === dk || this.norm(x).includes(this.norm(dk)));
+      out.push(`<p class="hint">${known ? esc(this.bi("This one is on the guide's list for " + speciesName(r) + "'s group.", "هذا المرض ضمن قائمة الدليل لفصيلة " + speciesName(r) + ".")) :
+        esc(this.bi("For this species' group the guide lists: " + list.join("، ") + ".", "أما قائمة الدليل لفصيلة هذا النوع: " + list.join("، ") + "."))} ` +
+        esc(this.bi("Vaccines and medicines stay a vet's call.", "والتطعيم والدواء قرار بيطري.")) + `</p>`);
+    }
+    return out.join("");
+  },
   /* Cage sizing is a rule of thumb, not a standard: the floor is a bird that can
      spread its wings and fly between perches. The species' own body length sets
      the length, the space score sets the class (cage below 4, aviary above). */
@@ -2979,7 +3105,13 @@ const AI = {
     const f = this.figures(q);
     const bird = this.aboutBird(q);
     const spBird = bird ? byId(bird.speciesId) : null;
-    const r = spBird || this.findSpecies(q)[0] || null;
+    const cand = this.findSpecies(q);
+    /* a weighted guess is not a species the keeper named. It may still lend a
+       body weight to the food maths, but it must not set a cage size, an
+       incubation date or a disease list, and it must not enter the context. */
+    const guessed = !spBird && this._guessed;
+    const r = spBird || (!guessed ? cand[0] : null) || null;
+    const dk = hits.includes("group") ? this.diseaseIn(q) : null;
     const g = r ? GROUPS[r.g] : null;
     const base = g ? g.foodWeight : 10;
     /* figures carried from the previous question: "وكم يحتاج من الماء؟" repeats
@@ -2989,10 +3121,15 @@ const AI = {
     const carriedN = f.birds == null && f.pairs == null && cf.birds != null;
     const given = f.grams != null ? f.grams : (carried ? cf.grams : null);
     const body = given != null ? given : (g ? base * 6 : null);
-    if (body == null && !r) return null;
-    const n = clamp(Math.round(f.pairs ? f.pairs * 2 : (f.birds != null ? f.birds : (carriedN ? cf.birds : (bird ? 1 : 1)))), 1, 20000);
+    if (body == null && !r && !dk) return null;
+    const n = clamp(Math.round(f.pairs ? f.pairs * 2 : (f.birds != null ? f.birds : (carriedN ? cf.birds : 1))), 1, 20000);
     const out = [];
-    const who = r ? `<p class="hint">${this.pill(r)}` + (bird ? ` <span class="chip">${esc(bird.nick)}</span>` : "") + `</p>` : "";
+    const who = r ? `<p class="hint">${this.pill(r)}` + (bird ? ` <span class="chip">${esc(bird.nick)}</span>` : "") + `</p>` :
+      dk ? `<p class="hint">${esc(this.bi(
+        "Answering about the disease you named, whatever the species.", "أجيب عن المرض الذي سمّيته، مهما كان النوع."))}</p>` :
+      `<p class="banner warn">${esc(this.bi(
+        "Your words did not name a species, so only the numbers you typed are used here. Name the bird (budgie, canary, الكاسكو…) for cage size, hatch dates and its group's diseases.",
+        "لم يسمِّ سؤالك نوعاً، فاستخدمتُ أرقامك وحدها هنا. اذكر الطائر (بدجي، كناري، الكاسكو…) لتحصل على مقاس القفص وتواريخ الفقس وأمراض فصيلته."))}</p>`;
     const kgTxt = v => v >= 1000 ? round(v / 1000, 2) + " kg" : round(v, v < 10 ? 1 : 0) + " g";
     const grams = body == null ? null : body;
 
@@ -3084,26 +3221,21 @@ const AI = {
         out.push(`<h4>💰 ${esc(this.bi("Monthly consumption", "الاستهلاك الشهري"))}</h4>` + this.kv(rows) +
           `<p class="hint">${esc(this.bi(
             `Consumption, not cost: ${n} bird${n > 1 ? "s" : ""} of ${round(grams, 0)} g at 12 % of body weight. Prices change by country and season, so the app converts them — multiply these kilograms by your local feed price.`,
-            `استهلاك لا سعر: ${n} ${round(grams, 0)} غم بـ١٢٪ من وزن الجسم. الأسعار تختلف بين البلدان والفصول، فاضرب هذه الكيلوغرامات في سعر العلف عندك.`))}</p>`);
+            `استهلاك لا سعر: ${n} ${n > 1 ? "طيور" : "طائر"} بوزن ${round(grams, 0)} غ، والطعام الجاف ١٢٪ من وزن الجسم. الأسعار تختلف بين البلدان والفصول، فاضرب هذه الكيلوغرامات في سعر العلف عندك.`))}</p>`);
       }
     }
 
     if (hits.includes("group")) {
-      if (!r) out.push(`<h4>🦠 ${esc(this.bi("Keeping them together", "التجمّع والعدوى"))}</h4><p class="hint">${esc(this.bi(
-        "Name the species — the contagious list is written per group.", "سمِّ النوع؛ فقائمة الأمراض المعدية مكتوبة لكل فصيلة."))}</p>`);
+      if (dk) out.push(this.ansDisease(dk, r));
+      else if (!r) out.push(`<h4>🦠 ${esc(this.bi("Keeping them together", "التجمّع والعدوى"))}</h4><p class="hint">${esc(this.bi(
+        "Name the species or the disease — the contagious list is written per group, and a named disease answers on its own.",
+        "سمِّ النوع أو المرض؛ فقائمة الأمراض المعدية مكتوبة لكل فصيلة، والمرض المسمّى يُجاب عنه وحده."))}</p>`);
       else {
         const list = GROUPS[r.g].dis || [];
-        const LVL = [["Not infectious", "غير معدٍ"], ["From the environment", "من البيئة"],
-          ["Contact and shared water", "بالملامسة والماء المشترك"], ["Spreads fast through a collection", "يسري بسرعة بين التجمّع"]];
-        const rows = list.map(d => {
-          const info = disText(d), sp = this.SPREAD[info[0]] || this.SPREAD[d[0]];
-          const lvl = sp ? clamp(sp.lvl, 0, 3) : null;
-          return `<p><b>${esc(info[0])}</b>${sp && sp.zo ? ` <span class="chip">${esc(this.bi("to humans", "للإنسان"))}</span>` : ""}
-            — ${esc(lvl == null ? this.bi("route not classified", "غير مصنّف الانتشار") : this.bi(LVL[lvl][0], LVL[lvl][1]))}. ` +
-            `${esc(sp ? sp[this.langKey()] : this.bi("The guide lists it without a transmission route.", "الدليل يذكره بلا طريقة انتشار موثقة."))}</p>`;
-        }).join("");
+        const rows = list.map(d => this.disLine(this.diseaseIn(d[0] + " " + disText(d)[0]) || d[0], false)).join("");
         const flock = store.birds.all().length;
-        out.push(`<h4>🦠 ${esc(this.bi("Keeping them together", "التجمّع والعدوى"))}</h4>${rows}` +
+        out.push(`<h4>🦠 ${esc(this.bi("Keeping them together", "التجمّع والعدوى"))}</h4>` +
+          `<p class="hint">${esc(this.bi("Diseases the guide lists for " + speciesName(r) + "'s group:", "أمراض يسردها الدليل لفصيلة " + speciesName(r) + ":"))}</p>` + rows +
           this.kv([[this.bi("New bird", "الطائر الجديد"), this.bi("30 days in a separate room, no shared air or water, then a vet check before it joins the collection",
             "ثلاثون يوماً في غرفة مستقلة بلا هواء أو ماء مشترك، ثم فحص بيطري قبل إدخاله التجمّع")],
           [this.bi("Order of care", "ترتيب العناية"), this.bi("healthy birds first, sick ones last, hands and boots between every group",
@@ -3111,8 +3243,8 @@ const AI = {
           [this.bi("Quarantine the sick one", "عزل المريض"), this.bi("one cage, one cloth, one bowl set, out of the room's airflow",
             "قفص واحد وقماشه وأوعيته، وخارج مجرى هواء الغرفة")]]) +
           (flock > 1 ? `<p class="hint">${esc(this.bi(
-            `Your log holds ${flock} birds — a disease at level 3 here reaches all of them in days. New arrivals go into a separate room before anything else.`,
-            `سجلّك يضم ${flock} طائراً؛ وأي مرض بمستوى ٣ هنا يصلها كلها خلال أيام. الجديد يدخل غرفة منفصلة قبل كل شيء.`))}</p>` : "") +
+            `Your log holds ${flock} birds — a fast-spreading disease here reaches all of them in days. New arrivals go into a separate room before anything else.`,
+            `سجلّك يضم ${flock} طائراً؛ وأي مرض يسري بسرعة هنا يصلها كلها خلال أيام. الجديد يدخل غرفة منفصلة قبل كل شيء.`))}</p>` : "") +
           `<p class="hint">${esc(this.bi(
             "Routes are the guide's own disease notes; vaccination and medicine remain a vet's call.",
             "طرق الانتشار هي ملاحظات الدليل عن هذه الأمراض؛ والتطعيم والدواء قرار بيطري."))}</p>`);
@@ -3129,12 +3261,11 @@ const AI = {
   findSpecies(q) {
     const t = this.norm(q);
     this._fromCtx = false; this._guessed = false;
-    /* a market name is a direct hit: resolve it before any fuzzy path */
-    const byAlias = this.aliasHit(t);
-    if (byAlias) {
-      const c = SPECIES.find(x => x.sci === byAlias) || (Atlas.get ? Atlas.get(byAlias) : null);
-      if (c) return [c];
-    }
+    /* market names are direct hits: resolve them before any fuzzy path, and keep
+       every one the sentence contains so a comparison has both birds */
+    const byAlias = this.aliasAll(t).map(sci =>
+      SPECIES.find(x => x.sci === sci) || (Atlas.get ? Atlas.get(sci) : null)).filter(Boolean);
+    if (byAlias.length) return byAlias.slice(0, 3);
     const hit = SPECIES.filter(b => (b.en && t.includes(this.norm(b.en))) ||
       (b.ar && this.norm(b.ar).length > 3 && t.includes(this.norm(b.ar))) ||
       (b.sci && this.norm(b.sci).length > 5 && t.includes(this.norm(b.sci))));
@@ -3191,7 +3322,13 @@ const AI = {
   ansCompare(q) {
     if (!/(compare|versus|\bvs\b|difference|better than|مقارن|قارن|فرق|ايهما|أيهما|افضل من|خير من)/i.test(q)) return null;
     const rs = this.findSpecies(q).slice(0, 2);
-    if (rs.length < 2) { const sem = this.semantic(q, 2).map(x => x.r); if (sem.length >= 2) rs.push.apply(rs, sem.slice(rs.length, 2)); }
+    /* the second column has to be a different bird: if only one name was found,
+       the semantic runner-up is used, never the same species again */
+    if (rs.length < 2) {
+      const have = new Set(rs.map(r => r.sci));
+      const sem = this.semantic(q, 6).map(x => x.r).filter(r => r && !have.has(r.sci));
+      if (sem.length) rs.push(sem[0]);
+    }
     if (rs.length < 2) return null;
     const head = `<tr><th></th>${rs.map(r => `<th>${esc(speciesName(r))}</th>`).join("")}</tr>`;
     const body = TRAITS.map(([k]) => `<tr><th>${esc(traitLabel(k))}</th>${rs.map(r =>

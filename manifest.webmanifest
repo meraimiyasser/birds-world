@@ -1,0 +1,23 @@
+{
+  "name": "Birds World — Avian Field Guide",
+  "short_name": "Birds World",
+  "description": "Field guide to 45 bird species with care calculators, health records, geo sightings and real-song analysis. Works offline.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f8fafc",
+  "theme_color": "#10b981",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["reference", "education", "lifestyle"],
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Species", "url": "./index.html#/birds" },
+    { "name": "Find my bird", "url": "./index.html#/find" },
+    { "name": "My birds", "url": "./index.html#/my-birds" },
+    { "name": "Sightings", "url": "./index.html#/sightings" }
+  ]
+}
