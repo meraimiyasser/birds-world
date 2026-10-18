@@ -3176,7 +3176,7 @@ const AI = {
     ["breed", /(تفريخ|تكاثر|حضانه|حضين|فقس|بيض|تعشيش|تضع البيض|هج|eegg|eggs|hatch|incubat|breed|nest|clutch|fledg|wean)/],
     ["cost", /(تكلفه|تكلف|استهلاك|شهري|شهريا|مصروف|مصاريف|monthly|per month|running cost|consumption|كم يكفي|كم كيلو|كم كيس)/],
     ["escape", /(طالع من|طلع من|خرج من|خارج القفص|القفص فتح|يهرب|هروب|السقف|يطير في الغرفة|يطير في البيت|رجع للقفص|ادخله القفص|امسكه|مسك الطائر|قص الريش|قص الريشة|تقليم|مشذب|الجناحات|شذب|flew out|flying out|escape|got out|won't come back|will not come back|wing clip|clipped|flight training|come back to me|lure)/],
-    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|\u062a\u0646\u062a\u0642\u0644|\u0627\u0646\u062a\u0642\u0627\u0644|\u0644\u0644\u0627\u0646\u0633\u0627\u0646|\u0628\u0634\u0631|\u0646\u0627\u0642\u0644|contagi|quarantin|infect|spread|flock|together|other birds|new bird|human|zoonotic|to people|يعيش.{0,40} مع |يسكن.{0,40} مع |يتعايش.{0,40} مع |هل يضر|ضار ب|mix with|house with|live with|safe with)/]
+    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|\u062a\u0646\u062a\u0642\u0644|\u0627\u0646\u062a\u0642\u0627\u0644|\u0644\u0644\u0627\u0646\u0633\u0627\u0646|\u0628\u0634\u0631|\u0646\u0627\u0642\u0644|contagi|quarantin|infect|spread|flock|together|other birds|new bird|human|zoonotic|to people|يعيش.{0,40} مع |يسكن.{0,40} مع |يتعايش.{0,40} مع |هل يضر|ضار ب|تصيب|يصيب|بمرض|mix with|house with|live with|safe with)/]
   ],
   PRACNAME: {
     food: ["Food and water", "الطعام والماء"], cage: ["Cage and space", "القفص والمساحة"],
@@ -3577,8 +3577,17 @@ const AI = {
     /* A keeper writes the plural a word, not a stem: "صقور" is "صقر" with one letter
        more. Two letters of drift still separates that from a genuinely different
        species, so only short Arabic words are compared this loosely. */
-    const near = (a, w) => a === w || (/[\u0600-\u06FF]/.test(a) && Math.min(a.length, w.length) >= 3 &&
-      Math.abs(a.length - w.length) <= 2 && (a.startsWith(w) || w.startsWith(a)));
+    /* an Arabic broken plural inserts a long vowel inside the root, so compare the
+       consonantal frame: "صقر" and "صقور" both reduce to "صر". Two different birds
+       whose names differ by a whole syllable ("كوكال" / "كوكاتيل") stay apart, which
+       a general edit-distance test did not guarantee. The frame is still not enough on
+       its own — كناري and كونور share one — so the shorter word must also sit inside
+       the longer, letter for letter. */
+    const frame = w => (/^[\u0600-\u06FF]+$/.test(w) ? w.replace(/[اوى]/g, "") : w);
+    const inside = (s, t) => { let i = 0; for (const c of t) { if (i < s.length && s[i] === c) i++; } return i === s.length; };
+    const near = (a, w) => a === w || (a.length >= 3 && w.length >= 3 &&
+      Math.abs(a.length - w.length) <= 3 && frame(a) === frame(w) && frame(a).length >= 2 &&
+      (inside(a, w) || inside(w, a)));
     /* rank() is where the sentence decides. Clitics differ between "الببغاء" and the
        stored "ببغاء", so name words are compared de-prefixed; a name written out whole
        scores far ahead (negative) so it beats a generic one-word alias, and the score
@@ -3597,7 +3606,7 @@ const AI = {
     const dedupe = a => Array.from(new Map(a.map(x => [x.id, x])).values());
     const ordered = a => dedupe(a).sort((x, y) => rank(x) - rank(y));
     const named = SPECIES.filter(b => rank(b) < 1e6);
-    const whole = named.filter(b => rank(b) < 0);
+    const whole = named.filter(b => rank(b) < -1e5);
     if (whole.length) return ordered(whole).slice(0, 3);
     const bySci = SPECIES.filter(b => b.sci && this.norm(b.sci).length > 5 && t.includes(this.norm(b.sci)));
     if (bySci.length) return bySci.slice(0, 2);
