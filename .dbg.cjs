@@ -1,0 +1,10 @@
+const fs=require('fs');const html=fs.readFileSync('index.html','utf8');
+const start=html.indexOf('const RAW = ['), end=html.indexOf('\n];',start), marker=html.indexOf('/* Wave three',start);
+const head=start+'const RAW = '.length;
+const trim=s=>s.replace(/^[\s,]+/,'').replace(/[\s,]+$/,'');
+const raw=html.slice(marker,end);
+const cut=raw.replace(/\/\* Wave three[\s\S]*?\*\//,'');
+console.log('marker',marker,'end',end);
+console.log('RAW-HEAD>>>',JSON.stringify(raw.slice(0,120)));
+console.log('CUT-HEAD>>>',JSON.stringify(cut.slice(0,120)));
+console.log('CUT-TAIL>>>',JSON.stringify(cut.slice(-160)));

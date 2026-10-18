@@ -79,7 +79,8 @@ const T = {
     back:"All species", print:"Print sheet", share:"Share", add_sighting:"Log a sighting", add_bird:"Add to my birds",
     calc_h:"Daily feed & water calculator", birds_count:"Number of birds", dry:"Dry food", greens:"Fresh greens", water:"Drinking water",
     breed_h:"Breeding & hatching tracker", inc_start:"Incubation start date", hatch:"Expected hatch", inc_days:"Incubation length", day_of:"Day",
-    synth:"Play synthesized chirp", real:"Load real recording", search_rec:"Search recordings…", more_sounds:"More sounds", rate:"Speed",
+    synth:"Modelled call (not a recording)", real:"Load real recording", search_rec:"Search recordings…", more_sounds:"More sounds", rate:"Speed",
+    synth_note:"The modelled call is generated from this bird's size and group so you can train your ear — it is not its voice. Use “Load real recording” for actual field audio.",
     xeno_need_key:"Add a free Xeno-canto key for the deepest catalogue — but real recordings are searched on Wikimedia Commons first, with no key.",
     xeno_key:"Xeno-canto API key", xeno_key_hint:"Get one at xeno-canto.org/explore/api. The API v2 was retired, so a key is now mandatory for that source. A key typed here is sent from this browser only; with a community backend set, requests go through it instead so the key stays private.",
     inat_key:"iNaturalist read token", inat_key_hint:"Measured: iNaturalist returns photo URLs but an empty sounds array for anonymous calls, so its recordings only load when a read token is present. The token stays on this device and is stripped from every backup export.",
@@ -105,6 +106,8 @@ const T = {
     badges:"Badges", lvl:"Level",
     wiz_h:"Which bird suits you?", wiz_next:"Next", wiz_back:"Back", wiz_result:"Your best matches", wiz_restart:"Start over",
     settings_h:"Settings", theme:"Theme", language:"Language", accent:"Accent colour", api_base:"Community sync URL (optional)",
+    theme_auto:"Follow the device", theme_light:"Day (light)", theme_dark:"Night (dark)", theme_now:"Mode: {m}",
+    theme_switch:"Switch between day and night mode", theme_hint:"Night mode dims the whole interface, including charts and spectrograms.",
     api_hint:"Leave empty for pure local mode. Set a REST base to push sightings and birds to a shared database.",
     storage:"Storage", clear_all:"Delete all my data", confirm_clear:"This permanently deletes favorites, notes, birds, sightings and progress on this device. Continue?",
     sync_now:"Sync now", outbox:"Queued writes", remote_ok:"Sync complete", remote_fail:"Sync failed — writes stay queued.",
@@ -149,6 +152,16 @@ const T = {
     id_rec:"Record", id_stoprec:"Stop", id_listening:"Listening…", id_again:"Try again", id_fromfile:"Use an audio file",
     id_none:"No reference voices indexed yet — index some songs first.", id_build:"Index reference songs", id_building:"Indexing",
     id_lib:"Reference library", id_indexed:"Indexed voices", id_mic_no:"Microphone unavailable or permission denied.",
+    id_status:"Before you record", id_mic_ready:"Microphone ready", id_mic_perm:"Microphone needs permission",
+    id_emptylib:"Nothing to compare against yet: the reference library is empty. Index some real songs first — identification cannot work without them.",
+    id_index_first:"Index songs now", id_mic_denied:"The browser refused the microphone. Use the lock/icon at the left of the address bar, allow microphone for this page, then press Record again.",
+    id_mic_busy:"Another app is using the microphone (a call, recorder or browser tab). Close it and try again.",
+    id_mic_none:"No microphone is connected to this device.",
+    id_mic_insecure:"Recording needs a secure page. Open the site through http://127.0.0.1 or https:// — a double-clicked local file (file://) blocks the microphone.",
+    id_usefile:"No microphone? Press “Use an audio file” and pick any recording of the song; the analysis is the same.",
+    id_check_lib:"Reference library", id_check_mic:"Microphone", id_check_src:"Recording sources", id_check_page:"Page address",
+    id_ready:"Ready", id_notready:"Not ready", id_novoice:"0 indexed", id_page_file:"local file (file://)", id_page_web:"web address",
+    id_nolike:"None of the indexed songs is close enough to this recording. Index more songs, or compare it against a species you suspect.",
     id_noaudio:"Could not read that audio.", id_quiet:"Only background noise reached the microphone — move closer or record a longer burst.", id_notonal:"No clear pitched note was found; wind and insects cannot be identified.", id_best:"Closest match", id_conf:"Confidence", id_feats:"Measured from your recording",
     id_pitch:"Peak frequency", id_rate2:"Notes per second", id_bands:"Energy by frequency band", id_shape:"Song shape across frequencies", id_cands:"Candidates",
     id_against:"Compare with this species", id_test:"Play a synthetic call", id_srclink:"Reference recording",
@@ -181,7 +194,8 @@ const T = {
     back:"كل الأنواع", print:"طباعة", share:"مشاركة", add_sighting:"سجّل مشاهدة", add_bird:"أضف إلى طيوري",
     calc_h:"حاسبة الغذاء والماء اليومية", birds_count:"عدد الطيور", dry:"غذاء جاف", greens:"خضار طازجة", water:"ماء شرب",
     breed_h:"متابعة التفريخ والفقس", inc_start:"بداية الحضانة", hatch:"تاريخ الفقس المتوقع", inc_days:"مدة الحضانة", day_of:"اليوم",
-    synth:"صفارة محاكاة", real:"تحميل تسجيل حقيقي", search_rec:"جارٍ البحث عن تسجيلات…", more_sounds:"مزيد من الأصوات", rate:"السرعة",
+    synth:"نداء مُحاكى (ليس تسجيلاً)", real:"تحميل تسجيل حقيقي", search_rec:"جارٍ البحث عن تسجيلات…", more_sounds:"مزيد من الأصوات", rate:"السرعة",
+    synth_note:"النداء المُحاكى مُولَّد من حجم هذا الطائر وفصيلته لتمييز مداه الصوتي، وليس غناءه. للتصحيح اضغط «تحميل تسجيل حقيقي».",
     xeno_need_key:"أضِف مفتاح Xeno-canto المجاني للحصول على أعمق فهرس — لكن البحث عن التسجيلات الحقيقية يبدأ من ويكيميديا كومنز بدون أي مفتاح.",
     xeno_key:"مفتاح Xeno-canto", xeno_key_hint:"احصل عليه من xeno-canto.org/explore/api. أُلغيت الواجهة v2 فأصبح المفتاح إلزامياً لهذا المصدر. المفتاح هنا يُرسل من هذا المتصفح فقط؛ وعند ضبط خلفية مجتمعية تمر الطلبات عبرها فيبقى المفتاح خاصاً.",
     inat_key:"رمز قراءة iNaturalist", inat_key_hint:"قِسنا ذلك: يُرجع iNaturalist روابط الصور لكن مصفوفة أصوات فارغة للاتصالات غير الموثّقة، فلا تُحمَّل تسجيلاته إلا مع رمز قراءة. يبقى الرمز على هذا الجهاز ويُحذَف من كل نسخة احتياطية.",
@@ -206,7 +220,8 @@ const T = {
     quiz_h:"اختبار الاسم والصوت", answer:"إجابتك", right:"صحيح", wrong:"خطأ", next:"التالي", streak:"التتابع", points:"النقاط",
     badges:"الأوسمة", lvl:"المستوى",
     wiz_h:"أي طائر يناسبك؟", wiz_next:"التالي", wiz_back:"رجوع", wiz_result:"أفضل التطابقات", wiz_restart:"ابدأ من جديد",
-    settings_h:"الإعدادات", theme:"المظهر", language:"اللغة", accent:"اللون المميز", api_base:"رابط مزامنة المجتمع (اختياري)",
+    settings_h:"الإعدادات", theme:"المظهر", theme_auto:"تلقائي (مع النظام)", theme_light:"وضع نهاري", theme_dark:"وضع ليلي", theme_now:"الوضع: {m}",
+    theme_switch:"التبديل بين الوضع النهاري والليلي", theme_hint:"الوضع الليلي يُعتّم الواجهة كلها بما فيها الرسوم والطيف الصوتي.", language:"اللغة", accent:"اللون المميز", api_base:"رابط مزامنة المجتمع (اختياري)",
     api_hint:"اتركه فارغاً للعمل المحلي الكامل. ضع رابط REST لمشاركة المشاهدات والطيور.",
     storage:"التخزين", clear_all:"حذف كل بياناتي", confirm_clear:"سيُحذف نهائيًا كل ما حفظته على هذا الجهاز. هل تريد المتابعة؟",
     sync_now:"مزامنة الآن", outbox:"كتابات في الطابور", remote_ok:"اكتملت المزامنة", remote_fail:"فشلت المزامنة — الكتابة باقية في الطابور.",
@@ -250,6 +265,16 @@ const T = {
     id_rec:"سجّل", id_stoprec:"أوقف", id_listening:"أستمع…", id_again:"أعد المحاولة", id_fromfile:"استخدم ملفاً صوتياً",
     id_none:"لا توجد أصوات مرجعية مفهرسة — ابدأ بفهرسة بعض الأغاني.", id_build:"فهرسة أغاني مرجعية", id_building:"جارٍ الفهرسة",
     id_lib:"المكتبة المرجعية", id_indexed:"أصوات مفهرسة", id_mic_no:"الميكروفون غير متاح أو تم رفض الإذن.",
+    id_status:"قبل أن تسجّل", id_mic_ready:"الميكروفون جاهز", id_mic_perm:"الميكروفون يحتاج إذناً",
+    id_emptylib:"لا يوجد ما نقارن به بعد: المكتبة المرجعية فارغة. افهرس بعض الأغاني الحقيقية أولاً — لا يمكن التعرف بدونها.",
+    id_index_first:"افهرس الأغاني الآن", id_mic_denied:"المتصفح رفض الميكروفون. اضغط أيقونة القفل/الإذن بجانب العنوان، اسمح بالميكروفون لهذه الصفحة ثم اضغط «سجّل» من جديد.",
+    id_mic_busy:"برنامج آخر يستخدم الميكروفون (مكالمة أو مسجّل أو تبويب آخر). أغلقه ثم أعد المحاولة.",
+    id_mic_none:"لا يوجد ميكروفون موصول بهذا الجهاز.",
+    id_mic_insecure:"التسجيل يحتاج صفحة آمنة. افتح الموقع عبر http://127.0.0.1 أو https:// — فتح الملف مباشرة (file://) يمنع الميكروفون.",
+    id_usefile:"لا ميكروفون؟ اضغط «استخدم ملفاً صوتياً» واختر أي تسجيل للأغنية؛ التحليل هو نفسه.",
+    id_check_lib:"المكتبة المرجعية", id_check_mic:"الميكروفون", id_check_src:"مصادر التسجيل", id_check_page:"عنوان الصفحة",
+    id_ready:"جاهز", id_notready:"غير جاهز", id_novoice:"0 مفهرس", id_page_file:"ملف محلي (file://)", id_page_web:"عنوان ويب",
+    id_nolike:"لا توجد أغنية مفهرسة قريبة بما يكفي من هذا التسجيل. افهرس أغاني أكثر، أو قارنه بنوعٍ تشكّ أنه هو.",
     id_noaudio:"تعذّرت قراءة هذا الصوت.", id_quiet:"لم يصل الميكروفون سوى ضوضاء خلفية — اقترب أو سجّل مقطعاً أطول.", id_notonal:"لم يُعثر على نبرة محددة واضحة؛ لا يمكن التعرف على الرياح أو الحشرات.", id_best:"أقرب مطابقة", id_conf:"درجة الثقة", id_feats:"قياسات تسجيلك",
     id_pitch:"الذروة الترددية", id_rate2:"نغمة في الثانية", id_bands:"الطاقة حسب نطاق التردد", id_shape:"شكل الغناء عبر الترددات", id_cands:"المرشحون",
     id_against:"قارن مع هذا النوع", id_test:"شغّل نداءً اصطناعياً", id_srclink:"التسجيل المرجعي",
@@ -629,6 +654,93 @@ const RAW = [
   { en:"Glossy Ibis", ar:"", sci:"Plegadis falcinellus", g:"wi", origin:"Warm regions worldwide", size:"50–65 cm", life:"10–20 years", tip:"Insects, small aquatic life and softbill food", file:"", t:[4,2,5,3,4] },
   { en:"Eurasian Spoonbill", ar:"", sci:"Platalea leucorodia", g:"wi", origin:"Eurasia and north Africa", size:"80–95 cm", life:"15–25 years", tip:"Small fish and crustaceans; shallow planted water", file:"", t:[5,2,5,5,3] },
   { en:"Andean Condor", ar:"", sci:"Vultur gryphus", g:"wi", origin:"Andean South America", size:"110–130 cm", life:"40–50 years", tip:"Large carcasses and whole prey; a very tall, cold enclosure", file:"", t:[5,2,5,5,2] },
+
+  /* Wave three. Same row shape as above, and the same rule: only species whose
+     husbandry can be stated honestly. Where a bird is protected, or simply
+     cannot live in a cage, the tip says so instead of giving care figures.
+     Arabic names are left blank wherever the market name is not established —
+     .review-sheet.cjs puts those rows in front of the keeper to name. */
+
+  { en:"Red-lored Amazon", ar:"أمازون أحمر الجبهة", sci:"Amazona autumnalis", g:"pa", origin:"Mexico and Central America", size:"32–35 cm", life:"40–50 years", tip:"Pellets, vegetables and fruit; never an all-seed diet", file:"", t:[4,4,4,3,4] },
+  { en:"White-fronted Amazon", ar:"أمازون أبيض الجبهة", sci:"Amazona albifrons", g:"pa", origin:"Mexico to northwestern Costa Rica", size:"28–32 cm", life:"40–50 years", tip:"Pellets and vegetables; chews everything, give safe wood", file:"", t:[4,4,3,3,4] },
+  { en:"Yellow-headed Amazon", ar:"أمازون أصفر الرأس", sci:"Amazona oratrix", g:"pa", origin:"Mexico, Belize and Guatemala", size:"38–41 cm", life:"40–60 years", tip:"Pellets, greens and limited fruit; trade is restricted — papers only", file:"", t:[5,4,4,4,4] },
+  { en:"Red-crowned Amazon", ar:"أمازون أحمر التاج", sci:"Amazona viridigenalis", g:"pa", origin:"Northeastern Mexico", size:"33–38 cm", life:"40–50 years", tip:"Pellet base with vegetables; needs hours outside the cage daily", file:"", t:[4,4,4,3,4] },
+  { en:"Cape Parrot", ar:"", sci:"Poicephalus robustus", g:"pa", origin:"Southern African forests", size:"33–35 cm", life:"40–60 years", tip:"Pellets, seeds and fruit; captive-bred only, wild birds are protected", file:"", t:[4,3,3,3,3] },
+  { en:"Australian King Parrot", ar:"ببغاء ملكي أسترالي", sci:"Alisterus scapularis", g:"pa", origin:"Eastern Australia", size:"42–43 cm", life:"20–30 years", tip:"Pellets, seed and fruit; quiet for a large parrot", file:"", t:[4,3,4,3,3] },
+  { en:"Red-rumped Parrot", ar:"ببغاء أحمر المؤخرة", sci:"Psephotus haematonotus", g:"pa", origin:"Inland eastern Australia", size:"26–28 cm", life:"15–20 years", tip:"Seed mix, greens and half-ripe seed heads in breeding", file:"", t:[2,3,3,2,3] },
+  { en:"Moustached Parakeet", ar:"باراكيت ذو الشوارب", sci:"Psittacula alexandri", g:"pa", origin:"South and Southeast Asia", size:"38–40 cm", life:"20–30 years", tip:"Fruit, pellets and vegetables; a loud, active flier", file:"", t:[3,4,4,3,3] },
+  { en:"Derbyan Parakeet", ar:"باراكيت دربيان", sci:"Psittacula derbiana", g:"pa", origin:"Eastern Tibet and western China", size:"48–50 cm", life:"30–40 years", tip:"A large strong cage, fruit and pellets; an experienced-keeper bird", file:"", t:[5,4,5,4,3] },
+  { en:"Red-masked Parakeet", ar:"باراكيت أحمر القناع", sci:"Psittacara erythrogenys", g:"pa", origin:"Southwestern Ecuador and northwestern Peru", size:"32–34 cm", life:"25–30 years", tip:"Pellets, vegetables and wood to chew; extremely loud", file:"", t:[3,5,4,3,4] },
+  { en:"Mitred Parakeet", ar:"باراكيت مطوّق أحمر", sci:"Psittacara mitrata", g:"pa", origin:"South American Andes", size:"38–41 cm", life:"25–30 years", tip:"Pellets base with greens; needs a tall flight cage", file:"", t:[4,4,4,3,4] },
+  { en:"Abyssinian Lovebird", ar:"حبيل حبشي", sci:"Agapornis taranta", g:"pa", origin:"Ethiopian highlands", size:"16–17 cm", life:"10–15 years", tip:"Seed mix, greens and cuttlebone; a hardy cool-climate lovebird", file:"", t:[3,3,2,2,4] },
+  { en:"Grey-headed Lovebird", ar:"حبيل رمادي الرأس", sci:"Agapornis canus", g:"pa", origin:"Madagascar", size:"14–15 cm", life:"10–15 years", tip:"Fine seed and greens; shy — keep pairs rather than hand-reared singles", file:"", t:[3,2,2,2,4] },
+  { en:"Long-billed Corella", ar:"كوكاتو طويل المنقار", sci:"Cacatua tenuirostris", g:"pa", origin:"South-eastern Australia", size:"37–40 cm", life:"40–60 years", tip:"Pellets, seed and vegetables; needs dust-bathing and heavy chewing", file:"", t:[4,3,4,4,4] },
+  { en:"Hawk-headed Parrot", ar:"ببغاء صقر الرأس", sci:"Deroptyus accipitrinus", g:"pa", origin:"Northern South America", size:"34–36 cm", life:"25–30 years", tip:"Pellets, fruit and palm shoots; a specialist bird, not a first parrot", file:"", t:[5,3,4,4,3] },
+
+  { en:"Red-browed Finch", ar:"", sci:"Neochmia temporalis", g:"fi", origin:"Eastern Australia", size:"10–12 cm", life:"5–8 years", tip:"Finch mix, seeding grasses and live food in breeding", file:"", t:[2,2,2,1,4] },
+  { en:"Double-barred Finch", ar:"", sci:"Taeniopygia bichenovii", g:"fi", origin:"Eastern and northern Australia", size:"10–12 cm", life:"5–8 years", tip:"Finch mix and millet spray; the quietest grass finch", file:"", t:[2,1,2,1,4] },
+  { en:"Black-headed Munia", ar:"منياك أسود الرأس", sci:"Lonchura malabarica", g:"fi", origin:"India and Sri Lanka", size:"11–12 cm", life:"5–8 years", tip:"Fine seed mix, greens and constant grit", file:"", t:[2,2,2,1,4] },
+  { en:"White-headed Munia", ar:"منياك أبيض الرأس", sci:"Lonchura maja", g:"fi", origin:"Java, Bali and Borneo", size:"11–12 cm", life:"5–8 years", tip:"Grain and fine seed; sensitive to cold, wet housing", file:"", t:[3,2,2,1,4] },
+  { en:"Parrot Finch", ar:"", sci:"Erythrura prasina", g:"fi", origin:"South and Southeast Asia", size:"11–12 cm", life:"5–8 years", tip:"Fine seed, egg food and live food; needs warmth year-round", file:"", t:[3,2,2,2,4] },
+  { en:"Eurasian Siskin", ar:"", sci:"Spinus spinus", g:"fi", origin:"Europe and northern Asia", size:"11–12 cm", life:"4–7 years", tip:"Canary seed, greens and seeding herbs; crosses readily with canary", file:"", t:[2,2,2,1,3] },
+  { en:"Lesser Redpoll", ar:"", sci:"Acanthis cabaret", g:"fi", origin:"Europe and western Asia", size:"11–12 cm", life:"3–5 years", tip:"Fine seed, nyjer and greens; fattens on rich mixes", file:"", t:[3,2,2,1,3] },
+  { en:"Cineraria Bunting", ar:"", sci:"Emberiza cineracea", g:"fi", origin:"Arid north-east Africa and Arabia", size:"15–16 cm", life:"5–8 years", tip:"Small seed mix and greens; wild-caught birds stress badly", file:"", t:[4,2,3,2,2] },
+  { en:"Red-headed Finch", ar:"", sci:"Amadina erythrocephala", g:"fi", origin:"Southern Africa", size:"14–16 cm", life:"6–10 years", tip:"Finch mix, greens and grit; hardy but needs dry housing", file:"", t:[2,2,2,1,4] },
+  { en:"Black-faced Waxbill", ar:"", sci:"Estrilda erythronotos", g:"fi", origin:"Eastern and southern Africa", size:"11–12 cm", life:"4–7 years", tip:"Fine seed, egg food and a little live food", file:"", t:[3,2,2,1,4] },
+  { en:"African Silverbill", ar:"", sci:"Euodice cantans", g:"fi", origin:"Africa south of the Sahara", size:"11–13 cm", life:"5–8 years", tip:"Small seed mix and seeding grasses; breeds easily in a colony", file:"", t:[1,2,2,1,4] },
+  { en:"Red-eared Firetail", ar:"", sci:"Stagonopleura oculata", g:"fi", origin:"South-western Australia", size:"11–12 cm", life:"5–8 years", tip:"Fine seed and half-ripe seed heads; quiet but delicate", file:"", t:[4,1,2,2,4] },
+  { en:"European Serin", ar:"", sci:"Serinus serinus", g:"fi", origin:"Europe, north Africa and western Asia", size:"11–12 cm", life:"5–8 years", tip:"Fine seed, greens and egg food; a wild songbird that rarely settles", file:"", t:[4,2,2,1,2] },
+  { en:"Rock Bunting", ar:"", sci:"Emberiza cia", g:"fi", origin:"Southern Europe and central Asia", size:"15–16 cm", life:"4–7 years", tip:"Seed mix, greens and live food in breeding", file:"", t:[4,2,3,1,2] },
+  { en:"Common Rosefinch", ar:"", sci:"Carpodacus erythrinus", g:"fi", origin:"Europe and south Asia", size:"14–15 cm", life:"5–8 years", tip:"Fine seed, greens and egg food; a shy aviary bird", file:"", t:[3,2,3,1,2] },
+
+  { en:"European Robin", ar:"أبو حمر", sci:"Erithacus rubecula", g:"so", origin:"Europe and western Asia", size:"12–14 cm", life:"3–5 years", tip:"Insectivore softbill food, live food and fruit; sings at night too", file:"", t:[4,2,3,2,2] },
+  { en:"Great Tit", ar:"قرقف كبير", sci:"Parus major", g:"so", origin:"Europe, north Africa and Asia", size:"14–15 cm", life:"3–7 years", tip:"Insect and softbill food with suet in winter; extremely bold", file:"", t:[4,3,3,2,2] },
+  { en:"Eurasian Blue Tit", ar:"قرقف أزرق", sci:"Cyanistes caeruleus", g:"so", origin:"Europe and western Asia", size:"11–12 cm", life:"3–6 years", tip:"Softbill mix, live food and seed; fragile, needs real flying space", file:"", t:[4,2,3,2,2] },
+  { en:"Red-whiskered Bulbul", ar:"بلبل أحمر الخدود", sci:"Pycnonotus jocosus", g:"so", origin:"South and Southeast Asia", size:"19–21 cm", life:"8–12 years", tip:"Low-iron softbill food, fruit and insects; high-iron mixes kill", file:"", t:[3,3,3,2,3] },
+  { en:"Northern Cardinal", ar:"كاردنال أحمر", sci:"Cardinalis cardinalis", g:"so", origin:"Southern United States and Mexico", size:"21–23 cm", life:"6–12 years", tip:"Mixed seed with sunflower and safflower; colour holds best in an aviary", file:"", t:[3,4,4,2,3] },
+  { en:"House Sparrow", ar:"عصفور دوري", sci:"Passer domesticus", g:"so", origin:"Worldwide through human association", size:"14–16 cm", life:"3–7 years", tip:"Seed and grain with insects; wild birds do not adapt to cage life", file:"", t:[3,3,2,1,4] },
+  { en:"Common Cuckoo", ar:"الوقواق", sci:"Cuculus canorus", g:"so", origin:"Europe, Africa and Asia", size:"32–36 cm", life:"6–7 years", tip:"Insects and softbill food; a brood parasite that cannot be kept with other birds", file:"", t:[5,3,4,3,1] },
+  { en:"Eurasian Wren", ar:"", sci:"Troglodytes troglodytes", g:"so", origin:"Europe and western Asia", size:"9–10 cm", life:"2–5 years", tip:"Live insects and softbill food; the loudest singer for its size", file:"", t:[5,4,2,2,2] },
+  { en:"Mistle Thrush", ar:"", sci:"Turdus viscivorus", g:"so", origin:"Europe, north Africa and western Asia", size:"25–27 cm", life:"6–12 years", tip:"Low-iron softbill food, fruit and insects; a messy feeder", file:"", t:[4,3,4,2,2] },
+  { en:"Bluethroat", ar:"", sci:"Luscinia svecica", g:"so", origin:"Europe and northern Asia", size:"14–15 cm", life:"3–6 years", tip:"Insects and low-iron softbill food; needs quiet, planted cover", file:"", t:[4,2,3,2,2] },
+  { en:"Violet Turaco", ar:"", sci:"Musophaga violacea", g:"so", origin:"West African forests", size:"40–43 cm", life:"15–20 years", tip:"Fruit, pellets and greens; low-iron diet in a large planted aviary", file:"", t:[5,2,5,4,3] },
+  { en:"Barn Swallow", ar:"سنونو شائع", sci:"Hirundo rustica", g:"so", origin:"Worldwide", size:"16–19 cm", life:"4–8 years", tip:"Insects taken on the wing only — a nesting guest, not a cage bird", file:"", t:[5,2,3,1,3] },
+
+  { en:"Common Wood Pigeon", ar:"", sci:"Columba palumbus", g:"do", origin:"Europe, west and central Asia", size:"40–45 cm", life:"8–15 years", tip:"Grain mix with peas and maize; grit always available", file:"", t:[2,2,3,2,3] },
+  { en:"Stock Dove", ar:"", sci:"Columba oenas", g:"do", origin:"Europe and western Asia", size:"32–34 cm", life:"8–15 years", tip:"Small grain mix and pulses; needs a dry, draught-free loft", file:"", t:[3,2,3,2,3] },
+  { en:"European Turtle Dove", ar:"", sci:"Streptopelia turtur", g:"do", origin:"Europe, north Africa and western Asia", size:"26–28 cm", life:"8–12 years", tip:"Fine seed and grain; a nervous dove that needs a quiet loft", file:"", t:[3,2,3,2,4] },
+  { en:"Speckled Pigeon", ar:"", sci:"Columba guinea", g:"do", origin:"Africa south of the Sahara", size:"27–32 cm", life:"8–12 years", tip:"Grain mix and grit; keeps well as a pair in a loft", file:"", t:[3,2,3,2,3] },
+  { en:"Inca Dove", ar:"", sci:"Columba inca", g:"do", origin:"Southern United States to Costa Rica", size:"19–21 cm", life:"5–8 years", tip:"Fine seed and grain; needs dry, warm housing", file:"", t:[3,2,2,2,3] },
+  { en:"Thick-billed Green Pigeon", ar:"حمام أخضر غليظ المنقار", sci:"Treron curvirostra", g:"do", origin:"South and Southeast Asia", size:"27–29 cm", life:"8–12 years", tip:"Fruit, figs and pellets; a specialist that needs planted space", file:"", t:[5,2,5,3,3] },
+
+  { en:"Vulturine Guineafowl", ar:"", sci:"Acryllium vulturinum", g:"po", origin:"East African dry thornveld", size:"60–75 cm", life:"8–12 years", tip:"Game feed, grain and greens; keep a flock, not a single pair", file:"", t:[3,3,4,2,5] },
+  { en:"Silver Pheasant", ar:"تدرج فضي", sci:"Lophura nycthemera", g:"po", origin:"Southeast Asia", size:"95–125 cm", life:"8–12 years", tip:"Game-bird feed, grain and greens; a large planted aviary", file:"", t:[4,2,5,3,2] },
+  { en:"Green Pheasant", ar:"تدرج أخضر", sci:"Phasianus versicolor", g:"po", origin:"Japan", size:"65–85 cm", life:"5–10 years", tip:"Game feed, greens and grain; the national bird of Japan", file:"", t:[4,3,5,3,2] },
+  { en:"Ocellated Turkey", ar:"", sci:"Meleagris ocellata", g:"po", origin:"Central American forest", size:"70–82 cm", life:"6–10 years", tip:"Turkey feed, greens and forage; wild populations are protected", file:"", t:[4,2,5,3,4] },
+  { en:"Sebright Bantam", ar:"دجاج سيبريت قزمي", sci:"Gallus gallus domesticus", g:"po", origin:"Bred in England from bantams", size:"24–30 cm", life:"6–10 years", tip:"Bantam layer feed plus grit; laces its own feathers", file:"", t:[3,3,2,2,3] },
+
+  { en:"Eurasian Wigeon", ar:"", sci:"Mareca penelope", g:"wa", origin:"Eurasia and north Africa", size:"42–50 cm", life:"10–20 years", tip:"Waterfowl pellets, grasses and greens", file:"", t:[3,2,4,2,4] },
+  { en:"Common Pochard", ar:"", sci:"Aythya ferina", g:"wa", origin:"Europe, west Asia and north Africa", size:"42–49 cm", life:"8–20 years", tip:"Waterfowl pellets and grain with fresh greens", file:"", t:[3,2,4,2,4] },
+  { en:"Ferruginous Duck", ar:"بط نحاسي", sci:"Aythya nyroca", g:"wa", origin:"Southern Europe and south Asia", size:"38–42 cm", life:"6–10 years", tip:"Waterfowl pellets, greens and live food; very sensitive to dirty water", file:"", t:[4,2,4,3,4] },
+  { en:"Paradise Shelduck", ar:"", sci:"Tadorna tadornoides", g:"wa", origin:"Australia and Tasmania", size:"55–64 cm", life:"15–25 years", tip:"Goose pellets, greens and maize; water deep enough to dunk the head", file:"", t:[4,3,5,3,4] },
+  { en:"Pink-eared Duck", ar:"", sci:"Malacorhynchus membranaceus", g:"wa", origin:"Inland Australia", size:"37–43 cm", life:"10–20 years", tip:"Duck pellets and strained greens; a filter feeder needing shallow water", file:"", t:[3,2,4,2,4] },
+  { en:"Coscoroba Swan", ar:"بجع كوسكوبا", sci:"Coscoroba coscoroba", g:"wa", origin:"Southern South America", size:"90–115 cm", life:"20–30 years", tip:"Goose pellets and grasses; noisy and aggressive in breeding", file:"", t:[4,4,5,3,3] },
+  { en:"Black-bellied Whistling Duck", ar:"", sci:"Dendrocygna autumnalis", g:"wa", origin:"Southern United States to South America", size:"43–51 cm", life:"10–15 years", tip:"Pellets, grain and greens; keeps well as a pair on dry ground", file:"", t:[2,2,3,2,5] },
+
+  { en:"Gyrfalcon", ar:"الوكري", sci:"Falco rusticolus", g:"ra", origin:"Arctic circles of the Northern Hemisphere", size:"48–65 cm", life:"15–20 years", tip:"Whole prey only; a licensed falconry bird, not a cage pet", file:"", t:[5,1,5,5,1] },
+  { en:"Golden Eagle", ar:"عقاب ذهبي", sci:"Aquila chrysaetos", g:"ra", origin:"Northern Hemisphere mountains and steppe", size:"66–100 cm", life:"30–50 years", tip:"Whole prey; a huge mews and legal permits are required", file:"", t:[5,1,5,5,1] },
+  { en:"Lanner Falcon", ar:"", sci:"Falco biarmicus", g:"ra", origin:"Africa and southern Europe", size:"43–50 cm", life:"15–20 years", tip:"Whole prey; the parent of most falconry crossbreeds", file:"", t:[5,1,5,4,1] },
+  { en:"Hen Harrier", ar:"", sci:"Circus cyaneus", g:"ra", origin:"Europe, Asia and North America", size:"42–50 cm", life:"12–16 years", tip:"Whole prey and rodents; needs wide open flying ground", file:"", t:[5,1,5,4,1] },
+  { en:"White-tailed Eagle", ar:"", sci:"Haliaeetus albicilla", g:"ra", origin:"Europe and northern Asia", size:"66–94 cm", life:"25–40 years", tip:"Fish and whole prey; a very large licensed aviary", file:"", t:[5,1,5,5,1] },
+  { en:"Secretarybird", ar:"طير سكرتير", sci:"Sagittarius serpentarius", g:"ra", origin:"Open African grassland", size:"125–150 cm", life:"20–30 years", tip:"Whole prey, rodents and reptiles; a tall walk-in with a grass floor", file:"", t:[5,2,5,5,2] },
+
+  { en:"Grey Heron", ar:"بلشون رمادي", sci:"Ardea cinerea", g:"wi", origin:"Europe, Asia and Africa", size:"84–102 cm", life:"15–25 years", tip:"Fish and whole prey; a wading hunter that needs water and space", file:"", t:[5,2,5,4,2] },
+  { en:"Cattle Egret", ar:"بلشون الماشية", sci:"Bubulcus ibis", g:"wi", origin:"Warm regions worldwide", size:"46–56 cm", life:"10–15 years", tip:"Insects, small prey and fish; breeds in noisy colonies", file:"", t:[4,3,5,3,5] },
+  { en:"White Stork", ar:"اللقلق الأبيض", sci:"Ciconia ciconia", g:"wi", origin:"Europe, north Africa and western Asia", size:"100–115 cm", life:"20–35 years", tip:"Fish, amphibians and insects; a tall nest platform on open ground", file:"", t:[4,2,5,4,3] },
+  { en:"Grey Crowned Crane", ar:"كركي متوّج رمادي", sci:"Balearica regulorum", g:"wi", origin:"Eastern and southern Africa", size:"100–110 cm", life:"20–30 years", tip:"Crane pellets, grain and greens; protected — captive-bred papers required", file:"", t:[5,3,5,4,4] },
+  { en:"Blue Crane", ar:"كركي أزرق", sci:"Anthropoides paradiseus", g:"wi", origin:"Grasslands of South Africa", size:"85–100 cm", life:"20–30 years", tip:"Crane pellets, grain and insects; a protected species", file:"", t:[5,2,5,4,3] },
+  { en:"Lesser Flamingo", ar:"نحام أصغر", sci:"Phoeniconaias minor", g:"wi", origin:"Africa and north-west India", size:"80–90 cm", life:"25–40 years", tip:"Alkaline water and specialised filter food; a licensed collection bird", file:"", t:[5,2,5,5,5] },
+  { en:"Great Cormorant", ar:"الغاق", sci:"Phalacrocorax carbo", g:"wi", origin:"Coasts worldwide", size:"80–100 cm", life:"15–25 years", tip:"Whole fish only; needs deep water and a licensed facility", file:"", t:[5,2,5,4,3] },
 ];
 
 const SPECIES = RAW.map((r, i) => {
@@ -914,23 +1026,45 @@ const Song = {
      sound like a person saying the name, which is worse than silence. */
   isSpeech(name) {
     const t = String(name);
-    return /^(LL-Q|[a-z]{2}(?:-[a-z]{2})?-)/.test(t) || /pronunciation|\(eng\)-|say the name/i.test(t);
+    /* /i matters: the language-code prefix is capitalised on Commons
+       ("De-Ara ararauna.ogg" is a German voice saying the name, not a macaw). */
+    return /^(ll-?q|wt[- ]|[a-z]{2}(-[a-z]{2})?[-_])/i.test(t) ||
+      /pronunciation|say the name|\(eng\)-|\bdescripci/i.test(t);
+  },
+  /* Filenames are matched word by word, never as a substring: "De-Brustara"
+     contains "ara", and a scoring rule that accepted that handed the keeper a
+     spoken German word as the voice of a Blue-and-yellow Macaw. */
+  toks(x) { return String(x.file || x.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").split(" ").filter(Boolean); },
+  hasPhrase(ts, phrase) {
+    const p = String(phrase || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").split(" ").filter(Boolean);
+    if (!p.length) return false;
+    if (p.length === 1) return ts.includes(p[0]);
+    for (let i = 0; i <= ts.length - p.length; i++) {
+      let hit = true;
+      for (let j = 0; j < p.length; j++) if (ts[i + j] !== p[j]) { hit = false; break; }
+      if (hit) return true;
+    }
+    return false;
   },
   score(item, b) {
-    const t = slug(item.file || item.title || "");
-    if (!t) return 0;
+    const ts = this.toks(item);
+    if (!ts.length) return 0;
     const parts = slug(b.sci || "").split("-"), gen = parts[0], epi = parts.slice(1).join("-");
     let v = 0;
-    if (gen && epi && t.includes(gen + "-" + epi)) v += 5;
-    else { if (gen && t.includes(gen)) v += 2; if (epi && t.includes(epi)) v += 2; }
-    if (b.en && t.includes(slug(b.en))) v += 4;
+    if (this.hasPhrase(ts, b.sci)) v += 6;
     else {
-      const words = String(b.en || "").toLowerCase().split(/\s+/).filter(w => w.length > 3 && slug(w));
-      v += Math.min(2, words.filter(w => t.includes(slug(w))).length);
+      if (gen && ts.includes(gen)) v += 2;
+      if (epi && ts.includes(epi)) v += 2;
     }
-    if (/xc\d{4,}/.test(t)) v += 1;
-    if (this.isSpeech(item.file || item.title)) v -= 7;
-    if (/human|talking person|alarm|traffic/.test(t)) v -= 2;
+    if (this.hasPhrase(ts, b.en)) v += 4;
+    else {
+      const words = String(b.en || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").split(" ")
+        .filter(w => w.length > 3);
+      v += Math.min(2, words.filter(w => ts.includes(w)).length);
+    }
+    if (/xc\d{4,}/.test(ts.join(""))) v += 1;
+    if (this.isSpeech(item.file || item.title)) v -= 9;
+    if (/human|talking person|alarm|traffic/.test(ts.join(" "))) v -= 2;
     return v;
   },
   /* keep only what a browser can actually play, then the trustworthy names */
@@ -949,8 +1083,16 @@ const Song = {
       "&format=json&origin=*&gsrsearch=" + encodeURIComponent(q);
   },
   async commons(b) {
+    /* A quoted phrase search reaches files Commons titles after the *common*
+       name ("Blue-and-yellow Macaw call.ogg"), which the plain word query
+       scatters across a thousand parrot pages. Without it the macaw reads as
+       "no recording exists" — the opposite error from the one that used to
+       hand over a spoken German word. */
     const names = [b.sci, b.en].filter(Boolean);
-    const qs = uniq(names.map(n => "filetype:audio " + n)).filter(q => q.length > 18);
+    const qs = uniq([].concat(
+      names.map(n => "filetype:audio " + n),
+      names.filter(n => n.split(" ").length > 1).map(n => 'filetype:audio "' + n + '"')
+    )).filter(q => q.length > 18);
     const out = [];
     for (const q of qs) {
       let raw = null;
@@ -959,16 +1101,23 @@ const Song = {
       for (const p of pages) {
         const i = (p.imageinfo || [])[0] || {}, m = i.extmetadata || {};
         const file = String(p.title || "").replace(/^File:/, "");
+        const secs = num(i.duration, 0) || num(m.Duration && m.Duration.value, 0);
+        /* A sub-second clip off Commons is a trimmed syllable or a spoken
+           word, never a song a keeper could recognise. */
+        if (secs && secs < 0.9) continue;
         out.push({ src: "commons", file, title: file, url: i.url, mime: i.mime,
-          kb: Math.round((i.size || 0) / 1024), secs: num(i.duration, 0) || num(m.Duration && m.Duration.value, 0),
+          kb: Math.round((i.size || 0) / 1024), secs,
           who: this.clean(m.Artist && m.Artist.value) || "Wikimedia contributor",
           lic: this.clean(m.LicenseShortName && m.LicenseShortName.value) || "free licence",
           page: CFG.API.commonsSite + encodeURIComponent(file.replace(/ /g, "_")) });
       }
-      if (out.length >= 14) break;                 /* enough: stay polite */
+      if (out.length >= 26) break;                 /* enough: stay polite */
       await nap(140);
     }
-    return this.filter(out, b);
+    /* Commons is a free-text search, not a species index: require a real
+       name match (genus+epithet tokens or the full common name) before
+       trusting a file as this bird's voice. */
+    return this.filter(out, b, 3);
   },
 
   /* --- provider 2: Xeno-canto, only with a key (v3 measures 401 without) -- */
@@ -1597,21 +1746,52 @@ function audioCtx() {
   if (audio.ctx.state === "suspended") audio.ctx.resume();
   return audio.ctx;
 }
-function playChirp(pitch) {
+/* A *modelled* call, and the UI says so: pitch follows the bird's size (bigger
+   bird, lower call) instead of one flat pitch per group, and the timbre follows
+   how the group really vocalises — macaws and hawks rasp through a sawtooth with
+   a noise edge, finches and songbirds trill fast and clean, doves and poultry
+   stay low, slow and sinusoidal. It is an approximation to recognise a bird by
+   ear-range, never a substitute for the real recordings. */
+function voiceProfile(b) {
+  const g = GROUPS[b.g] || {}, cm = b.sizeMax || b.sizeMin || 15;
+  const harsh = b.g === "pa" || b.g === "ra";
+  const trill = b.g === "fi" || b.g === "so";
+  const low = b.g === "do" || b.g === "wa" || b.g === "po" || b.g === "wi";
+  return {
+    freq: Math.round(clamp((g.synthPitch || 1600) * Math.pow(14 / cm, 0.45), 260, 3800)),
+    type: harsh ? "sawtooth" : trill ? "triangle" : "sine",
+    notes: trill ? 7 : harsh ? 3 : low ? 3 : 4,
+    gap: trill ? 0.075 : harsh ? 0.28 : low ? 0.34 : 0.16,
+    len: trill ? 0.1 : harsh ? 0.3 : low ? 0.22 : 0.15,
+    sweep: harsh ? 1.4 : trill ? 1.06 : 1.09,
+    noise: harsh ? 0.5 : low ? 0.1 : 0.16
+  };
+}
+function playCall(b) {
   const ctx = audioCtx(); if (!ctx) return;
-  const t0 = ctx.currentTime, master = ctx.createGain();
-  master.gain.value = .9; master.connect(ctx.destination);
-  const notes = [[0, 1], [.16, 1.34], [.3, .82], [.46, 1.16]];
-  notes.forEach(([at, mul]) => {
-    const o = ctx.createOscillator(), g = ctx.createGain(), f = pitch * mul;
-    o.type = "sine"; o.frequency.setValueAtTime(f, t0 + at);
-    o.frequency.exponentialRampToValueAtTime(f * 1.09, t0 + at + .05);
-    o.frequency.exponentialRampToValueAtTime(f * .88, t0 + at + .13);
-    g.gain.setValueAtTime(.0001, t0 + at);
-    g.gain.exponentialRampToValueAtTime(.28, t0 + at + .02);
-    g.gain.exponentialRampToValueAtTime(.0001, t0 + at + .15);
-    o.connect(g); g.connect(master); o.start(t0 + at); o.stop(t0 + at + .18);
-  });
+  const p = voiceProfile(b), t0 = ctx.currentTime, master = ctx.createGain();
+  master.gain.value = .7; master.connect(ctx.destination);
+  for (let i = 0; i < p.notes; i++) {
+    const at = t0 + i * p.gap, f = p.freq * (i % 2 ? 1.12 : .94);
+    const o = ctx.createOscillator(), g2 = ctx.createGain();
+    o.type = p.type; o.frequency.setValueAtTime(f, at);
+    o.frequency.exponentialRampToValueAtTime(f * p.sweep, at + p.len * .35);
+    o.frequency.exponentialRampToValueAtTime(f * .8, at + p.len);
+    g2.gain.setValueAtTime(.0001, at);
+    g2.gain.exponentialRampToValueAtTime(.2, at + .015);
+    g2.gain.exponentialRampToValueAtTime(.0001, at + p.len + .02);
+    o.connect(g2); g2.connect(master); o.start(at); o.stop(at + p.len + .04);
+    /* the rasp: a band-passed noise burst under the note, which is what makes a
+       parrot or a hawk read as harsh rather than as a flute */
+    if (p.noise > .3) {
+      const n = Math.floor(ctx.sampleRate * p.len), buf = ctx.createBuffer(1, n, ctx.sampleRate), d = buf.getChannelData(0);
+      for (let k = 0; k < n; k++) d[k] = (Math.random() * 2 - 1) * Math.pow(1 - k / n, 1.6);
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = f * 1.6; bp.Q.value = 1.3;
+      const ng = ctx.createGain(); ng.gain.value = p.noise * .16;
+      src.connect(bp); bp.connect(ng); ng.connect(master); src.start(at);
+    }
+  }
 }
 function attachAnalyser(mediaEl, waveCv, specCv) {
   const ctx = audioCtx(); if (!ctx) return;
@@ -2294,7 +2474,36 @@ const AI = {
     "Sturnus vulgaris": ["زرزور", "starling"],
     "Upupa epops": ["هدهد", "hudhud", "hoopoe"],
     "Colinus virginianus": ["ببوايت", "bobwhite", "bobwhite quail"],
-    "Excalfactoria chinensis": ["سمان ملك", "king quail", "sun quail"]
+    "Excalfactoria chinensis": ["سمان ملك", "king quail", "sun quail"],
+    /* wave three: only names people actually say in the market or the loft */
+    "Cardinalis cardinalis": ["كاردنال", "كاردنال احمر", "كاردينال", "cardinal", "red cardinal"],
+    "Passer domesticus": ["عصفور دوري", "الدوري", "عصفور البيت", "house sparrow", "sparrow"],
+    "Pycnonotus jocosus": ["بلبل", "بلبل احمر الخدود", "bulbul", "red whiskered"],
+    "Erithacus rubecula": ["ابو حمر", "الروبن", "robin", "european robin"],
+    "Ciconia ciconia": ["اللقلق", "لقلق", "stork", "white stork"],
+    "Ardea cinerea": ["بلشون", "بلشون رمادي", "heron", "grey heron"],
+    "Balearica regulorum": ["كركي متوج", "كركي رمادي", "crowned crane", "grey crowned"],
+    "Bubulcus ibis": ["بلشون الماشية", "cattle egret", "egret"],
+    "Columba palumbus": ["ورشان", "حمام الغاب", "wood pigeon"],
+    "Streptopelia turtur": ["مقلد", "turtle dove", "eurasian turtle"],
+    "Amazona autumnalis": ["امازون", "الامازون", "amazon parrot", "red lored"],
+    "Amazona oratrix": ["امازون اصفر الراس", "yellow headed", "double yellow"],
+    "Agapornis taranta": ["حبيل حبشي", "abyssinian lovebird", "taranta"],
+    "Poicephalus robustus": ["ببغاء كيب", "cape parrot", "poicephalus"],
+    "Alisterus scapularis": ["الببغاء الملكي", "king parrot", "أسترالي ملكي"],
+    "Cacatua tenuirostris": ["كوكاتو طويل المنقار", "corella", "long billed corella"],
+    "Sagittarius serpentarius": ["طير سكرتير", "السكرتير", "secretarybird", "secretary bird"],
+    "Falco rusticolus": ["الوكري", "وكري", "gyrfalcon", "gyr"],
+    "Aquila chrysaetos": ["العقاب الذهبي", "golden eagle"],
+    "Haliaeetus albicilla": ["عقاب ابيض الذيل", "white-tailed eagle", "sea eagle"],
+    "Phoeniconaias minor": ["نحام", "نحام اصغر", "lesser flamingo"],
+    "Anthropoides paradiseus": ["كركي ازرق", "blue crane"],
+    "Phalacrocorax carbo": ["غاق", "cormorant"],
+    "Neochmia temporalis": ["احمر الحاجب", "red-browed"],
+    "Euodice cantans": ["فضي", "silverbill", "african silverbill"],
+    "Lophura nycthemera": ["تدرج فضي", "silver pheasant"],
+    "Acryllium vulturinum": ["غينية", "دجاج غيني", "vulturine guineafowl"],
+    "Columba inca": ["انكا", "inca dove"]
   },
   /* Longest alias wins per species: "ببغاء استرالي" must beat a stray "ببغاء", and
      words are compared whole (clitics folded) so "البدجي" finds "بدجي". Every
@@ -2600,6 +2809,55 @@ const AI = {
      swaps the unit words and any place names inside the phrase. Unmatched text
      is passed through: nothing here invents a fact. */
   ORIGIN_AR: {
+    /* wave three origins — every new RAW row's origin string belongs here,
+       otherwise Arabic mode falls through to the English phrase */
+    "Mexico and Central America": "المكسيك وأمريكا الوسطى",
+    "Mexico to northwestern Costa Rica": "من المكسيك إلى شمال غرب كوستاريكا",
+    "Mexico, Belize and Guatemala": "المكسيك وبليز وغواتيمالا",
+    "Northeastern Mexico": "شمال شرق المكسيك",
+    "Southern African forests": "غابات إفريقيا الجنوبية",
+    "Inland eastern Australia": "شرق أستراليا الداخلي",
+    "Eastern Tibet and western China": "شرق التبت وغرب الصين",
+    "Southwestern Ecuador and northwestern Peru": "جنوب غرب الإكوادور وشمال غرب بيرو",
+    "South American Andes": "جبال الأنديز في أمريكا الجنوبية",
+    "Ethiopian highlands": "مرتفعات إثيوبيا",
+    "Madagascar": "مدغشقر",
+    "Northern South America": "شمال أمريكا الجنوبية",
+    "Eastern and northern Australia": "شرق أستراليا وشمالها",
+    "Java, Bali and Borneo": "جاوة وبالي وبورنيو",
+    "Europe and northern Asia": "أوروبا وشمال آسيا",
+    "Arid north-east Africa and Arabia": "شمال شرق إفريقيا القاحل وشبه الجزيرة العربية",
+    "Southern Africa": "إفريقيا الجنوبية",
+    "South-western Australia": "جنوب غرب أستراليا",
+    "Europe, north Africa and western Asia": "أوروبا وشمال إفريقيا وغرب آسيا",
+    "Southern Europe and central Asia": "جنوب أوروبا ووسط آسيا",
+    "Europe and south Asia": "أوروبا وجنوب آسيا",
+    "Europe, north Africa and Asia": "أوروبا وشمال إفريقيا وآسيا",
+    "Southern United States and Mexico": "جنوب الولايات المتحدة والمكسيك",
+    "Worldwide through human association": "حول العالم بفضل تعايشه مع الإنسان",
+    "Europe, Africa and Asia": "أوروبا وإفريقيا وآسيا",
+    "West African forests": "غابات غرب إفريقيا",
+    "Europe, west and central Asia": "أوروبا وغرب آسيا ووسطها",
+    "Southern United States to Costa Rica": "من جنوب الولايات المتحدة إلى كوستاريكا",
+    "East African dry thornveld": "أدغال شرق إفريقيا الجافة",
+    "Southeast Asia": "جنوب شرق آسيا",
+    "Japan": "اليابان",
+    "Central American forest": "غابات أمريكا الوسطى",
+    "Bred in England from bantams": "مربّى في إنجلترا من الدجاج القزم",
+    "Europe, west Asia and north Africa": "أوروبا وغرب آسيا وشمال إفريقيا",
+    "Southern Europe and south Asia": "جنوب أوروبا وجنوب آسيا",
+    "Australia and Tasmania": "أستراليا وتسمانيا",
+    "Inland Australia": "أستراليا الداخلية",
+    "Southern South America": "جنوب أمريكا الجنوبية",
+    "Southern United States to South America": "من جنوب الولايات المتحدة إلى أمريكا الجنوبية",
+    "Arctic circles of the Northern Hemisphere": "الدوائر القطبية في نصف الكرة الشمالي",
+    "Northern Hemisphere mountains and steppe": "جبال وسهوب نصف الكرة الشمالي",
+    "Africa and southern Europe": "إفريقيا وجنوب أوروبا",
+    "Europe, Asia and North America": "أوروبا وآسيا وأمريكا الشمالية",
+    "Open African grassland": "مراعي إفريقيا المفتوحة",
+    "Grasslands of South Africa": "مراعي جنوب إفريقيا",
+    "Africa and north-west India": "إفريقيا وشمال غرب الهند",
+    "Coasts worldwide": "السواحل حول العالم",
     "Australia": "أستراليا", "South America": "أمريكا الجنوبية",
     "Australia and New Guinea": "أستراليا وغينيا الجديدة",
     "Africa and South Asia": "إفريقيا وجنوب آسيا",
@@ -2895,7 +3153,7 @@ const AI = {
     ["breed", /(تفريخ|تكاثر|حضانه|حضين|فقس|بيض|تعشيش|تضع البيض|هج|eegg|eggs|hatch|incubat|breed|nest|clutch|fledg|wean)/],
     ["cost", /(تكلفه|تكلف|استهلاك|شهري|شهريا|مصروف|مصاريف|monthly|per month|running cost|consumption|كم يكفي|كم كيلو|كم كيس)/],
     ["escape", /(طالع من|طلع من|خرج من|خارج القفص|القفص فتح|يهرب|هروب|السقف|يطير في الغرفة|يطير في البيت|رجع للقفص|ادخله القفص|امسكه|مسك الطائر|قص الريش|قص الريشة|تقليم|مشذب|الجناحات|شذب|flew out|flying out|escape|got out|won't come back|will not come back|wing clip|clipped|flight training|come back to me|lure)/],
-    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|\u062a\u0646\u062a\u0642\u0644|\u0627\u0646\u062a\u0642\u0627\u0644|\u0644\u0644\u0627\u0646\u0633\u0627\u0646|\u0628\u0634\u0631|\u0646\u0627\u0642\u0644|contagi|quarantin|infect|spread|flock|together|other birds|new bird|human|zoonotic|to people|يعيش.{0,40} مع |يسكن.{0,40} مع |يتعايش.{0,40} مع |تربية.{0,40} مع |تربيه.{0,40} مع |اجمع.{0,30} مع |يدمج.{0,30} مع |ادخال.{0,30} مع |هل يضر|ضار ب|تصيب|يصيب|بمرض|mix with|house with|live with|safe with|keep with|keeping together)/]
+    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|\u062a\u0646\u062a\u0642\u0644|\u0627\u0646\u062a\u0642\u0627\u0644|\u0644\u0644\u0627\u0646\u0633\u0627\u0646|\u0628\u0634\u0631|\u0646\u0627\u0642\u0644|contagi|quarantin|infect|spread|flock|other birds|new bird|human|zoonotic|to people|يعيش.{0,40} مع |يسكن.{0,40} مع |يتعايش.{0,40} مع |تربية.{0,40} مع |تربيه.{0,40} مع |اربي.{0,40} مع |ربي.{0,40} مع |وضع.{0,40} مع |يوضع.{0,40} مع |اضع.{0,40} مع |احط.{0,40} مع |ادخل.{0,30} مع |يدمج.{0,30} مع |اجمع.{0,30} مع |نفس القفص|نفس المسكن|نفس البيت|نفس الغرف|مع بعض|سوا|سويا|same cage|same aviary|house together|هل يضر|ضار ب|تصيب|يصيب|بمرض|together|mix with|house with|live with|safe with|keep with|keeping together)/]
   ],
   PRACNAME: {
     food: ["Food and water", "الطعام والماء"], cage: ["Cage and space", "القفص والمساحة"],
@@ -3751,6 +4009,10 @@ function renderNav() {
   }).join("");
   $("#btnLang").textContent = I18N.lang === "ar" ? "EN" : "ع";
   $("#btnTheme").textContent = store.settings.theme === "dark" ? "☀️" : store.settings.theme === "light" ? "🌙" : "🌗";
+  /* An icon-only toggle in a foreign language is invisible: name what it does
+     and which mode is active, in the language the user is reading. */
+  $("#btnTheme").title = tr("theme_switch") + " — " + themeLabel(store.settings.theme);
+  $("#btnTheme").setAttribute("aria-label", tr("theme_switch"));
 }
 const setCompN = () => { $("#compN").textContent = store.compare.length; };
 
@@ -3792,7 +4054,7 @@ function hydrateCards(root) {
     if (b && box) want.push([box, b]);
   }
   if (!want.length) return;
-  /* A guide of 168 species is 168 photo lookups, each of which can wait on a network
+  /* A guide of 241 species is 241 photo lookups, each of which can wait on a network
      timeout. Resolve only what the keeper can see, plus a screen of margin, and let
      the rest load as they scroll in. */
   if (!("IntersectionObserver" in window)) { want.forEach(([box, b]) => loadPhoto(box, b)); return; }
@@ -4139,7 +4401,7 @@ function wireCatalogueClicks(root) {
         if (!auditionAudio) auditionAudio = new Audio();
         if (await Song.play(known[0], auditionAudio, null, null)) return;
       }
-      playChirp(GROUPS[b.g].synthPitch);
+      playCall(b);
     });
   }
 }
@@ -4229,9 +4491,10 @@ function viewDetail(id) {
         <div><label>7 ${esc(tr("day_of"))}</label><div class="kv"><b id="rWeek">–</b> g dry food</div></div>
       </div><p class="hint">${esc(tr("feed_rule"))}</p></div>`],
     ["au", `<div class="panel"><h2>${esc(tr("t_sounds"))}</h2>
-      <div class="row"><button class="btn sm" id="synth">🔊 ${esc(tr("synth"))}</button>
-        <button class="btn sm ghost" id="loadRec">🎧 ${esc(tr("real"))}</button>
+      <div class="row"><button class="btn sm" id="loadRec">🎧 ${esc(tr("real"))}</button>
+        <button class="btn sm ghost" id="synth">🔊 ${esc(tr("synth"))}</button>
         <a class="btn sm ghost" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/results?search_query=${encodeURIComponent(b.en + " bird song")}">${esc(tr("more_sounds"))} ↗</a></div>
+      <p class="hint">${esc(tr("synth_note"))}</p>
       <div id="recList" style="margin-top:var(--s-3)"></div>
       <div class="wavebox" style="margin-top:var(--s-3)">
         <audio id="player" controls crossorigin="anonymous" preload="none" style="width:100%"></audio>
@@ -4258,10 +4521,15 @@ function viewDetail(id) {
   ].map(([k, html], i) => `<div class="panel-host" role="tabpanel" id="p-${k}" aria-labelledby="tb-${k}"${i ? ' hidden' : ""}>${html}</div>`).join("")}`;
 
   /* tabs */
+  /* Opening the Sounds tab pulls the real recordings on its own: keepers came
+     here to hear the bird, and making them press a second button is how a
+     modelled call ends up being remembered as "the macaw's voice". */
+  let auLoaded = false;
   $("#tabs").addEventListener("click", e => {
     const t = e.target.closest("[data-t]"); if (!t) return;
     $$("#tabs [data-t]").forEach(x => x.setAttribute("aria-selected", String(x === t)));
     $$("[id^='p-']").forEach(x => { x.hidden = x.id !== "p-" + t.dataset.t; });
+    if (t.dataset.t === "au" && !auLoaded) { auLoaded = true; renderSongs(false); }
   });
 
   /* media + credit */
@@ -4310,7 +4578,7 @@ function viewDetail(id) {
   $("#incStart").addEventListener("change", breed); $("#clutch").addEventListener("input", debounce(breed, 120)); breed();
 
   /* sounds */
-  $("#synth").onclick = () => playChirp(g.synthPitch);
+  $("#synth").onclick = () => playCall(b);
   const player = $("#player");
   $("#rate").addEventListener("input", e => { player.playbackRate = +e.target.value; $("#rateO").textContent = (+e.target.value).toFixed(2) + "×"; });
   const renderSongs = async keepMem => {
@@ -4335,7 +4603,7 @@ function viewDetail(id) {
     wireSongs($("#recList"), items, player, $("#wave"), $("#spec"), () => renderSongs(true));
     $("#player").addEventListener("play", () => { player.playbackRate = +$("#rate").value; });
     $("#recAgain").onclick = () => renderSongs(false);
-    $("#recSynth").onclick = () => playChirp(g.synthPitch);
+    $("#recSynth").onclick = () => playCall(b);
     $("#recLib").onclick = async () => {
       $("#recLib").textContent = "…";
       let ok = null;
@@ -4769,12 +5037,11 @@ function viewLearn() {
         <div class="opts" id="qOpts" style="margin-top:var(--s-3)"></div>`;
       let recs = [];
       try { recs = await Song.for(target); } catch { recs = []; }
-      const pitch = GROUPS[target.g].synthPitch;
       if (recs.length) {
         $("#qState").textContent = "🎧 " + recs.length + " · " + (Song.SRC[recs[0].src] || [""])[0];
         const q = new Audio(); q.preload = "none";
-        $("#playQ").onclick = () => { Song.play(recs[0], q, null, null).then(ok => { if (!ok) playChirp(pitch); }); };
-      } else { $("#qState").textContent = "🔊 " + tr("synth"); $("#playQ").onclick = () => playChirp(pitch); }
+        $("#playQ").onclick = () => { Song.play(recs[0], q, null, null).then(ok => { if (!ok) playCall(target); }); };
+      } else { $("#qState").textContent = "🔊 " + tr("synth"); $("#playQ").onclick = () => playCall(target); }
       $("#qOpts").innerHTML = quiz.opts.map(o => `<button class="qopt" data-opt="${o.id}">${esc(speciesName(o))}</button>`).join("");
       on($("#qOpts"), "click", "[data-opt]", (e, n) => finish(n.dataset.opt === target.id, n.dataset.opt));
     }
@@ -4799,6 +5066,9 @@ function viewLearn() {
 }
 
 /* -------------------------------------------------------------- SETTINGS */
+/* Written as three literal tr() calls on purpose: a concatenated key such as
+   "theme_" + v is invisible to .i18ncheck.cjs and silently unlocalised. */
+function themeLabel(v) { return v === "dark" ? tr("theme_dark") : v === "light" ? tr("theme_light") : tr("theme_auto"); }
 function applyTheme() {
   const pref = store.settings.theme;
   const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -4806,6 +5076,8 @@ function applyTheme() {
   document.documentElement.style.setProperty("--h", store.settings.accent);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.content = "hsl(" + store.settings.accent + " 72% 42%)";
+  const state = $("#themeState");
+  if (state) state.textContent = tr("theme_now", { m: themeLabel(pref) }) + " · " + tr("theme_hint");
   renderNav();
 }
 async function storageInfo() {
@@ -4848,11 +5120,12 @@ function viewSettings() {
   app.innerHTML = `<section class="panel"><h2>⚙️ ${esc(tr("settings_h"))}</h2>
     <div class="filters">
       <div><label>${esc(tr("theme"))}</label><select id="setTheme">
-        ${["auto", "light", "dark"].map(v => `<option value="${v}"${s.theme === v ? " selected" : ""}>${v}</option>`).join("")}</select></div>
+        ${["auto", "light", "dark"].map(v => `<option value="${v}"${s.theme === v ? " selected" : ""}>${esc(themeLabel(v))}</option>`).join("")}</select></div>
       <div><label>${esc(tr("language"))}</label><select id="setLang">
         ${CFG.LANGS.map(v => `<option value="${v}"${I18N.lang === v ? " selected" : ""}>${v === "ar" ? "العربية" : "English"}</option>`).join("")}</select></div>
       <div><label>${esc(tr("accent"))}</label><div class="rng"><input type="range" id="setHue" min="0" max="360" value="${s.accent}"><output id="hueOut">${s.accent}°</output></div></div>
     </div>
+    <p class="hint" id="themeState" style="margin-top:var(--s-2)">${esc(tr("theme_now", { m: themeLabel(s.theme) }))} · ${esc(tr("theme_hint"))}</p>
     <div id="installRow" class="row" style="margin-top:var(--s-3)"></div></section>
 
   <section class="panel"><h2>🌐 ${esc(tr("api_base"))}</h2>
@@ -4915,7 +5188,7 @@ function viewSettings() {
       <span class="spacer"></span><button class="btn danger" id="wipe">🗑 ${esc(tr("clear_all"))}</button></div></section>
 
   <section class="panel no-print"><h2>⌨️ ${esc(tr("traits"))}</h2>
-    <p class="hint">/ ${esc(tr("search"))} · g+h/g/b/f/m/s/l · t ${esc(tr("theme"))} · l ${esc(tr("language"))} · Esc ${esc(tr("clear"))}</p></section>`;
+    <p class="hint">/ ${esc(tr("search"))} · g+h/g/b/f/m/s/l · t ${esc(tr("theme"))} · y ${esc(tr("language"))} · Esc ${esc(tr("clear"))}</p></section>`;
 
   $("#setTheme").onchange = e => { s.theme = e.target.value; store.persist(); applyTheme(); };
   $("#setLang").onchange = e => { I18N.apply(e.target.value); route(); };
@@ -5200,10 +5473,29 @@ async function viewIdentify() {
   document.title = tr("nav_id") + " — Birds World";
   await Atlas.load();
   const es = await Acoustic.entries();
+  const voices = es.reduce((a, r) => a + r.voices.length, 0);
+  /* This screen used to fail one vague way for three different reasons: an
+     empty reference library, a refused microphone, and a page address the
+     browser will not record from. Measuring all three before the user presses
+     Record — and naming the one that is broken — is the actual fix. */
+  const srcs = Song.enabled();
+  const micCapable = Acoustic.supported();
+  const secure = !!window.isSecureContext;
+  const micReady = micCapable && secure;
+  const check = (label, ok, good, bad) =>
+    `<div class="kv"><span>${esc(label)}</span><b style="color:${ok ? "var(--ok-fg)" : "var(--warn-fg)"}">${ok ? "✓" : "⚠"} ${esc(ok ? good : bad)}</b></div>`;
   app.innerHTML = `<section class="panel"><h2>🎙️ ${esc(tr("id_h"))}</h2>
     <p class="hint">${esc(tr("id_sub"))}</p>
+    <h3 style="margin-top:var(--s-3)">${esc(tr("id_status"))}</h3>
+    <div class="kb">${check(tr("id_check_lib"), voices > 0, voices + " " + tr("id_indexed"), tr("id_novoice"))}
+      ${check(tr("id_check_mic"), micReady, tr("id_ready"), micCapable ? tr("id_page_file") : tr("id_notready"))}
+      ${check(tr("id_check_src"), srcs.length > 0, srcs.map(s => (Song.SRC[s] || [s])[0]).join(" · "), tr("id_notready"))}
+      ${check(tr("id_check_page"), secure, tr("id_page_web"), tr("id_page_file"))}</div>
+    ${!voices ? `<div class="banner warn" style="margin-top:var(--s-2)">${esc(tr("id_emptylib"))}
+      <div class="row" style="margin-top:8px"><button class="btn sm" id="idIndexFirst">🧬 ${esc(tr("id_index_first"))}</button></div></div>` : ""}
+    ${!micReady ? `<p class="hint" style="margin-top:var(--s-2)">${esc(secure ? tr("id_mic_no") : tr("id_mic_insecure"))} ${esc(tr("id_usefile"))}</p>` : ""}
     <div class="row" style="margin-top:var(--s-3)">
-      <button class="btn" id="idRec">🎙 ${esc(tr("id_rec"))}</button>
+      <button class="btn" id="idRec" ${micReady ? "" : "disabled"}>🎙 ${esc(tr("id_rec"))}</button>
       <label class="btn ghost" style="cursor:pointer">📁 ${esc(tr("id_fromfile"))}
         <input type="file" id="idFile" accept="audio/*" hidden></label>
       <button class="btn ghost" id="idTest">🧪 ${esc(tr("id_test"))}</button>
@@ -5244,7 +5536,7 @@ async function viewIdentify() {
     if (!q.ok) { say(esc(q.why), "warn"); return; }
     show(fp);
     const rk = await Acoustic.identify(fp, only);
-    if (!rk.length) { say(esc(tr("id_none")), "warn"); return; }
+    if (!rk.length) { say(esc(voices ? tr("id_nolike") : tr("id_emptylib")), "warn"); return; }
     const best = rk[0];
     out.insertAdjacentHTML("beforeend", `<h3>${esc(tr("id_cands"))}</h3>` + rk.slice(0, 5).map((r, i) => {
       const sp = SPECIES.find(b => b.sci === r.sci) || Atlas.get(r.sci);
@@ -5259,8 +5551,18 @@ async function viewIdentify() {
     const cv = $("#idSpec");
     if (cv) { const v = (best.row.voices || [])[0]; if (v) drawBands(cv, fp, v.fp); }
   };
+  /* navigator.mediaDevices rejects with a *name*, and every name means a
+     different fix. Handing back e.message shows the user a browser string. */
+  const micErr = e => {
+    const n = String((e && e.name) || "");
+    if (!window.isSecureContext || n === "SecurityError") return tr("id_mic_insecure");
+    if (n === "NotAllowedError" || n === "PermissionDeniedError") return tr("id_mic_denied");
+    if (n === "NotReadableError" || n === "AbortError" || n === "TrackStartError") return tr("id_mic_busy");
+    if (n === "NotFoundError" || n === "DevicesNotFoundError" || n === "OverconstrainedError") return tr("id_mic_none");
+    return tr("id_mic_no");
+  };
   $("#idRec").onclick = async () => {
-    if (!Acoustic.supported()) { say(esc(tr("id_mic_no")), "warn"); return; }
+    if (!Acoustic.supported()) { say(esc(tr("id_notready") + " — " + tr("id_usefile")), "warn"); return; }
     try {
       const mr = await Acoustic.start();
       $("#idRec").disabled = true;
@@ -5279,7 +5581,7 @@ async function viewIdentify() {
       await report(Acoustic.analyse(buf));
     } catch (e) {
       $("#idRec").disabled = false; time.textContent = "";
-      say(esc(String((e && e.message) || e)), "warn");
+      say(esc(micErr(e)) + `<br><span class="hint">${esc(tr("id_usefile"))}</span>`, "warn");
     }
   };
   $("#idFile").onchange = async e => {
@@ -5319,6 +5621,7 @@ async function viewIdentify() {
     else { const es2 = await Acoustic.entries(); toast(tr("id_indexed") + " " + es2.length, "ok", 3200); }
   };
   $("#idStop").onclick = () => { Acoustic.stopBuild(); };
+  const first = $("#idIndexFirst"); if (first) first.onclick = () => $("#idBuild").click();
   $("#idClear").onclick = async () => {
     if (!confirmDlg(tr("id_clearlib") + "?")) return;
     await Acoustic.clearLibrary(); toast(tr("id_libempty"), "info"); viewIdentify();
@@ -5483,7 +5786,7 @@ function initChrome() {
   I18N.apply(lsGet("lang", localStorage.getItem("bw_lang")) || (document.documentElement.lang || "en"));
   $("#btnTheme").onclick = () => {
     store.settings.theme = store.settings.theme === "dark" ? "light" : store.settings.theme === "light" ? "auto" : "dark";
-    store.persist(); applyTheme(); toast(tr("theme") + ": " + store.settings.theme, "info", 1400);
+    store.persist(); applyTheme(); toast(tr("theme_now", { m: themeLabel(store.settings.theme) }), "info", 1600);
   };
   $("#btnLang").onclick = () => { I18N.apply(I18N.lang === "en" ? "ar" : "en"); route(); };
   $("#btnCompare").onclick = openCompare;
