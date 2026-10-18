@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Birds World — Avian Field Guide</title>
-<meta name="description" content="Field guide to 45 bird species with care calculators, breeding tracker, individual health records, geo sightings, real-song analysis and spaced-repetition learning. Works offline.">
+<meta name="description" content="Bird care guides with feed and incubation calculators, breeding tracker, individual health records, geo sightings, real-song analysis and spaced-repetition learning. Works offline.">
 <meta name="theme-color" content="#10b981">
 <meta name="color-scheme" content="light dark">
 <link rel="manifest" href="manifest.webmanifest">
@@ -354,7 +354,7 @@ const T = {
     skip:"Skip to content", badge:"Field guide", compare:"Compare", disclaimer:"General information only — not veterinary advice. For laboured breathing, egg binding or sudden weakness, contact an avian veterinarian immediately.",
     localfirst:"Everything you save stays on this device.",
     nav_home:"Home", nav_birds:"Species", nav_wizard:"Find my bird", nav_mybirds:"My birds", nav_sightings:"Sightings", nav_learn:"Learn", nav_settings:"Settings",
-    home_title:"Discover the wonderful world of birds", home_sub:"45 care guides plus a world atlas you can pull to thousands of species: real field recordings with licence and recorder, photo credits, feed and incubation calculators, individual health records, geo sightings, sound identification and spaced-repetition learning — all of it offline-capable.",
+    home_title:"Discover the wonderful world of birds", home_sub:"{n} care guides plus a world atlas you can pull to thousands of species: real field recordings with licence and recorder, photo credits, feed and incubation calculators, individual health records, geo sightings, sound identification and spaced-repetition learning — all of it offline-capable.",
     stat_species:"Species", stat_groups:"Families", stat_fav:"Favorites", stat_seen:"Explored", stat_mine:"My birds", stat_sights:"Sightings",
     bird_of_day:"Bird of the day", open:"Open", search:"Search", search_ph:"Name, scientific name or origin…", filters:"Filters", sort:"Sort",
     voice_no:"Voice search is not supported in this browser.", voice_fail:"Voice input failed.", voice_listen:"Listening…",
@@ -416,6 +416,10 @@ const T = {
     atlas_include:"Include atlas species in search", atlas_off:"Atlas import needs a connection.", atlas_throttled:"Slowed down: too many requests.",
     atlas_noimg:"No freely licensed photo found", atlas_cleared:"Atlas data deleted", atlas_enriched:"Added",
     atlas_promote:"Log a sighting", atlas_quick:"Quick import", atlas_deep:"Deep import",
+    src_guide:"Care guide", src_atlas:"Species atlas", stat_atlas:"Atlas species",
+    atlas_ord:"Order", atlas_all_orders:"All orders", atlas_only_img:"With a photo", atlas_only_ar:"With an Arabic name",
+    atlas_no_care:"Atlas species \u2014 no care figures", atlas_pick_src:"Switch source above to browse every world species on this device.",
+    pg_prev:"Previous", pg_next:"Next", atlas_page:"Page",
     photo:"Photos", yes:"Yes", tax_order:"Order", tax_family:"Family", tax_genus:"Genus",
     caps_h:"What is new",
     feat_atlas:"Every bird on Earth", feat_atlas_d:"Import the global checklist by order or by family, then browse it offline.",
@@ -444,7 +448,7 @@ const T = {
     id_test_ok:"Self-test passed: the estimator recovered the known pitch and note rate of the synthetic call.",
     id_test_fail:"Self-test drifted — this browser's audio path may resample the recording. Treat other results with care.",
     id_note:"Matches are acoustic similarity, not proof of identity.", id_clearlib:"Delete indexed voices", id_libempty:"Library is empty",
-    id_scope:"Which species to index", id_scope_lib:"My guide (45 species)", id_scope_atlas:"Atlas species in view", id_scope_fav:"Favorites",
+    id_scope:"Which species to index", id_scope_lib:"My guide ({n} species)", id_scope_atlas:"Atlas species in view", id_scope_fav:"Favorites",
     id_scope_hint:"Freely licensed field recordings exist mostly for wild species, so the atlas scope indexes far more than the guide list. A species with no usable recording is skipped, not guessed.",
     feat_id:"Name a bird from its song", feat_id_d:"Record six seconds and rank it against reference songs measured the same way.",
   },
@@ -452,7 +456,7 @@ const T = {
     skip:"تخطَّ إلى المحتوى", badge:"دليل ميداني", compare:"مقارنة", disclaimer:"معلومات عامة فقط وليست استشارة بيطرية. عند عسر التنفس أو احتباس البيضة أو الوهن المفاجئ راجع طبيب طيور فوراً.",
     localfirst:"كل ما تحفظه يبقى على جهازك.",
     nav_home:"الرئيسية", nav_birds:"الأنواع", nav_wizard:"ابنِ طائري", nav_mybirds:"طيوري", nav_sightings:"مشاهدات", nav_learn:"تعلّم", nav_settings:"الإعدادات",
-    home_title:"اكتشف عالم الطيور العجيب", home_sub:"٤٥ دليلاً للعناية وأطلساً عالمياً تسحبه إلى آلاف الأنواع: تسجيلات ميدانية حقيقية مع الرخصة واسم المُسجِّل، وحقوق الصور، وحاسبات الغذاء والحضانة، وسجلات صحية فردية، ومشاهدات جغرافية، وتعرّف على الأصوات، وتكرار متباعد — وكل ذلك يعمل دون إنترنت.",
+    home_title:"اكتشف عالم الطيور العجيب", home_sub:"{n} دليلاً للعناية وأطلساً عالمياً تسحبه إلى آلاف الأنواع: تسجيلات ميدانية حقيقية مع الرخصة واسم المُسجِّل، وحقوق الصور، وحاسبات الغذاء والحضانة، وسجلات صحية فردية، ومشاهدات جغرافية، وتعرّف على الأصوات، وتكرار متباعد — وكل ذلك يعمل دون إنترنت.",
     stat_species:"الأنواع", stat_groups:"الفصائل", stat_fav:"المفضلة", stat_seen:"المُستكشفة", stat_mine:"طيوري", stat_sights:"المشاهدات",
     bird_of_day:"طائر اليوم", open:"افتح", search:"بحث", search_ph:"الاسم أو الاسم العلمي أو الموطن…", filters:"تصفية", sort:"ترتيب",
     voice_no:"البحث الصوتي غير مدعوم في هذا المتصفح.", voice_fail:"تعذّر إدخال الصوت.", voice_listen:"أستمع…",
@@ -514,6 +518,10 @@ const T = {
     atlas_include:"أضف أنواع الأطلس إلى البحث", atlas_off:"استيراد الأطلس يحتاج اتصالاً.", atlas_throttled:"أبطأنا السحب: عدد طلبات كبير.",
     atlas_noimg:"لم نعثر على صورة مرخّصة بحرية", atlas_cleared:"حُذفت بيانات الأطلس", atlas_enriched:"أُضيف",
     atlas_promote:"سجّل مشاهدة", atlas_quick:"استيراد سريع", atlas_deep:"استيراد شامل",
+    src_guide:"دليل العناية", src_atlas:"أطلس الأنواع", stat_atlas:"أنواع الأطلس",
+    atlas_ord:"الرتبة", atlas_all_orders:"كل الرتب", atlas_only_img:"بصورة", atlas_only_ar:"باسم عربي",
+    atlas_no_care:"نوع أطلسي — بلا أرقام رعاية", atlas_pick_src:"اختر مصدراً بالأعلى لتصفح أنواع العالم المخزّنة على الجهاز.",
+    pg_prev:"السابق", pg_next:"التالي", atlas_page:"صفحة",
     photo:"الصور", yes:"نعم", tax_order:"الرتبة", tax_family:"الفصيلة", tax_genus:"الجنس",
     caps_h:"ما الجديد",
     feat_atlas:"كل طيور الأرض", feat_atlas_d:"استورد القائمة العالمية بحسب الرتبة أو الفصيلة ثم تصفحها بلا إنترنت.",
@@ -541,8 +549,9 @@ const T = {
     id_test_ok:"اختبار ذاتي ناجح: قياس الذروة الترددية ومعدل النغمات طابقت النداء الاصطناعي المعروف.",
     id_test_fail:"القياس انحرف — قد يعيد هذا المتصفح تغيير معدل العينة. تعامل مع النتائج الأخرى بحذر.",
     id_note:"التطابق قياس صوتي وليس دليلاً قاطعاً على الهوية.", id_clearlib:"حذف الأصوات المفهرسة", id_libempty:"المكتبة فارغة",
-    id_scope:"أي أنواع تُفهرس", id_scope_lib:"مرشدي (٤٥ نوعاً)", id_scope_atlas:"أنواع الأطلس المعروضة", id_scope_fav:"المفضلة",
+    id_scope:"أي أنواع تُفهرس", id_scope_lib:"مرشدي ({n} نوعاً)", id_scope_atlas:"أنواع الأطلس المعروضة", id_scope_fav:"المفضلة",
     id_scope_hint:"التسجيلات الميدانية المتاحة برخص حرة توجد غالباً للطيور البرية، لذلك فهرس الأطلس يغطي أنواعاً أكثر بكثير من قائمة المرشد. النوع الذي لا يوجد له تسجيل صالح يُتجاوَز ولا يُخمَّن.",
+    feat_ai:"اسأل أي شيء عن طيورك", feat_ai_d:"فرز صحي وتوصيات وحقائق عن الأنواع تُحسب من بياناتك أنت — أو من نموذج توصله بنفسك.",
     feat_id:"سمِّ الطائر من صوته", feat_id_d:"سجّل ست ثوانٍ وقارنها بأغانٍ مرجعية قيست بالطريقة نفسها.",
   },
 };
@@ -584,6 +593,9 @@ const dayKey = (d = new Date()) => new Date(d).toISOString().slice(0, 10);
 const fmtDate = (iso, lang = I18N.lang) => { try { return new Date(iso).toLocaleDateString(lang === "ar" ? "ar-EG" : "en-GB", { year:"numeric", month:"short", day:"numeric" }); } catch { return iso; } };
 const addDays = (iso, n) => { const d = new Date(iso); d.setDate(d.getDate() + n); return d; };
 const daysBetween = (a, b) => Math.round((new Date(b) - new Date(a)) / 864e5);
+/* Wikipedia titles sentence-case bird names: "Blue-fronted Amazon" becomes
+   "Blue-fronted amazon". An explicit r.wiki wins, and is normalised the same way. */
+const wikiTitle = s => { const t = String(s).trim(); return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase(); };
 const parseRange = str => { const n = String(str).match(/[\d.]+/g); if (!n) return [0, 0]; return n.length === 1 ? [+n[0], +n[0]] : [+n[0], +n[1]]; };
 const num = (s, fallback = 0) => { const n = typeof s === "number" ? s : parseFloat(s); return Number.isFinite(n) ? n : fallback; };
 
@@ -631,8 +643,8 @@ function rateBar(v, max = 5) {
     `<i class="${i < v ? "on" : ""}"></i>`).join("")}</span>`;
 }
 function statBlock(items) {
-  return `<div class="grid-stats">${items.map(([v, l]) =>
-    `<div class="stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join("")}</div>`;
+  return `<div class="grid-stats">${items.map(([v, l, id]) =>
+    `<div class="stat"${id ? ` id="${id}"` : ""}><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join("")}</div>`;
 }
 
 /* --------------------------------------------------------- 4. SCHEMA + DATA */
@@ -762,7 +774,7 @@ const RAW = [
   { en:"Canada Goose", ar:"إوز كندي", sci:"Branta canadensis", g:"wa", origin:"North America", size:"55–100 cm", life:"15–25 years", tip:"Grass and waterfowl pellets with access to water", file:"", t:[3,4,5,3,4] },
   { en:"Mute Swan", ar:"بجع آخرس", sci:"Cygnus olor", g:"wa", origin:"Eurasia", size:"140–175 cm", life:"15–30 years", tip:"Aquatic plants, swan pellets and chopped greens", file:"", t:[4,4,5,4,3] },
 
-  { en:"Common Kestrel", ar:"", sci:"Falco tinnunculus", g:"ra", origin:"Africa, Europe and Asia", size:"31–38 cm", life:"8–12 years", tip:"Whole prey such as mice and quail", file:"", t:[5,3,4,4,1] },
+  { en:"Common Kestrel", ar:"العوسق", sci:"Falco tinnunculus", g:"ra", origin:"Africa, Europe and Asia", size:"31–38 cm", life:"8–12 years", tip:"Whole prey such as mice and quail", file:"", t:[5,3,4,4,1] },
   { en:"Peregrine Falcon", ar:"صقر شاهين", sci:"Falco peregrinus", g:"ra", origin:"Worldwide except polar ice", size:"34–58 cm", life:"10–15 years", tip:"Whole prey; varied diet with fur and bone", file:"", t:[5,3,4,4,1] },
   { en:"Harris's Hawk", ar:"", sci:"Parabuteo unicinctus", g:"ra", origin:"Arid South and North America", size:"46–58 cm", life:"15–25 years", tip:"Rats, quail and chicks; weigh prey to condition", file:"", t:[5,3,4,4,2] },
   { en:"Barn Owl", ar:"بومة الحظائر", sci:"Tyto alba", g:"ra", origin:"Worldwide", size:"32–40 cm", life:"10–15 years", tip:"Whole rodents only; never cooked meat", file:"", t:[4,1,3,3,1] },
@@ -779,6 +791,137 @@ const RAW = [
   { en:"Common Ostrich", ar:"نعامة", sci:"Struthio camelus", g:"wi", origin:"Africa", size:"175–280 cm", life:"40–60 years", tip:"High-fibre ratite pellets, lucerne and grit", file:"", t:[5,3,5,5,3] },
   { en:"Southern Cassowary", ar:"كازوار جنوبي", sci:"Casuarius casuarius", g:"wi", origin:"New Guinea and northeast Australia", size:"120–180 cm", life:"40–50 years", tip:"Fallen fruit, greens and ratite pellets", file:"", t:[5,2,5,5,1] },
   { en:"Kea", ar:"", sci:"Nestor notabilis", g:"wi", origin:"Alpine South Island, New Zealand", size:"46–49 cm", life:"20–30 years", tip:"Parrot pellets, veg and fruit; protect everything rubber", file:"", t:[5,4,4,5,5] },
+
+  { en:"Rosy-faced Lovebird", ar:"حبيل وردي الوجه", sci:"Agapornis roseicollis", g:"pa", origin:"South-west Africa", size:"15–17 cm", life:"10–15 years", tip:"Pellets and seed with a cuttlebone; give nesting material and a dry aviary", file:"", t:[2,3,1,2,4] },
+  { en:"Yellow-collared Lovebird", ar:"حبيل أصفر الطوق", sci:"Agapornis personatus", g:"pa", origin:"East Africa", size:"14–15 cm", life:"10–15 years", tip:"Seed mix with seeding grasses; breeds readily in pairs", file:"", t:[2,3,1,2,5] },
+  { en:"Fischer's Lovebird", ar:"", sci:"Agapornis fischeri", g:"pa", origin:"Lake Victoria region", size:"14–15 cm", life:"10–15 years", tip:"Pellets, seed and greens; keep pairs off excess condition", file:"", t:[3,3,1,2,5] },
+  { en:"Black-headed Lovebird", ar:"", sci:"Agapornis nigrigenis", g:"pa", origin:"South-west Zambia", size:"13–14 cm", life:"10–15 years", tip:"Fine seed mix, greens and live food while rearing", file:"", t:[3,3,1,2,5] },
+  { en:"Quaker Parrot", ar:"ببغاء الراهب", sci:"Myiopsitta monachus", g:"pa", origin:"South America", size:"29–33 cm", life:"15–20 years", tip:"Pellets, vegetables and limited seed; builds stick nests in colonies", file:"", t:[3,4,2,2,4] },
+  { en:"Senegal Parrot", ar:"ببغاء سنغالي", sci:"Poicephalus senegalus", g:"pa", origin:"West Africa", size:"22–26 cm", life:"25–30 years", tip:"Pellets and vegetables; watch weight, lipomas are common", file:"", t:[3,3,2,3,4] },
+  { en:"Meyer's Parrot", ar:"ببغاء ماير", sci:"Poicephalus meyeri", g:"pa", origin:"South and central Africa", size:"22–25 cm", life:"25–30 years", tip:"Low-fat pellets and vegetables; quiet for a parrot", file:"", t:[3,2,2,3,4] },
+  { en:"Timneh Grey Parrot", ar:"ببغاء رمادي تيمني", sci:"Psittacus timneh", wiki:"Timneh Parrot", g:"pa", origin:"West Africa", size:"28–33 cm", life:"40–60 years", tip:"Pellets, nuts and vegetables; calcium and foraging daily", file:"", t:[5,3,3,5,5] },
+  { en:"Eclectus Parrot", ar:"ببغاء إكليكتوس", sci:"Eclectus roratus", g:"pa", origin:"New Guinea and the Solomon Islands", size:"33–38 cm", life:"30–40 years", tip:"Pellets, fruit and vegetables; keep iron low and vitamin A up", file:"", t:[4,3,3,4,4] },
+  { en:"Goffin's Cockatoo", ar:"كوكاتو غوفين", sci:"Cacatua goffiniana", g:"pa", origin:"Tanimbar Islands", size:"30–33 cm", life:"25–40 years", tip:"Pellets, nuts and fresh browse; needs chewing time every day", file:"", t:[4,4,3,4,5] },
+  { en:"Major Mitchell's Cockatoo", ar:"كوكاتو ميتشل", sci:"Cacatua leadbeateri", wiki:"Pink Cockatoo", g:"pa", origin:"Arid inland Australia", size:"35–40 cm", life:"40–60 years", tip:"Pellets, nuts and vegetables sparingly with seed; very attention-hungry", file:"", t:[5,5,4,5,5] },
+  { en:"Green-cheeked Conure", ar:"كونور أخضر الخد", sci:"Pyrrhura molinae", g:"pa", origin:"South America", size:"24–26 cm", life:"20–30 years", tip:"Pellets with fruit and vegetables; quieter than most conures", file:"", t:[2,3,1,2,4] },
+  { en:"Sun Conure", ar:"كونور شمسي", sci:"Aratinga solstitialis", g:"pa", origin:"North-east South America", size:"28–32 cm", life:"20–30 years", tip:"Pellets, fruit and vegetables; loud contact calls at dawn and dusk", file:"", t:[4,5,3,3,5] },
+  { en:"Nanday Conure", ar:"نانداي", sci:"Aratinga nenday", g:"pa", origin:"Central South America", size:"40–45 cm", life:"20–30 years", tip:"Pellets, seed and legumes; very loud and strong-billed", file:"", t:[4,5,4,3,5] },
+  { en:"Scarlet Macaw", ar:"أرا قرمزي", sci:"Ara macao", g:"pa", origin:"Central and South America", size:"80–90 cm", life:"40–50 years", tip:"Nuts, pellets and sprouted seed; heavy chew toys daily", file:"", t:[5,5,5,5,5] },
+  { en:"Hahn's Macaw", ar:"أرا هان", sci:"Diopsittaca nobilis", wiki:"Red-shouldered Macaw", g:"pa", origin:"Brazil and the Guianas", size:"15–17 cm", life:"25–30 years", tip:"Pellets, nuts and vegetables; needs real flight space", file:"", t:[3,4,2,3,4] },
+  { en:"Bourke's Parrot", ar:"ببغاء بوركي", sci:"Neophema bourkii", g:"pa", origin:"Arid and semi-arid Australia", size:"24–28 cm", life:"10–20 years", tip:"Seed and pellets with greens; quiet and most active at dusk", file:"", t:[3,1,2,2,3] },
+  { en:"Eastern Rosella", ar:"روزيللا شرقية", sci:"Platycercus eximius", g:"pa", origin:"South-east Australia", size:"28–33 cm", life:"15–20 years", tip:"Rosella mix, seeding grasses and greens", file:"", t:[3,3,2,2,3] },
+  { en:"Crimson Rosella", ar:"روزيللا قرمزية", sci:"Platycercus elegans", g:"pa", origin:"Eastern Australia", size:"28–35 cm", life:"20–30 years", tip:"Pellets, seed and vegetables; avoid an all-seed diet", file:"", t:[3,3,3,2,3] },
+  { en:"Alexandrine Parakeet", ar:"ببغاء إسكندراني", sci:"Psittacula eupatria", g:"pa", origin:"South Asia", size:"56–66 cm", life:"20–30 years", tip:"Pellets, nuts and vegetables; needs tall perching room", file:"", t:[3,4,4,3,4] },
+  { en:"Blue-crowned Hanging Parrot", ar:"", sci:"Loriculus galgulus", g:"pa", origin:"Malay Peninsula and Sumatra", size:"12–15 cm", life:"15–20 years", tip:"Nectar, soft food and fruit; needs warmth and humidity", file:"", t:[4,2,2,3,3] },
+  { en:"Spectacled Parrotlet", ar:"", sci:"Forpus conspicillatus", g:"pa", origin:"North Colombia and Venezuela", size:"11–13 cm", life:"15–20 years", tip:"Small seed mix, greens and egg food; house pairs separately", file:"", t:[3,2,1,2,3] },
+  { en:"Pacific Parrotlet", ar:"", sci:"Forpus coelestis", g:"pa", origin:"Coastal Ecuador and Peru", size:"12–14 cm", life:"15–20 years", tip:"Pellets and small seed; territorial, so house singly", file:"", t:[3,2,1,2,3] },
+
+  { en:"Java Sparrow", ar:"عصفور جافا", sci:"Padda oryzivora", g:"fi", origin:"Java and Bali", size:"15–17 cm", life:"5–10 years", tip:"Rice-based mix plus greens; needs grit and warmth", file:"", t:[2,3,2,1,4] },
+  { en:"Indian Silverbill", ar:"", sci:"Lonchura malabarica", g:"fi", origin:"India and Sri Lanka", size:"10–13 cm", life:"5–8 years", tip:"Fine seed mix, seeding grasses and grit always available", file:"", t:[1,2,1,1,5] },
+  { en:"Chestnut Munia", ar:"", sci:"Lonchura atricapilla", g:"fi", origin:"South and south-east Asia", size:"10–12 cm", life:"5–8 years", tip:"Small seed mix and greens; hardy but damp-sensitive", file:"", t:[2,2,1,1,5] },
+  { en:"White-rumped Munia", ar:"", sci:"Lonchura striata", g:"fi", origin:"South and east Asia", size:"10–12 cm", life:"5–8 years", tip:"Finch mix and sprouting seed; often used to foster other finches", file:"", t:[1,2,1,1,5] },
+  { en:"Scaly-breasted Munia", ar:"", sci:"Lonchura punctulata", g:"fi", origin:"Tropical Asia", size:"11–13 cm", life:"5–8 years", tip:"Seed, greens and live food during breeding", file:"", t:[2,2,1,1,5] },
+  { en:"Masked Finch", ar:"", sci:"Poephila personata", g:"fi", origin:"Northern Australia", size:"14–16 cm", life:"6–10 years", tip:"Finch mix and seeding grasses; warm dry housing", file:"", t:[3,2,2,2,4] },
+  { en:"Diamond Firetail", ar:"", sci:"Stagonopleura guttata", g:"fi", origin:"South-eastern Australia", size:"10–12 cm", life:"6–10 years", tip:"Finch mix plus live food; very stress-sensitive", file:"", t:[3,2,2,2,4] },
+  { en:"Red-billed Firefinch", ar:"", sci:"Lagonosticta senegala", g:"fi", origin:"Sub-Saharan Africa", size:"9–10 cm", life:"5–8 years", tip:"Fine seed, greens and live food for rearing", file:"", t:[2,2,1,1,4] },
+  { en:"Orange-cheeked Waxbill", ar:"", sci:"Estrilda muleta", g:"fi", origin:"Angola and Zambia", size:"10–11 cm", life:"5–8 years", tip:"Seed with plenty of sprouting feed and live food; damp-sensitive", file:"", t:[3,2,2,2,4] },
+  { en:"Common Waxbill", ar:"", sci:"Estrilda astrild", g:"fi", origin:"Sub-Saharan Africa", size:"10–12 cm", life:"5–8 years", tip:"Finch mix, sprouted seed and egg food", file:"", t:[2,2,1,1,5] },
+  { en:"Black-rumped Waxbill", ar:"", sci:"Estrilda troglodytes", g:"fi", origin:"West and central Africa", size:"9–10 cm", life:"5–8 years", tip:"Fine seed and live food; quiet and easily startled", file:"", t:[2,1,1,1,4] },
+  { en:"Red-cheeked Cordon-bleu", ar:"", sci:"Uraeginthus bengalus", g:"fi", origin:"Sub-Saharan Africa", size:"12–15 cm", life:"5–8 years", tip:"Seed, greens and live food; needs warmth", file:"", t:[2,2,2,1,4] },
+  { en:"Blue-breasted Cordon-bleu", ar:"", sci:"Uraeginthus angolensis", g:"fi", origin:"Eastern and southern Africa", size:"12–15 cm", life:"5–8 years", tip:"Finch mix plus constant live food or egg food", file:"", t:[2,2,2,1,4] },
+  { en:"Purple Grenadier", ar:"", sci:"Granatina ianthinogaster", g:"fi", origin:"East Africa", size:"12–14 cm", life:"5–8 years", tip:"Seed, sprouting mix and insects in a calm aviary", file:"", t:[3,2,2,2,4] },
+  { en:"African Quailfinch", ar:"", sci:"Ortalis galeata", g:"fi", origin:"Sub-Saharan Africa", size:"10–12 cm", life:"5–8 years", tip:"Fine seed and grit; a floor-nester needing dense cover", file:"", t:[3,2,2,1,5] },
+  { en:"Cut-throat Finch", ar:"", sci:"Amadina fasciata", g:"fi", origin:"Africa south of the Sahara", size:"10–12 cm", life:"5–8 years", tip:"Finch mix and seeding grasses; quarantine new birds", file:"", t:[3,2,2,1,5] },
+  { en:"Star Finch", ar:"", sci:"Neochmia ruficauda", g:"fi", origin:"Northern Australia", size:"10–12 cm", life:"5–8 years", tip:"Small seed and live food; gentle planted aviary", file:"", t:[3,2,2,2,4] },
+  { en:"Red-faced Crimsonwing", ar:"", sci:"Cryptospiza reichenovii", g:"fi", origin:"Angolan and Zambian highlands", size:"12–15 cm", life:"5–8 years", tip:"Sprouting seed, fine greens and live food", file:"", t:[3,2,2,2,3] },
+  { en:"Pin-tailed Whydah", ar:"", sci:"Vidua macroura", g:"fi", origin:"Sub-Saharan Africa", size:"8–16 cm", life:"2–5 years", tip:"Small seed and live food; needs host finches to breed", file:"", t:[3,2,2,2,3] },
+
+  { en:"Emerald Dove", ar:"", sci:"Chalcophaps indica", g:"do", origin:"South and south-east Asia", size:"22–25 cm", life:"5–10 years", tip:"Small grain and millets; needs dense planting and warmth", file:"", t:[3,1,3,2,3] },
+  { en:"Spotted Dove", ar:"يمامة منقطة", sci:"Streptopelia chinensis", g:"do", origin:"South and south-east Asia", size:"27–33 cm", life:"6–12 years", tip:"Grain and millet mix with grit always available", file:"", t:[2,2,3,2,4] },
+  { en:"Laughing Dove", ar:"يمامة ضاحكة", sci:"Streptopelia senensis", g:"do", origin:"North Africa and the Middle East", size:"24–29 cm", life:"6–12 years", tip:"Small seeds and grain; drinks deep so open water is needed", file:"", t:[2,2,3,1,4] },
+  { en:"Peaceful Dove", ar:"", sci:"Geopelia strenua", g:"do", origin:"Australia", size:"22–25 cm", life:"8–12 years", tip:"Fine seed and grass seeds; very dry housing", file:"", t:[2,1,2,1,4] },
+  { en:"Nicobar Pigeon", ar:"حمام نيكوبار", sci:"Caloenas nicobarica", g:"do", origin:"Nicobar and Andaman Islands eastwards", size:"38–42 cm", life:"15–20 years", tip:"Pellets, grain and berries; roosts out of sight", file:"", t:[4,2,4,3,3] },
+  { en:"Victoria Crowned Pigeon", ar:"حمامة فيكتوريا المتوجة", sci:"Goura victoria", g:"do", origin:"Northern New Guinea", size:"40–46 cm", life:"15–25 years", tip:"Pellets, grain, fruit and greens; needs a large walk-in", file:"", t:[4,2,5,4,3] },
+
+  { en:"Turkey", ar:"ديك رومي", sci:"Meleagris gallopavo", g:"po", origin:"North America, domesticated", size:"100–125 cm", life:"6–10 years", tip:"Complete poultry feed, greens and grit; room to dust-bathe", file:"", t:[3,5,5,3,3] },
+  { en:"Red Junglefowl", ar:"", sci:"Gallus gallus", g:"po", origin:"South and south-east Asia", size:"60–75 cm", life:"10–15 years", tip:"Poultry feed, grain and greens; a very active flier", file:"", t:[3,3,4,2,3] },
+  { en:"Grey Junglefowl", ar:"", sci:"Gallus sonneratii", g:"po", origin:"Indian subcontinent", size:"60–75 cm", life:"8–12 years", tip:"Game-bird feed and grain; flighty, so handle as little as possible", file:"", t:[3,3,4,2,3] },
+  { en:"Silkie", ar:"", sci:"Gallus gallus domesticus", g:"po", origin:"Domestic breed from East Asia", size:"35–45 cm", life:"5–10 years", tip:"Layer feed with grit; broody and easy around children", file:"", t:[1,2,2,1,3] },
+  { en:"Cochin Chicken", ar:"", sci:"Gallus gallus domesticus", g:"po", origin:"Domestic breed from China", size:"45–55 cm", life:"5–10 years", tip:"Layer feed and scratch; calm but prone to obesity", file:"", t:[1,2,2,1,3] },
+  { en:"Bobwhite Quail", ar:"", sci:"Colinus virginianus", wiki:"Northern Bobwhite", g:"po", origin:"North America", size:"20–25 cm", life:"3–6 years", tip:"High-protein quail crumb; keep the room quiet to stop panic injuries", file:"", t:[3,3,3,2,3] },
+  { en:"California Quail", ar:"", sci:"Callipepla californica", g:"po", origin:"Western North America", size:"24–26 cm", life:"3–6 years", tip:"Quail crumb, grain and greens; needs a covered flight", file:"", t:[3,3,4,2,3] },
+  { en:"Gambel's Quail", ar:"", sci:"Callipepla gambelii", g:"po", origin:"South-western North America", size:"24–28 cm", life:"3–6 years", tip:"Quail crumb with grit; dry sandy enclosure", file:"", t:[3,3,4,2,3] },
+  { en:"King Quail", ar:"", sci:"Excalfactoria chinensis", g:"po", origin:"South-east Asia and northern Australia", size:"11–13 cm", life:"2–4 years", tip:"Crumb and fine seed; the smallest quail and easy to overfeed", file:"", t:[2,1,1,1,3] },
+  { en:"Chukar", ar:"", sci:"Alectoris chukar", g:"po", origin:"Mountains of Eurasia", size:"32–36 cm", life:"5–10 years", tip:"Game feed and greens; needs a tall covered aviary", file:"", t:[3,3,4,2,3] },
+  { en:"Red-legged Partridge", ar:"حجل أحمر الأرجل", sci:"Alectoris rufa", g:"po", origin:"Western Europe and north-west Africa", size:"32–35 cm", life:"4–8 years", tip:"Game-bird grain, greens and grit", file:"", t:[3,2,3,2,3] },
+  { en:"Grey Partridge", ar:"", sci:"Perdix perdix", g:"po", origin:"Europe", size:"28–32 cm", life:"4–8 years", tip:"Partridge crumb and greens; a quiet ground bird", file:"", t:[3,2,3,2,3] },
+  { en:"Green Peafowl", ar:"طاووس أخضر", sci:"Pavo muticus", g:"po", origin:"South-east Asia", size:"180–230 cm", life:"15–25 years", tip:"Poultry feed, grain and greens; extremely loud at dawn", file:"", t:[4,5,5,4,3] },
+  { en:"Kalij Pheasant", ar:"", sci:"Lophura leucomelanos", g:"po", origin:"The Himalayas", size:"60–90 cm", life:"5–10 years", tip:"Game feed, greens and fruit in a heavily planted aviary", file:"", t:[3,3,4,3,2] },
+  { en:"Golden Pheasant", ar:"", sci:"Chrysolophus pictus", g:"po", origin:"Mountains of central China", size:"90–110 cm", life:"5–10 years", tip:"Grain, game feed and greens; covered aviary only", file:"", t:[3,3,4,3,2] },
+  { en:"Lady Amherst's Pheasant", ar:"", sci:"Chrysolophus amherstiae", g:"po", origin:"Myanmar and south-west China", size:"100–180 cm", life:"6–10 years", tip:"Game-bird feed and seeding grasses; very shy", file:"", t:[4,2,4,3,2] },
+
+  { en:"Egyptian Goose", ar:"إوز مصري", sci:"Alopochen aegyptiaca", g:"wa", origin:"Africa north of the Limpopo", size:"66–78 cm", life:"15–25 years", tip:"Goose pellets, grass and greens; guards the other birds", file:"", t:[3,4,5,3,4] },
+  { en:"Black Swan", ar:"بجعة سوداء", sci:"Cygnus atratus", g:"wa", origin:"Australia", size:"110–140 cm", life:"20–30 years", tip:"Aquatic plants and swan pellets; never bread", file:"", t:[4,3,5,4,4] },
+  { en:"Mandarin Duck", ar:"بط صيني", sci:"Aix galericulata", g:"wa", origin:"East Asia", size:"45–50 cm", life:"8–12 years", tip:"Waterfowl pellets, greens and insects; low safe perches", file:"", t:[3,2,4,2,3] },
+  { en:"Wood Duck", ar:"", sci:"Aix sponsa", g:"wa", origin:"North America", size:"47–54 cm", life:"8–15 years", tip:"Waterfowl pellets and mast; nest boxes over water", file:"", t:[3,2,4,2,3] },
+  { en:"Northern Shoveler", ar:"", sci:"Anas clypeata", g:"wa", origin:"North America and Eurasia", size:"48–56 cm", life:"5–10 years", tip:"Waterfowl pellets plus shallow muddy water to filter feed in", file:"", t:[3,2,4,2,3] },
+  { en:"Eurasian Teal", ar:"", sci:"Anas crecca", g:"wa", origin:"Eurasia and North America", size:"36–39 cm", life:"5–10 years", tip:"Pellets, seeds and greens; a small shallow pond", file:"", t:[3,2,4,2,3] },
+  { en:"Garganey", ar:"", sci:"Anas querquedula", g:"wa", origin:"Europe and Asia", size:"35–40 cm", life:"5–10 years", tip:"Fine pellets and plant matter; calm water away from big ducks", file:"", t:[3,2,4,2,3] },
+  { en:"Comb Duck", ar:"", sci:"Sarkidiornis melanotos", g:"wa", origin:"Tropical Africa, Asia and the Americas", size:"55–66 cm", life:"8–15 years", tip:"Waterfowl pellets and greens; loves heat", file:"", t:[3,2,5,2,3] },
+  { en:"Chinese Goose", ar:"إوز صيني", sci:"Anser cygnoides", g:"wa", origin:"North-east Asia", size:"70–90 cm", life:"15–25 years", tip:"Grass, pellets and hay; noisy and watchful", file:"", t:[3,5,5,3,4] },
+  { en:"Cape Barren Goose", ar:"", sci:"Cereopsis novaehollandiae", g:"wa", origin:"Southern Australia and nearby islands", size:"75–90 cm", life:"20–30 years", tip:"Grass and greens; a grazing bird that needs little pelleted feed", file:"", t:[3,2,5,3,3] },
+  { en:"Magpie Goose", ar:"", sci:"Anseranas semipalmata", g:"wa", origin:"Australia and New Guinea", size:"86–94 cm", life:"15–25 years", tip:"Grass, pellets and greens; needs a large pond", file:"", t:[4,3,5,3,4] },
+  { en:"Crested Screamer", ar:"", sci:"Anhima cornuta", g:"wa", origin:"Amazon and Orinoco basins", size:"90–100 cm", life:"20–30 years", tip:"Pellets, greens and grass; calls loudly through the night", file:"", t:[4,5,5,3,3] },
+  { en:"Marbled Duck", ar:"", sci:"Marmaronetta angustirostris", g:"wa", origin:"Mediterranean, Middle East and south Asia", size:"38–42 cm", life:"8–12 years", tip:"Fine pellets and plant matter; shallow planted water", file:"", t:[4,2,4,3,3] },
+  { en:"Cotton Pygmy Goose", ar:"", sci:"Nettapus coromandelianus", g:"wa", origin:"South and south-east Asia", size:"30–36 cm", life:"8–12 years", tip:"Pellets, greens and small aquatic life; warm water", file:"", t:[3,2,3,2,4] },
+  { en:"Radjah Shelduck", ar:"", sci:"Tadorna radjah", g:"wa", origin:"New Guinea and northern Australia", size:"46–53 cm", life:"10–15 years", tip:"Waterfowl pellets and greens; safe roosting posts", file:"", t:[3,3,4,3,3] },
+
+  { en:"Saker Falcon", ar:"الصقر الأشقر", sci:"Falco cherrug", g:"ra", origin:"Central Asia and the steppe", size:"42–60 cm", life:"15–25 years", tip:"Whole prey: quail, rats and gerbils; weathered daily in a mews", file:"", t:[5,3,4,5,1] },
+  { en:"Laggar Falcon", ar:"", sci:"Falco jugger", g:"ra", origin:"Indian subcontinent", size:"48–60 cm", life:"15–20 years", tip:"Whole prey with variety; needs daily flying exercise", file:"", t:[5,3,4,4,1] },
+  { en:"Red-footed Falcon", ar:"", sci:"Falco vespertinus", g:"ra", origin:"Eastern Europe into central Asia", size:"27–33 cm", life:"8–12 years", tip:"Small prey: insects, moths and small birds", file:"", t:[5,2,3,3,1] },
+  { en:"Merlin", ar:"", sci:"Falco columbarius", wiki:"Merlin (bird)", g:"ra", origin:"Northern Hemisphere", size:"24–33 cm", life:"8–12 years", tip:"Small birds and mice; the fastest falcon of its size", file:"", t:[5,2,3,3,1] },
+  { en:"Eurasian Sparrowhawk", ar:"", sci:"Accipiter nisus", g:"ra", origin:"Eurasia and Africa", size:"28–38 cm", life:"8–12 years", tip:"Small birds weighed to condition; a very quiet mews", file:"", t:[5,2,4,4,1] },
+  { en:"Red-tailed Hawk", ar:"", sci:"Buteo jamaicensis", g:"ra", origin:"North America", size:"45–65 cm", life:"15–25 years", tip:"Rats and quail; a large mews with daily flights", file:"", t:[5,3,5,4,1] },
+  { en:"Common Buzzard", ar:"", sci:"Buteo buteo", g:"ra", origin:"Europe and western Asia", size:"50–60 cm", life:"15–25 years", tip:"Whole prey; avoids overfeeding because it bulks quickly", file:"", t:[4,3,4,3,1] },
+  { en:"Black-winged Kite", ar:"", sci:"Elanus caeruleus", g:"ra", origin:"Africa and south Asia", size:"31–37 cm", life:"10–15 years", tip:"Small rodents; calm in a walk-in but feeds often", file:"", t:[5,2,4,4,1] },
+  { en:"Osprey", ar:"", sci:"Pandion haliaetus", g:"ra", origin:"Worldwide", size:"50–60 cm", life:"15–20 years", tip:"Whole fish only; needs a large pool and a high perch", file:"", t:[5,3,5,5,1] },
+  { en:"Booted Eagle", ar:"", sci:"Hieraaetus pennatus", g:"ra", origin:"Iberia, central Asia and Africa", size:"45–55 cm", life:"15–25 years", tip:"Rats, rabbits and quail; mews plus daily flying", file:"", t:[5,3,4,4,1] },
+  { en:"Tawny Eagle", ar:"", sci:"Aquila rapax", g:"ra", origin:"Africa and the Indian subcontinent", size:"65–75 cm", life:"20–30 years", tip:"Rabbits, rats and large quail; a big mews", file:"", t:[5,3,5,5,1] },
+  { en:"Pharaoh Eagle-Owl", ar:"", sci:"Bubo ascalaphus", g:"ra", origin:"North Africa and the Middle East", size:"46–57 cm", life:"15–25 years", tip:"Rats and rabbits; a quiet nocturnal mews", file:"", t:[5,2,4,4,1] },
+  { en:"Little Owl", ar:"", sci:"Athene noctua", g:"ra", origin:"Eurasia and north Africa", size:"21–28 cm", life:"10–15 years", tip:"Mice, day-old chicks and insects; needs a daylight cycle", file:"", t:[4,2,3,3,1] },
+  { en:"Burrowing Owl", ar:"", sci:"Athene cunicularia", g:"ra", origin:"North and South America", size:"21–28 cm", life:"10–15 years", tip:"Mice and insects; must have a burrow to dig into", file:"", t:[4,3,3,3,2] },
+  { en:"Snowy Owl", ar:"بومة ثلجية", sci:"Bubo scandiacus", g:"ra", origin:"The Arctic", size:"52–71 cm", life:"15–20 years", tip:"Rats and mice only; needs a cold enclosure with wind", file:"", t:[5,2,5,5,1] },
+
+  { en:"White-eared Bulbul", ar:"", sci:"Pycnonotus leucotis", g:"so", origin:"Arabian Peninsula and Iraq", size:"18–20 cm", life:"8–12 years", tip:"Softbill mix, fruit and insects; sensitive to iron overload", file:"", t:[3,3,3,2,4] },
+  { en:"Red-vented Bulbul", ar:"", sci:"Pycnonotus cafer", g:"so", origin:"South Asia", size:"19–20 cm", life:"8–12 years", tip:"Low-iron softbill food, fruit and live food", file:"", t:[3,4,3,2,4] },
+  { en:"Black Bulbul", ar:"", sci:"Hypsipetes leucocephalus", g:"so", origin:"The Himalayas and south-east Asia", size:"22–25 cm", life:"8–12 years", tip:"Fruit, softbill pellets and insects; a messy eater", file:"", t:[3,3,3,2,3] },
+  { en:"Common Hill Myna", ar:"", sci:"Gracula religiosa", g:"so", origin:"South and south-east Asia", size:"25–30 cm", life:"15–25 years", tip:"Low-iron softbill food and fruit; a large airy cage", file:"", t:[4,4,4,3,4] },
+  { en:"Bali Myna", ar:"", sci:"Leucopsar rothschildi", g:"so", origin:"Bali only", size:"25–30 cm", life:"15–25 years", tip:"Low-iron pellets, fruit and insects; captive-bred birds only", file:"", t:[5,3,4,4,3] },
+  { en:"Rosy Starling", ar:"", sci:"Pastor roseus", g:"so", origin:"Europe and western Asia", size:"19–23 cm", life:"8–15 years", tip:"Softbill pellets, fruit and insects; keep iron low", file:"", t:[3,3,3,2,4] },
+  { en:"Common Starling", ar:"زرزور", sci:"Sturnus vulgaris", g:"so", origin:"Eurasia, introduced elsewhere", size:"20–23 cm", life:"8–15 years", tip:"Softbill food and fruit; strong, messy and very social", file:"", t:[2,3,3,2,5] },
+  { en:"Common Nightingale", ar:"عندليب شائع", sci:"Luscinia megarhynchos", g:"so", origin:"Europe and western Asia", size:"15–17 cm", life:"3–5 years", tip:"Insect-rich softbill food; a quiet, dim, calm cage", file:"", t:[4,2,2,2,1] },
+  { en:"Song Thrush", ar:"", sci:"Turdus philomelos", g:"so", origin:"Europe and western Asia", size:"20–23 cm", life:"5–10 years", tip:"Thrush pellets, fruit and mealworms", file:"", t:[3,2,3,2,2] },
+  { en:"Common Blackbird", ar:"شحرور", sci:"Turdus merula", g:"so", origin:"Eurasia, introduced elsewhere", size:"22–28 cm", life:"5–10 years", tip:"Thrush mix, fruit and worms; needs bath water", file:"", t:[3,3,3,2,2] },
+  { en:"Eurasian Skylark", ar:"", sci:"Alauda arvensis", g:"so", origin:"Europe and north Africa into central Asia", size:"16–18 cm", life:"5–8 years", tip:"Seed and live food; floor space and a long light cycle", file:"", t:[4,2,3,2,2] },
+  { en:"Oriental Magpie-Robin", ar:"", sci:"Copsychus saularis", g:"so", origin:"South and south-east Asia", size:"17–20 cm", life:"8–12 years", tip:"Insect and fruit diet; a tall cage with perch stages", file:"", t:[3,3,3,2,3] },
+  { en:"Greater Coucal", ar:"", sci:"Centropus sinensis", g:"so", origin:"South and south-east Asia", size:"42–48 cm", life:"8–12 years", tip:"Insects, small prey and softbill food; a planted walk-in", file:"", t:[3,2,4,3,1] },
+  { en:"Eurasian Hoopoe", ar:"الهدهد", sci:"Upupa epops", g:"so", origin:"Europe, Asia and Africa", size:"25–32 cm", life:"5–10 years", tip:"Insect-rich softbill food and live prey; needs bare soil to probe", file:"", t:[4,2,4,3,2] },
+
+  { en:"Emu", ar:"إيمو", sci:"Dromaius novaehollandiae", g:"wi", origin:"Australia", size:"150–190 cm", life:"10–20 years", tip:"Ratite pellets, lucerne and browse; strong fencing needed", file:"", t:[5,3,5,4,3] },
+  { en:"Greater Rhea", ar:"", sci:"Rhea americana", g:"wi", origin:"South America", size:"125–175 cm", life:"10–20 years", tip:"Ratite pellets and high-fibre greens; keep them in a group", file:"", t:[5,3,5,4,4] },
+  { en:"Lesser Rhea", ar:"", sci:"Rhea pennata", g:"wi", origin:"Andean South America", size:"90–100 cm", life:"10–15 years", tip:"Ratite feed, greens and grit; open running ground", file:"", t:[5,3,5,4,4] },
+  { en:"Sarus Crane", ar:"كركي ساروس", sci:"Grus antigone", g:"wi", origin:"South Asia and northern Australia", size:"180–200 cm", life:"30–50 years", tip:"Crane pellets, grain and greens; a large wet enclosure", file:"", t:[5,3,5,5,3] },
+  { en:"Demoiselle Crane", ar:"", sci:"Anthropoides virgo", g:"wi", origin:"North Africa and central Asia", size:"85–90 cm", life:"15–25 years", tip:"Insects, grain and crane pellets; dry running space", file:"", t:[4,3,5,3,4] },
+  { en:"Brolga", ar:"", sci:"Grus rubicunda", g:"wi", origin:"Northern Australia", size:"100–130 cm", life:"20–30 years", tip:"Crane pellets, grain and greens; pair bonds last for years", file:"", t:[5,3,5,4,3] },
+  { en:"Indian Grey Hornbill", ar:"قرنس هندي رمادي", sci:"Ocyceros birostris", g:"wi", origin:"Indian subcontinent", size:"43–50 cm", life:"15–20 years", tip:"Fruit, pellets and insects; low-iron diet with live food", file:"", t:[4,3,5,3,3] },
+  { en:"Southern Ground Hornbill", ar:"", sci:"Bucorvus leadbeateri", g:"wi", origin:"Southern and eastern Africa", size:"100–130 cm", life:"30–60 years", tip:"Whole prey and fruit; a large planted walk-in", file:"", t:[5,3,5,5,3] },
+  { en:"Great Bustard", ar:"حبارى", sci:"Otis tarda", g:"wi", origin:"Iberia and the Eurasian steppe", size:"100–125 cm", life:"15–20 years", tip:"Insects, grain and greens; open undisturbed grassland", file:"", t:[5,2,5,4,2] },
+  { en:"Little Bustard", ar:"", sci:"Tetrax tetrax", g:"wi", origin:"Iberia and central Asia", size:"42–50 cm", life:"8–12 years", tip:"Insects and fine grain in a quiet grass aviary", file:"", t:[4,2,5,3,3] },
+  { en:"Northern Bald Ibis", ar:"", sci:"Geronticus eremita", g:"wi", origin:"North Africa and the Levant", size:"70–80 cm", life:"15–20 years", tip:"Insects, small prey and softbill pellets; deep sand for digging", file:"", t:[5,2,5,4,3] },
+  { en:"Sacred Ibis", ar:"أبو منجل المقدس", sci:"Threskiornis aethiopicus", g:"wi", origin:"Africa and the Middle East", size:"65–81 cm", life:"15–25 years", tip:"Insects, small fish and soft food; a messy wading bird", file:"", t:[4,3,5,4,4] },
+  { en:"Glossy Ibis", ar:"", sci:"Plegadis falcinellus", g:"wi", origin:"Warm regions worldwide", size:"50–65 cm", life:"10–20 years", tip:"Insects, small aquatic life and softbill food", file:"", t:[4,2,5,3,4] },
+  { en:"Eurasian Spoonbill", ar:"", sci:"Platalea leucorodia", g:"wi", origin:"Eurasia and north Africa", size:"80–95 cm", life:"15–25 years", tip:"Small fish and crustaceans; shallow planted water", file:"", t:[5,2,5,5,3] },
+  { en:"Andean Condor", ar:"", sci:"Vultur gryphus", g:"wi", origin:"Andean South America", size:"110–130 cm", life:"40–50 years", tip:"Large carcasses and whole prey; a very tall, cold enclosure", file:"", t:[5,2,5,5,2] },
 ];
 
 const SPECIES = RAW.map((r, i) => {
@@ -787,7 +930,7 @@ const SPECIES = RAW.map((r, i) => {
     id: slug(r.en) || "sp-" + i,
     en: r.en, ar: r.ar || "", sci: r.sci, g: r.g, origin: r.origin,
     size: r.size, life: r.life, sizeMin, sizeMax, lifeMin, lifeMax,
-    tip: r.tip, wiki: r.en, file: r.file || "",
+    tip: r.tip, wiki: wikiTitle(r.wiki || r.en), file: r.file || "",
     img: r.file ? "https://commons.wikimedia.org/wiki/Special:FilePath/" +
       encodeURIComponent(r.file.replace(/ /g, "_")) + "?width=" + CFG.API.thumbPx : "",
     difficulty: r.t[0], noise: r.t[1], space: r.t[2], cost: r.t[3], sociability: r.t[4],
@@ -1322,6 +1465,8 @@ const Atlas = {
         meta.fams.forEach((f, i) => (chunks[i] || []).forEach(r => this.adopt(r, f.key)));
         this.meta.total = this.rows.length;
       }
+      /* rows written before the label guard can still hold a non-Arabic "ar" */
+      for (const r of this.rows) if (r.ar && !isArabicName(r.ar)) r.ar = "";
       if (this.rows.length) this.backfillNames();
       return this.rows;
     })().catch(() => { this._p = null; return this.rows; });
@@ -1335,7 +1480,7 @@ const Atlas = {
     for (const b of SPECIES) {
       if (b.ar) continue;
       const a = this.bySci.get(b.sci);
-      if (a && a.ar && a.ar !== b.en) { b.ar = a.ar; n++; }
+      if (a && isArabicName(a.ar) && a.ar !== b.en) { b.ar = a.ar; n++; }
     }
     if (n && typeof AI !== "undefined") AI.invalidate();
     return n;
@@ -1426,7 +1571,7 @@ const Atlas = {
       const k = b.sci.value, cur = map.get(k) || {};
       if (b.item && !cur.wd) cur.wd = b.item.value.split("/").pop();
       if (b.en && !cur.en) cur.en = b.en.value;
-      if (b.ar && !cur.ar) cur.ar = b.ar.value;
+      if (b.ar && !cur.ar && isArabicName(b.ar.value)) cur.ar = b.ar.value;
       if (b.img && !cur.file) cur.file = decodeURIComponent(b.img.value.split("/").pop()).replace(/_/g, " ");
       map.set(k, cur);
     });
@@ -1443,7 +1588,7 @@ const Atlas = {
         const hit = map && map.get(r.sci);
         if (!hit) return;
         if (hit.en) r.en = hit.en;
-        if (hit.ar) r.ar = hit.ar;
+        if (hit.ar && isArabicName(hit.ar)) r.ar = hit.ar;
         if (hit.wd && !r.wd) r.wd = hit.wd;
         if (hit.file && !r.file) { r.file = hit.file; r.img = commonsThumb(hit.file, 600); }
         touched.add(r.fk);
@@ -1606,6 +1751,10 @@ function queueWrite(type, op, payload) {
 
 /* -------------------------------------------------------------- DERIVED READS */
 const speciesName = b => (I18N.lang === "ar" && b.ar ? b.ar : (b.en || b.sci || ""));
+/* A Wikidata "ar" label is not always Arabic — one eagle came back in Bengali
+   script. Anything without a single Arabic letter is dropped rather than shown,
+   and the English name takes over. */
+const isArabicName = s => !!s && /[\u0600-\u06FF\u0750-\u077F]/.test(String(s));
 const byId = id => SPECIES.find(b => b.id === id);
 const isFav = id => store.favs.has(id);
 function toggleFav(id) {
@@ -2536,7 +2685,7 @@ const AI = {
       act: { en: "Keep the bird warm at 28–30 C, do not handle it, an avian vet within hours — respiratory blockage kills quickly and nebulised air is not a substitute.",
         ar: "أبقِ الطائر دافئاً 28–30 مئوية، لا تمسكه، راجع طبيب طيور خلال ساعات؛ انسداد التنفّس قاتل سريعاً والتبخير ليس بديلاً." } },
     { k: "eggbound", en: "straining more than a day, hard swollen belly, wide stance, leg weakness, sitting on cage floor, pressing vent",
-      ar: "حصار أكثر من يوم، بطن صلب منتفخ، وقفة واسعة، ضعف رجل، جلوس على أرض القفس، ضغط على المخرج",
+      ar: "حصار أكثر من يوم، بطن صلب منتفخ، وقفة واسعة، ضعف رجل، جلوس على أرض القفص، ضغط على المخرج",
       urg: 3, cause: { en: "Egg binding, calcium or vitamin D deficiency, first clutches in young hens.",
         ar: "احتباس البيضة، نقص كالسيوم أو فيتامين د، أول عنقات في الأنثى الصغيرة." },
       act: { en: "Warm humid box 30 C, a drop of oil on the vent, calcium solution in water, vet the same day — do not squeeze the abdomen.",
@@ -2551,7 +2700,7 @@ const AI = {
       urg: 3, cause: { en: "Anything serious in a small bird: infection, impaction, crop stasis, pain, toxic water.",
         ar: "أي أمر خطير عند طائر صغير: عدوى، انسداد، ركود الحوصلة، ألم، ماء ملوث." },
       act: { en: "Warm it, put food and water on the cage floor, check the crop empties, weigh it daily, vet within 24 hours.",
-        ar: "أدفئه، ضع الطعام والماء على أرضية القفس، تحقق أن الحوصلة تفرغ، زِنه يومياً، وراجع الطبيب خلال 24 ساعة." } },
+        ar: "أدفئه، ضع الطعام والماء على أرضية القفص، تحقق أن الحوصلة تفرغ، زِنه يومياً، وراجع الطبيب خلال 24 ساعة." } },
     { k: "diarrhea", en: "watery droppings, loose, green yellow droppings, wet vent, sticky feathers around vent",
       ar: "فضلات مائيه، سائله، خضراء او صفراء، مخرج مبلل، ريش لاصق حول المخرج",
       urg: 2, cause: { en: "Bacterial or protozoal infection, sudden diet change, too much greens, kidney involvement.",
@@ -2569,7 +2718,7 @@ const AI = {
       urg: 1, cause: { en: "Scaly leg mite, red mite, feather mites, or feather-plucking from boredom.",
         ar: "قمل الأقدام المتقشر، الهام الأحمر، هوام الريش، أو نتف الريش من الملل." },
       act: { en: "Treat with a bird-safe acaricide per label, wash and sun the cage, isolate from others, vet if skin is raw.",
-        ar: "عالج بمبيد طفيليات آمن للطيور وفق النشرة، اغسل القفس وعرضه للشمس، اعزل الطائر، وراجع الطبيب إن كان الجلد ملتهباً." } },
+        ar: "عالج بمبيد طفيليات آمن للطيور وفق النشرة، اغسل القفص وعرضه للشمس، اعزل الطائر، وراجع الطبيب إن كان الجلد ملتهباً." } },
     { k: "crop", en: "crop not emptying, sour smell from mouth, regurgitating, swelling on neck",
       ar: "الحوصلة لا تفرغ، رائحة فم حمضية، رجعة، انتفاخ الرقبة",
       urg: 2, cause: { en: "Crop stasis, sour crop (yeast), bacterial infection, impaction.", ar: "ركود الحوصلة، الحوصلة الحامضة (خميرة)، عدوى بكتيرية، انضغاط." },
@@ -2749,7 +2898,7 @@ const AI = {
     "Asia, introduced across Eurasia": "آسيا، وأُدخل في كل أوراسيا",
     "South Asia": "جنوب آسيا", "Africa": "إفريقيا", "North Africa": "شمال إفريقيا",
     "Northern Hemisphere": "نصف الكرة الشمالي",
-    "Central and South America": "وسط أمريكا الجنوبية",
+    "Central and South America": "أمريكا الوسطى والجنوبية",
     "Java, from Mallard stock": "جاوة، من سلالة البطة البرية",
     "Europe and western Asia": "أوروبا وغرب آسيا",
     "North America": "أمريكا الشمالية", "Eurasia": "أوراسيا",
@@ -2764,7 +2913,87 @@ const AI = {
     "Africa, southern Europe, South Asia": "إفريقيا وجنوب أوروبا وجنوب آسيا",
     "Antarctica": "أنتاركتيكا",
     "New Guinea and northeast Australia": "غينيا الجديدة وشمال شرق أستراليا",
-    "Alpine South Island, New Zealand": "جزيرة الجنوب الألبية، نيوزيلندا"
+    "Alpine South Island, New Zealand": "جزيرة الجنوب الألبية، نيوزيلندا",
+    "South-west Africa": "جنوب غرب إفريقيا",
+    "East Africa": "شرق إفريقيا",
+    "Lake Victoria region": "منطقة بحيرة فيكتوريا",
+    "South-west Zambia": "جنوب غرب زامبيا",
+    "West Africa": "غرب إفريقيا",
+    "South and central Africa": "جنوب ووسط إفريقيا",
+    "New Guinea and the Solomon Islands": "غينيا الجديدة وجزر سليمان",
+    "Tanimbar Islands": "جزر تانيمبار",
+    "Arid inland Australia": "داخل أستراليا القاحل",
+    "North-east South America": "شمال شرق أمريكا الجنوبية",
+    "Central South America": "وسط أمريكا الجنوبية",
+    "Brazil and the Guianas": "البرازيل وغويانا",
+    "Arid and semi-arid Australia": "أستراليا القاحلة وشبه القاحلة",
+    "South-east Australia": "جنوب شرق أستراليا",
+    "Eastern Australia": "شرق أستراليا",
+    "Malay Peninsula and Sumatra": "شبه جزيرة ملايو وسومطرة",
+    "North Colombia and Venezuela": "شمال كولومبيا وفنزويلا",
+    "Coastal Ecuador and Peru": "ساحل الإكوادور وبيرو",
+    "Java and Bali": "جاوة وبالي",
+    "India and Sri Lanka": "الهند وسري لانكا",
+    "South and south-east Asia": "جنوب وجنوب شرق آسيا",
+    "South and east Asia": "جنوب وشرق آسيا",
+    "Tropical Asia": "آسيا الاستوائية",
+    "South-eastern Australia": "أستراليا الجنوبية الشرقية",
+    "Angola and Zambia": "أنغولا وزامبيا",
+    "West and central Africa": "غرب ووسط إفريقيا",
+    "Eastern and southern Africa": "شرق وجنوب إفريقيا",
+    "Africa south of the Sahara": "إفريقيا جنوب الصحراء",
+    "Angolan and Zambian highlands": "مرتفعات أنغولا وزامبيا",
+    "North Africa and the Middle East": "شمال إفريقيا والشرق الأوسط",
+    "Nicobar and Andaman Islands eastwards": "جزر نيكوبار وأندمان وما شرقها",
+    "Northern New Guinea": "شمال غينيا الجديدة",
+    "North America, domesticated": "أمريكا الشمالية، ومُستأنَس",
+    "Indian subcontinent": "شبه القارة الهندية",
+    "Domestic breed from East Asia": "سلالة داجنة من شرق آسيا",
+    "Domestic breed from China": "سلالة داجنة من الصين",
+    "Western North America": "غرب أمريكا الشمالية",
+    "South-western North America": "جنوب غرب أمريكا الشمالية",
+    "South-east Asia and northern Australia": "جنوب شرق آسيا وشمال أستراليا",
+    "Mountains of Eurasia": "جبال أوراسيا",
+    "Western Europe and north-west Africa": "غرب أوروبا وشمال غرب إفريقيا",
+    "Europe": "أوروبا",
+    "South-east Asia": "جنوب شرق آسيا",
+    "The Himalayas": "الهيمالايا",
+    "Mountains of central China": "جبال وسط الصين",
+    "Myanmar and south-west China": "ميانمار وجنوب غرب الصين",
+    "Africa north of the Limpopo": "إفريقيا شمال نهر ليمبوبو",
+    "North America and Eurasia": "أمريكا الشمالية وأوراسيا",
+    "Eurasia and North America": "أوراسيا وأمريكا الشمالية",
+    "Europe and Asia": "أوروبا وآسيا",
+    "Tropical Africa, Asia and the Americas": "إفريقيا وآسيا والأمريكيتان الاستوائية",
+    "North-east Asia": "شمال شرق آسيا",
+    "Southern Australia and nearby islands": "جنوب أستراليا وجزر قريبة منه",
+    "Amazon and Orinoco basins": "حوضا الأمازون والأورينوكو",
+    "Mediterranean, Middle East and south Asia": "المتوسط والشرق الأوسط وجنوب آسيا",
+    "New Guinea and northern Australia": "غينيا الجديدة وشمال أستراليا",
+    "Central Asia and the steppe": "وسط آسيا والسهب",
+    "Eastern Europe into central Asia": "شرق أوروبا امتداداً إلى وسط آسيا",
+    "Eurasia and Africa": "أوراسيا وإفريقيا",
+    "Africa and south Asia": "إفريقيا وجنوب آسيا",
+    "Iberia, central Asia and Africa": "أيبيريا ووسط آسيا وإفريقيا",
+    "Africa and the Indian subcontinent": "إفريقيا وشبه القارة الهندية",
+    "Eurasia and north Africa": "أوراسيا وشمال إفريقيا",
+    "North and South America": "أمريكا الشمالية والجنوبية",
+    "The Arctic": "القطب الشمالي",
+    "Arabian Peninsula and Iraq": "شبه الجزيرة العربية والعراق",
+    "The Himalayas and south-east Asia": "الهيمالايا وجنوب شرق آسيا",
+    "Bali only": "جزيرة بالي وحدها",
+    "Eurasia, introduced elsewhere": "أوراسيا، وأُدخل في مناطق أخرى",
+    "Europe and north Africa into central Asia": "أوروبا وشمال إفريقيا امتداداً إلى وسط آسيا",
+    "Europe, Asia and Africa": "أوروبا وآسيا وإفريقيا",
+    "Andean South America": "أمريكا الجنوبية الأنديزية",
+    "South Asia and northern Australia": "جنوب آسيا وشمال أستراليا",
+    "North Africa and central Asia": "شمال إفريقيا ووسط آسيا",
+    "Southern and eastern Africa": "جنوب إفريقيا وشرقها",
+    "Iberia and the Eurasian steppe": "أيبيريا والسهب الأوراسي",
+    "Iberia and central Asia": "أيبيريا ووسط آسيا",
+    "North Africa and the Levant": "شمال إفريقيا والمشرق",
+    "Africa and the Middle East": "إفريقيا والشرق الأوسط",
+    "Warm regions worldwide": "المناطق الدافئة في كل العالم"
   },
   locVal(v) {
     if (I18N.lang !== "ar" || v == null) return v;
@@ -2947,10 +3176,10 @@ const AI = {
     ["breed", /(تفريخ|تكاثر|حضانه|حضين|فقس|بيض|تعشيش|تضع البيض|هج|eegg|eggs|hatch|incubat|breed|nest|clutch|fledg|wean)/],
     ["cost", /(تكلفه|تكلف|استهلاك|شهري|شهريا|مصروف|مصاريف|monthly|per month|running cost|consumption|كم يكفي|كم كيلو|كم كيس)/],
     ["escape", /(طالع من|طلع من|خرج من|خارج القفص|القفص فتح|يهرب|هروب|السقف|يطير في الغرفة|يطير في البيت|رجع للقفص|ادخله القفص|امسكه|مسك الطائر|قص الريش|قص الريشة|تقليم|مشذب|الجناحات|شذب|flew out|flying out|escape|got out|won't come back|will not come back|wing clip|clipped|flight training|come back to me|lure)/],
-    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|\u062a\u0646\u062a\u0642\u0644|\u0627\u0646\u062a\u0642\u0627\u0644|\u0644\u0644\u0627\u0646\u0633\u0627\u0646|\u0628\u0634\u0631|\u0646\u0627\u0642\u0644|contagi|quarantin|infect|spread|flock|together|other birds|new bird|human|zoonotic|to people)/]
+    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|\u062a\u0646\u062a\u0642\u0644|\u0627\u0646\u062a\u0642\u0627\u0644|\u0644\u0644\u0627\u0646\u0633\u0627\u0646|\u0628\u0634\u0631|\u0646\u0627\u0642\u0644|contagi|quarantin|infect|spread|flock|together|other birds|new bird|human|zoonotic|to people|يعيش.{0,40} مع |يسكن.{0,40} مع |يتعايش.{0,40} مع |هل يضر|ضار ب|mix with|house with|live with|safe with)/]
   ],
   PRACNAME: {
-    food: ["Food and water", "الطعام والماء"], cage: ["Cage and space", "القفس والمساحة"],
+    food: ["Food and water", "الطعام والماء"], cage: ["Cage and space", "القفص والمساحة"],
     breed: ["Breeding calendar", "تقويم التفريخ"], cost: ["Monthly consumption", "الاستهلاك الشهري"],
     escape: ["Out of the cage", "خارج القفص"],
     group: ["Keeping them together", "التجمّع والعدوى"]
@@ -3189,7 +3418,7 @@ const AI = {
     }
 
     if (hits.includes("cage")) {
-      if (!r) out.push(`<h4>📏 ${esc(this.bi("Cage and space", "القفس والمساحة"))}</h4><p class="hint">${esc(this.bi(
+      if (!r) out.push(`<h4>📏 ${esc(this.bi("Cage and space", "القفص والمساحة"))}</h4><p class="hint">${esc(this.bi(
         "Name the species and this answers with real centimetres — space depends on body length, not on taste.",
         "سمِّ النوع فتُجيب هذه الفقرة بالسنتيمترات؛ فالمساحة تُحسب من طول الطائر لا من الذوق."))}</p>`);
       else {
@@ -3207,7 +3436,7 @@ const AI = {
         rows.push([this.bi("Placement", "الوضع"), this.bi(
           `eye level of the room, out of draughts and kitchen fumes, with a dark quiet sleep block`,
           `بمستوى نظر الغرفة، بعيداً عن التيارات ودخان المطبخ، مع نوم مظلم هادئ`)]);
-        out.push(`<h4>📏 ${esc(this.bi("Cage and space", "القفس والمساحة"))}</h4>` + this.kv(rows) +
+        out.push(`<h4>📏 ${esc(this.bi("Cage and space", "القفص والمساحة"))}</h4>` + this.kv(rows) +
           `<p class="hint">${esc(this.bi(
             `Derived from a body length of ${c.L} cm and the guide's space score of ${r.space || 3}/5: length ≥ 3× the bird, height enough to spread the wings. Practical floor, not a legal standard.`,
             `مشتقة من طول جسم ${c.L} سم ودرجة المساحة ${r.space || 3}/5 في الدليل: الطول ≥ ٣ أضعاف الطائر، والارتفاع يسمح بفرد الجناحين. حدّ عملي وليس مواصفة قانونية.`))}</p>`);
@@ -3268,10 +3497,10 @@ const AI = {
           "نادراً ما يُفتح باب مقفل: الطائر يكون جالساً على حافة الباب أو المجثم العلوي وقت الفتح، أو يفزع من صوت فيمرّ من الفتحة قبل أن ترمش.")],
         [this.bi("Door and latch", "الباب والقفل"), this.bi(
           "A bolt that drops into a tube, or one carabiner through the door and frame eyes, beats any hook a bird can lift. Train one habit: the bird is inside and the door closes on its own weight before you let go.",
-          "مزلاج يسقط في أنبوب، أو كربلوجة واحدة عبر عين الباب والإطار، أقوى من أي خطاف يرفعه الطائر. وعلّم عادة واحدة: أبقِه داخل القفص ولا تترك الباب حتى يغلق بثقله.")],
+          "مزلاج يسقط في أنبوب، أو مشبك كارابينا واحدة عبر عين الباب والإطار، أقوى من أي خطاف يرفعه الطائر. وعلّم عادة واحدة: أبقِه داخل القفص ولا تترك الباب حتى يغلق بثقله.")],
         [this.bi("Perch position", "مكان المجثم"), this.bi(
           "Move the top perch and the toy ladder away from the door so nothing lands in the doorway while it is open.",
-          "نقل المجثم العلوي وسلّيمة الألعاب بعيداً عن الباب حتى لا يقف شيء في فتحة الباب وهو مفتوح.")],
+          "نقل المجثم العلوي وسُلّم الألعاب بعيداً عن الباب حتى لا يقف شيء في فتحة الباب وهو مفتوح.")],
         [this.bi("Bar spacing", "تباعد القضبان"), c && c.bars ? this.bi(
           `This bird is kept at ${c.bars} cm bars; a head that fits squeezes the body through, so a mismatched cage is an escape waiting for a surprise.`,
           `هذا النوع يُربّى على تباعد ${c.bars} سم؛ والرأس الذي يمرّ يمرّ معه الجسد، فالقفص غير المناسب هروب مؤجّل حتى أول فزعة.`) :
@@ -3292,7 +3521,7 @@ const AI = {
       const back = [
         [this.bi("Stop the chase", "أوقف المطاردة"), this.bi(
           "Chasing makes you the predator: the more you step, the further it flies, and a panicked bird in a room breaks its chest on the fan or the glass.",
-          "المطاردة تجعلك المفترس: كلما تقدمت طار أبعد، والطائر الفزع في غرفة يكسر صدره بالمروحة أو بالزجاج.")],
+          "المطاردة تجعلك المفترس: كلما تقدمت طار أبعد، والطائر المذعور في غرفة يكسر صدره بالمروحة أو بالزجاج.")],
         [this.bi("Close the space", "ضيّق المساحة"), this.bi(
           "One room, doors shut, lights low, perches and curtains within reach only — a dim room slows the flight and shortens the distance.",
           "غرفة واحدة، أبواب مغلقة، إضاءة منخفضة، والمجاثم والستائر في متناول الطيران فقط — الإضاءة الخافتة تُبطئ الرحلة وتقصّر المسافة.")],
@@ -3344,21 +3573,38 @@ const AI = {
   findSpecies(q) {
     const t = this.norm(q);
     this._fromCtx = false; this._guessed = false;
-    /* market names are direct hits: resolve them before any fuzzy path, and keep
-       every one the sentence contains so a comparison has both birds */
+    const qtoks = this.toks(q);
+    /* A keeper writes the plural a word, not a stem: "صقور" is "صقر" with one letter
+       more. Two letters of drift still separates that from a genuinely different
+       species, so only short Arabic words are compared this loosely. */
+    const near = (a, w) => a === w || (/[\u0600-\u06FF]/.test(a) && Math.min(a.length, w.length) >= 3 &&
+      Math.abs(a.length - w.length) <= 2 && (a.startsWith(w) || w.startsWith(a)));
+    /* rank() is where the sentence decides. Clitics differ between "الببغاء" and the
+       stored "ببغاء", so name words are compared de-prefixed; a name written out whole
+       scores far ahead (negative) so it beats a generic one-word alias, and the score
+       is the word position, which keeps two named birds in the order they were asked. */
+    const rank = b => {
+      let best = 1e6;
+      for (const n of [b.en, b.ar].filter(Boolean)) {
+        const nt = this.norm(n), ws = this.toks(n);
+        if (!ws.length || ws.length > 3) continue;
+        if (nt.length > 3 && ws.length > 1 && t.includes(nt)) best = Math.min(best, -1e6 + t.indexOf(nt));
+        const at = ws.map(w => qtoks.findIndex(x => near(w, x)));
+        if (at.every(i => i >= 0)) best = Math.min(best, Math.min.apply(null, at) + (ws.length > 1 ? -1e3 : 0));
+      }
+      return best;
+    };
+    const dedupe = a => Array.from(new Map(a.map(x => [x.id, x])).values());
+    const ordered = a => dedupe(a).sort((x, y) => rank(x) - rank(y));
+    const named = SPECIES.filter(b => rank(b) < 1e6);
+    const whole = named.filter(b => rank(b) < 0);
+    if (whole.length) return ordered(whole).slice(0, 3);
+    const bySci = SPECIES.filter(b => b.sci && this.norm(b.sci).length > 5 && t.includes(this.norm(b.sci)));
+    if (bySci.length) return bySci.slice(0, 2);
     const byAlias = this.aliasAll(t).map(sci =>
       SPECIES.find(x => x.sci === sci) || (Atlas.get ? Atlas.get(sci) : null)).filter(Boolean);
-    if (byAlias.length) return byAlias.slice(0, 3);
-    const hit = SPECIES.filter(b => (b.en && t.includes(this.norm(b.en))) ||
-      (b.ar && this.norm(b.ar).length > 3 && t.includes(this.norm(b.ar))) ||
-      (b.sci && this.norm(b.sci).length > 5 && t.includes(this.norm(b.sci))));
-    if (hit.length) return hit.slice(0, 2);
-    /* clitics differ between "الببغاء" and the stored "ببغاء", so compare
-       de-prefixed name words instead of raw substrings */
-    const qset = new Set(this.toks(q));
-    const phrase = SPECIES.filter(b => [b.ar, b.en].filter(Boolean)
-      .some(n => { const ws = this.toks(n); return ws.length && ws.length <= 3 && ws.every(w => qset.has(w)); }));
-    if (phrase.length) return phrase.slice(0, 2);
+    if (byAlias.length) return ordered(byAlias.concat(named)).slice(0, 3);
+    if (named.length) return ordered(named).slice(0, 3);
     /* "budgies" is not a substring of "budgerigar", so a shared stem is tried
        before falling back to the semantic index: five letters when that finds
        anything, otherwise four, which is what links budgie to budgerigar */
@@ -3620,7 +3866,8 @@ function fuzzyScore(query, text) {
   let i = 0; for (const ch of t) if (ch === q[i]) i++;
   return i === q.length ? 12 - idx : (words.some(w => t.includes(w.slice(0, 4))) ? 6 : 0);
 }
-const FILTER_DEFAULT = () => ({ g: "all", sort: "name", size: [0, 300], life: [0, 80], noise: [1, 5], difficulty: [1, 5], cost: [1, 5] });
+const FILTER_DEFAULT = () => ({ g: "all", sort: "name", size: [0, 300], life: [0, 80], noise: [1, 5], difficulty: [1, 5], cost: [1, 5],
+  src: "guide", page: 0, ord: "all", aImg: false, aAr: false });
 let filters = FILTER_DEFAULT();
 
 function searchSpecies(q, f = filters) {
@@ -3781,7 +4028,7 @@ const setCompN = () => { $("#compN").textContent = store.compare.length; };
 
 function statCards() {
   return statBlock([
-    [SPECIES.length, tr("stat_species")], [Object.keys(GROUPS).length, tr("stat_groups")],
+    [SPECIES.length, tr("stat_species")], [Atlas.count(), tr("stat_atlas"), "stAtlas"], [Object.keys(GROUPS).length, tr("stat_groups")],
     [store.favs.size, tr("stat_fav")], [store.visits.size + "/" + SPECIES.length, tr("stat_seen")],
     [store.birds.all().length, tr("stat_mine")], [store.sightings.all().length, tr("stat_sights")],
   ]);
@@ -3806,13 +4053,30 @@ function cardHTML(b) {
       </div>
     </div></article>`;
 }
-async function hydrateCards(root) {
+let photoIO = null;
+function hydrateCards(root) {
   if (!root) return;
+  if (photoIO) { photoIO.disconnect(); photoIO = null; }
   const ids = uniq($$("[data-id]", root).map(n => n.dataset.id));
+  const want = [];
   for (const id of ids) {
     const b = byId(id), box = root.querySelector('.spec[data-id="' + id + '"] .thumb');
-    if (b && box) loadPhoto(box, b);
+    if (b && box) want.push([box, b]);
   }
+  if (!want.length) return;
+  /* A guide of 168 species is 168 photo lookups, each of which can wait on a network
+     timeout. Resolve only what the keeper can see, plus a screen of margin, and let
+     the rest load as they scroll in. */
+  if (!("IntersectionObserver" in window)) { want.forEach(([box, b]) => loadPhoto(box, b)); return; }
+  photoIO = new IntersectionObserver((entries, obs) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      obs.unobserve(e.target);
+      const hit = want.find(w => w[0] === e.target);
+      if (hit && hit[0].isConnected) loadPhoto(hit[0], hit[1]).catch(() => {});
+    }
+  }, { rootMargin: "600px 0px" });
+  want.forEach(([box]) => photoIO.observe(box));
 }
 
 /* ------------------------------------------------------------------- HOME */
@@ -3821,7 +4085,7 @@ function viewHome() {
   const b = birdOfDay(), g = GROUPS[b.g], due = SRS.count();
   app.innerHTML = `
   <section class="hero">
-    <h1>${esc(tr("home_title"))}</h1><p>${esc(tr("home_sub"))}</p>
+    <h1>${esc(tr("home_title"))}</h1><p>${esc(tr("home_sub", { n: SPECIES.length }))}</p>
     <div class="row">
       <a class="btn" href="#/birds">${esc(tr("nav_birds"))} →</a>
       <a class="btn ghost" href="#/find">✨ ${esc(tr("wiz_h"))}</a>
@@ -3877,25 +4141,65 @@ function viewHome() {
   $("#dodText").textContent = "";
   wikiSummary(b.wiki).then(w => { if (w && w.text) $("#dodText").textContent = w.text.slice(0, 220) + (w.text.length > 220 ? "…" : ""); });
   loadPhoto($("#dod"), b);
+  /* atlas rows live in IndexedDB, so the stat lands one tick after the first paint */
+  Atlas.load().then(rows => { const el = $("#stAtlas b"); if (el) el.textContent = rows.length; });
   drawHome();
   wireCatalogueClicks(app);
 }
 
 /* ----------------------------------------------------------------- BROWSE */
+/* One list, two sources. The care guide holds the species with measured
+   husbandry traits; the atlas holds every world species imported on this
+   device — names, classification, photos and recordings, but no care numbers.
+   Atlas cards say that plainly instead of showing invented pills, and they page
+   so thousands of rows never hit the DOM at once. */
+const ATLAS_PAGE = 60;
+
+function atlasFiltered(f) {
+  const q = (f.q || "").trim();
+  let rows = q ? Atlas.match(q, Atlas.rows.length) : Atlas.rows.slice();
+  if (f.ord && f.ord !== "all") rows = rows.filter(r => r.order === f.ord);
+  if (f.aImg) rows = rows.filter(r => !!r.img);
+  if (f.aAr) rows = rows.filter(r => !!r.ar);
+  if (!q) {
+    const key = r => String(speciesName(r) || r.sci).toLowerCase();
+    rows = rows.map(r => [key(r), r]).sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)).map(x => x[1]);
+  }
+  return rows;
+}
+
+function atlasCardHTML(r) {
+  const u = "#/atlas/" + encodeURIComponent(r.sci), nm = speciesName(r) || r.sci;
+  return `<article class="card spec">
+    <a class="thumb" href="${u}" aria-label="${esc(nm)}">
+      <div class="ph">🌍</div><img alt="${esc(nm)}" loading="lazy" decoding="async"${r.img
+        ? ` src="${esc(r.img)}" onload="this.classList.add('loaded')" onerror="this.hidden=true"` : ""}>
+    </a>
+    <div class="body">
+      <h3><a href="${u}">${esc(nm)}</a></h3>
+      <div class="sci">${esc(r.sci)}</div>
+      <div class="meta"><span class="pill">🧬 ${esc(r.family || "—")}</span>${r.order ? `<span class="pill">${esc(r.order)}</span>` : ""}${r.ar ? '<span class="pill">🗣</span>' : ""}</div>
+      <div class="foot"><span class="hint">${esc(tr("atlas_no_care"))}</span>
+        <span class="row"><button class="btn sm ghost" data-asight="${esc(r.sci)}" aria-label="${esc(tr("atlas_promote"))}">📍</button>
+        <a class="btn sm ghost" href="${u}">${esc(tr("open"))}</a></span></div>
+    </div></article>`;
+}
+
 function viewBrowse() {
   document.title = tr("nav_birds") + " — Birds World";
   const f = filters, q = f.q || "";
   app.innerHTML = `
   <section class="panel">
-    <h2>${esc(tr("nav_birds"))} <span class="hint" style="display:inline">(${SPECIES.length})</span></h2>
-    <div class="row" style="margin-bottom:var(--s-3)">
+    <h2>${esc(tr("nav_birds"))} <span class="hint" style="display:inline" id="srcCount">(${SPECIES.length})</span></h2>
+    <div class="row" id="srcRow"></div>
+    <div class="row" style="margin:var(--s-3) 0">
       <input id="q" type="search" placeholder="${esc(tr("search_ph"))}" value="${esc(q)}" aria-label="${esc(tr("search"))}">
       <button class="btn ghost" id="voice" aria-label="Voice">🎙️</button>
       <button class="btn ghost" id="reset">${esc(tr("clear"))}</button>
     </div>
     <details class="panel" style="box-shadow:none" ${f.open ? "open" : ""} id="fpanel">
       <summary style="font-weight:700;cursor:pointer">${esc(tr("filters"))}</summary>
-      <div class="filters" style="margin-top:var(--s-3)">
+      <div class="filters" id="careFilters" style="margin-top:var(--s-3)">
         <div><label>${esc(tr("group"))}</label><select id="f-g">
           <option value="all">${esc(tr("g_all"))}</option><option value="fav">${esc(tr("g_fav"))}</option>
           ${Object.entries(GROUPS).map(([k, v]) => `<option value="${k}"${f.g === k ? " selected" : ""}>${v.e} ${esc(v.en)}</option>`).join("")}</select></div>
@@ -3908,7 +4212,12 @@ function viewBrowse() {
         <div><label>🎯 ${esc(traitLabel("difficulty"))}</label><div class="rng"><input type="range" id="f-diff" min="1" max="5" value="${f.difficulty[1]}"><output id="o-diff">≤5</output></div></div>
         <div><label>💰 ${esc(traitLabel("cost"))}</label><div class="rng"><input type="range" id="f-cost" min="1" max="5" value="${f.cost[1]}"><output id="o-cost">≤5</output></div></div>
       </div>
-      <div class="row" style="margin-top:var(--s-3)">
+      <div class="filters" id="atlasFilters" style="margin-top:var(--s-3)" hidden>
+        <div><label>🧬 ${esc(tr("atlas_ord"))}</label><select id="f-ord"></select></div>
+        <label class="inline"><input type="checkbox" id="f-aimg" ${f.aImg ? "checked" : ""}> ${esc(tr("atlas_only_img"))}</label>
+        <label class="inline"><input type="checkbox" id="f-aar" ${f.aAr ? "checked" : ""}> ${esc(tr("atlas_only_ar"))}</label>
+      </div>
+      <div class="row" style="margin-top:var(--s-3)" id="savedRow">
         <button class="btn sm ghost" id="saveSearch">＋ ${esc(tr("save_search"))}</button>
         <div id="savedList" class="row"></div>
       </div>
@@ -3916,16 +4225,58 @@ function viewBrowse() {
   </section>
   <div class="row"><span class="hint" id="count"></span></div>
   <div class="grid" id="grid"></div>
+  <div class="row" id="pager"></div>
   <div id="atPool"></div>`;
+
+  const isAtlas = () => f.src === "atlas" && Atlas.rows.length > 0;
+
+  const drawSrc = () => {
+    const nA = Atlas.rows.length;
+    $("#srcRow").innerHTML =
+      `<button class="btn sm${f.src === "guide" ? "" : " ghost"}" data-src="guide">🪶 ${esc(tr("src_guide"))} · ${SPECIES.length}</button>` +
+      `<button class="btn sm${f.src === "atlas" ? "" : " ghost"}" data-src="atlas"${nA ? "" : " disabled"}>🌍 ${esc(tr("src_atlas"))} · ${nA}</button>` +
+      (nA ? `<span class="hint">${esc(tr("atlas_pick_src"))}</span>`
+        : `<span class="hint">${esc(tr("atlas_none"))} <a href="#/atlas">${esc(tr("atlas_h"))} →</a></span>`);
+    if (!nA) return;
+    const byOrder = new Map();
+    for (const r of Atlas.rows) if (r.order) byOrder.set(r.order, (byOrder.get(r.order) || 0) + 1);
+    $("#f-ord").innerHTML = `<option value="all">${esc(tr("atlas_all_orders"))} (${Atlas.rows.length})</option>` +
+      [...byOrder.entries()].sort((a, b) => b[1] - a[1]).map(([o, n]) =>
+        `<option value="${esc(o)}"${f.ord === o ? " selected" : ""}>${esc(o)} (${n})</option>`).join("");
+  };
+
+  const drawAtlas = () => {
+    const rows = atlasFiltered(f);
+    const pages = Math.max(1, Math.ceil(rows.length / ATLAS_PAGE));
+    f.page = clamp(f.page, 0, pages - 1);
+    const at = f.page * ATLAS_PAGE;
+    const cut = rows.slice(at, at + ATLAS_PAGE);
+    $("#grid").innerHTML = cut.length ? cut.map(atlasCardHTML).join("")
+      : `<div class="empty" style="grid-column:1/-1"><b>🌍</b>${esc(tr("no_results"))}<br><span class="hint">${esc(tr("try_wide"))}</span></div>`;
+    $("#count").textContent = rows.length + " / " + Atlas.rows.length + (f.q.trim() ? " · " + tr("atlas_found") : "");
+    $("#atPool").innerHTML = "";
+    $("#pager").innerHTML = pages > 1
+      ? `<button class="btn sm ghost" data-p="-1"${f.page ? "" : " disabled"}>← ${esc(tr("pg_prev"))}</button>` +
+        `<span class="hint">${esc(tr("atlas_page"))} ${f.page + 1} / ${pages}</span>` +
+        `<button class="btn sm ghost" data-p="1"${f.page >= pages - 1 ? " disabled" : ""}>${esc(tr("pg_next"))} →</button>`
+      : "";
+  };
 
   const draw = () => {
     f.q = $("#q").value;
+    $("#careFilters").hidden = isAtlas();
+    $("#atlasFilters").hidden = !isAtlas();
+    $("#savedRow").hidden = isAtlas();
+    $("#srcCount").textContent = "(" + (isAtlas() ? Atlas.rows.length : SPECIES.length) + ")";
+    if (isAtlas()) return drawAtlas();
     const items = searchSpecies(f.q, f);
     $("#grid").innerHTML = items.length ? items.map(cardHTML).join("")
       : `<div class="empty" style="grid-column:1/-1"><b>🪶</b>${esc(tr("no_results"))}<br><span class="hint">${esc(tr("try_wide"))}</span></div>`;
     $("#count").textContent = items.length + " / " + SPECIES.length;
-    /* atlas matches stay in their own panel: they have no care traits to rank
-       or display, and mixing them into the grid would imply data we do not have */
+    $("#pager").innerHTML = "";
+    /* guide mode still offers atlas hits, but in their own panel: they have no
+       care traits to rank or display, and mixing them into the grid would
+       imply data we do not have */
     $("#atPool").innerHTML = (store.settings.includeAtlas && f.q.trim() && Atlas.rows.length)
       ? atlasList(Atlas.match(f.q.trim(), 24), tr("atlas_include")) : "";
     hydrateCards($("#grid"));
@@ -3936,14 +4287,20 @@ function viewBrowse() {
     $("#savedList").innerHTML = store.saved.all().map(s =>
       `<button class="chip" data-load="${s.id}">${esc(s.name)}</button>`).join("");
   };
-  $("#q").addEventListener("input", debounce(draw, 140));
+  $("#q").addEventListener("input", debounce(() => { filters.page = 0; draw(); }, 140));
   ["f-g", "f-sort"].forEach(id => $("#" + id).addEventListener("change", e => {
     filters[id === "f-g" ? "g" : "sort"] = e.target.value; draw();
   }));
   const rng = (id, key, max) => $("#" + id).addEventListener("input", e => { filters[key] = [filters[key][0], +e.target.value]; draw(); });
   rng("f-size", "size"); rng("f-life", "life"); rng("f-noise", "noise"); rng("f-diff", "difficulty"); rng("f-cost", "cost");
+  $("#f-ord").addEventListener("change", e => { filters.ord = e.target.value; filters.page = 0; draw(); });
+  $("#f-aimg").addEventListener("change", e => { filters.aImg = e.target.checked; filters.page = 0; draw(); });
+  $("#f-aar").addEventListener("change", e => { filters.aAr = e.target.checked; filters.page = 0; draw(); });
   $("#fpanel").addEventListener("toggle", e => { filters.open = e.target.open; });
-  $("#reset").onclick = () => { const keep = filters.g; filters = Object.assign(FILTER_DEFAULT(), { g: keep }); viewBrowse(); };
+  $("#reset").onclick = () => {
+    const keep = { g: filters.g, src: filters.src };
+    filters = Object.assign(FILTER_DEFAULT(), keep); viewBrowse();
+  };
   $("#saveSearch").onclick = () => {
     const name = window.prompt(tr("save_search"), filters.q || tr("g_all"));
     if (!name) return;
@@ -3953,13 +4310,23 @@ function viewBrowse() {
     const s = store.saved.get(n.dataset.load); if (!s) return;
     filters = Object.assign(FILTER_DEFAULT(), s.state); viewBrowse();
   });
-  $("#voice").onclick = () => startVoice(t => { $("#q").value = t; draw(); });
-  draw(); drawSaved(); wireCatalogueClicks(app);
-  if (store.settings.includeAtlas) Atlas.load().then(rows => {
-    if (rows.length && location.hash.startsWith("#/birds")) draw();
+  on($("#srcRow"), "click", "[data-src]", (e, n) => {
+    if (n.dataset.src === "atlas" && !Atlas.rows.length) return;
+    filters.src = n.dataset.src; filters.page = 0; draw();
+  });
+  on($("#pager"), "click", "[data-p]", (e, n) => {
+    filters.page += +n.dataset.p; drawAtlas();
+    $("#grid").scrollIntoView({ block: "start", behavior: "smooth" });
+  });
+  $("#voice").onclick = () => startVoice(t => { $("#q").value = t; filters.page = 0; draw(); });
+  drawSrc(); draw(); drawSaved(); wireCatalogueClicks(app);
+  Atlas.load().then(rows => {
+    if (!rows.length || !location.hash.startsWith("#/birds")) return;
+    drawSrc();
+    if (filters.src === "atlas") drawAtlas();
+    else if (store.settings.includeAtlas) draw();
   });
 }
-
 function startVoice(apply) {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) { toast(tr("voice_no"), "warn"); return; }
@@ -5111,7 +5478,7 @@ async function viewIdentify() {
   <section class="panel"><h2>📚 ${esc(tr("id_lib"))}</h2>
     <div class="row"><label style="min-width:130px">${esc(tr("id_scope"))}</label>
       <select id="idScope">
-        <option value="lib">${esc(tr("id_scope_lib"))}</option>
+        <option value="lib">${esc(tr("id_scope_lib", { n: SPECIES.length }))}</option>
         <option value="fav">${esc(tr("id_scope_fav"))}</option>
         <option value="atlas"${Atlas.rows.length ? " selected" : ""}>${esc(tr("id_scope_atlas"))}</option></select>
       <button class="btn" id="idBuild">🧬 ${esc(tr("id_build"))}</button>
