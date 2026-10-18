@@ -422,6 +422,7 @@ const T = {
     src_guide:"Care guide", src_atlas:"Species atlas", stat_atlas:"Atlas species",
     atlas_ord:"Order", atlas_all_orders:"All orders", atlas_only_img:"With a photo", atlas_only_ar:"With an Arabic name",
     atlas_no_care:"Atlas species \u2014 no care figures", atlas_pick_src:"Switch source above to browse every world species on this device.",
+    units_note:"{r} rows · {u} species", breed_chip:"breed", breed_of:"A domestic breed of {n}",
     pg_prev:"Previous", pg_next:"Next", atlas_page:"Page",
     photo:"Photos", yes:"Yes", tax_order:"Order", tax_family:"Family", tax_genus:"Genus",
     caps_h:"What is new",
@@ -461,7 +462,7 @@ const T = {
     id_test_ok:"Self-test passed: the estimator recovered the known pitch and note rate of the synthetic call.",
     id_test_fail:"Self-test drifted — this browser's audio path may resample the recording. Treat other results with care.",
     id_note:"Matches are acoustic similarity, not proof of identity.", id_clearlib:"Delete indexed voices", id_libempty:"Library is empty",
-    id_scope:"Which species to index", id_scope_lib:"My guide ({n} species)", id_scope_atlas:"Atlas species in view", id_scope_fav:"Favorites",
+    id_scope:"Which species to index", id_scope_lib:"My guide ({n} rows)", id_scope_atlas:"Atlas species in view", id_scope_fav:"Favorites",
     id_scope_hint:"Freely licensed field recordings exist mostly for wild species, so the atlas scope indexes far more than the guide list. A species with no usable recording is skipped, not guessed.",
     feat_id:"Name a bird from its song", feat_id_d:"Record six seconds and rank it against reference songs measured the same way.",
   },
@@ -536,6 +537,7 @@ const T = {
     src_guide:"دليل العناية", src_atlas:"أطلس الأنواع", stat_atlas:"أنواع الأطلس",
     atlas_ord:"الرتبة", atlas_all_orders:"كل الرتب", atlas_only_img:"بصورة", atlas_only_ar:"باسم عربي",
     atlas_no_care:"نوع أطلسي — بلا أرقام رعاية", atlas_pick_src:"اختر مصدراً بالأعلى لتصفح أنواع العالم المخزّنة على الجهاز.",
+    units_note:"{r} صفاً · {u} نوعاً", breed_chip:"صنف", breed_of:"صنف مستأنس من {n}",
     pg_prev:"السابق", pg_next:"التالي", atlas_page:"صفحة",
     photo:"الصور", yes:"نعم", tax_order:"الرتبة", tax_family:"الفصيلة", tax_genus:"الجنس",
     caps_h:"ما الجديد",
@@ -574,7 +576,7 @@ const T = {
     id_test_ok:"اختبار ذاتي ناجح: قياس الذروة الترددية ومعدل النغمات طابقت النداء الاصطناعي المعروف.",
     id_test_fail:"القياس انحرف — قد يعيد هذا المتصفح تغيير معدل العينة. تعامل مع النتائج الأخرى بحذر.",
     id_note:"التطابق قياس صوتي وليس دليلاً قاطعاً على الهوية.", id_clearlib:"حذف الأصوات المفهرسة", id_libempty:"المكتبة فارغة",
-    id_scope:"أي أنواع تُفهرس", id_scope_lib:"مرشدي ({n} نوعاً)", id_scope_atlas:"أنواع الأطلس المعروضة", id_scope_fav:"المفضلة",
+    id_scope:"أي أنواع تُفهرس", id_scope_lib:"مرشدي ({n} صفاً)", id_scope_atlas:"أنواع الأطلس المعروضة", id_scope_fav:"المفضلة",
     id_scope_hint:"التسجيلات الميدانية المتاحة برخص حرة توجد غالباً للطيور البرية، لذلك فهرس الأطلس يغطي أنواعاً أكثر بكثير من قائمة المرشد. النوع الذي لا يوجد له تسجيل صالح يُتجاوَز ولا يُخمَّن.",
     feat_ai:"اسأل أي شيء عن طيورك", feat_ai_d:"فرز صحي وتوصيات وحقائق عن الأنواع تُحسب من بياناتك أنت — أو من نموذج توصله بنفسك.",
     feat_id:"سمِّ الطائر من صوته", feat_id_d:"سجّل ست ثوانٍ وقارنها بأغانٍ مرجعية قيست بالطريقة نفسها.",
@@ -972,7 +974,7 @@ const RAW = [
 
   { en:"Red-browed Finch", ar:"", sci:"Neochmia temporalis", g:"fi", origin:"Eastern Australia", size:"10–12 cm", life:"5–8 years", tip:"Finch mix, seeding grasses and live food in breeding", file:"", t:[2,2,2,1,4] },
   { en:"Double-barred Finch", ar:"", sci:"Taeniopygia bichenovii", g:"fi", origin:"Eastern and northern Australia", size:"10–12 cm", life:"5–8 years", tip:"Finch mix and millet spray; the quietest grass finch", file:"", t:[2,1,2,1,4] },
-  { en:"Black-headed Munia", ar:"منياك أسود الرأس", sci:"Lonchura malabarica", g:"fi", origin:"India and Sri Lanka", size:"11–12 cm", life:"5–8 years", tip:"Fine seed mix, greens and constant grit", file:"", t:[2,2,2,1,4] },
+  { en:"Tricolored Munia", ar:"منياك ثلاثي الألوان", sci:"Lonchura malacca", g:"fi", origin:"South and south-east Asia", size:"11–12 cm", life:"5–8 years", tip:"Fine seed mix, greens and constant grit", file:"", t:[2,2,2,1,4] },
   { en:"White-headed Munia", ar:"منياك أبيض الرأس", sci:"Lonchura maja", g:"fi", origin:"Java, Bali and Borneo", size:"11–12 cm", life:"5–8 years", tip:"Grain and fine seed; sensitive to cold, wet housing", file:"", t:[3,2,2,1,4] },
   { en:"Parrot Finch", ar:"", sci:"Erythrura prasina", g:"fi", origin:"South and Southeast Asia", size:"11–12 cm", life:"5–8 years", tip:"Fine seed, egg food and live food; needs warmth year-round", file:"", t:[3,2,2,2,4] },
   { en:"Eurasian Siskin", ar:"", sci:"Spinus spinus", g:"fi", origin:"Europe and northern Asia", size:"11–12 cm", life:"4–7 years", tip:"Canary seed, greens and seeding herbs; crosses readily with canary", file:"", t:[2,2,2,1,3] },
@@ -1050,9 +1052,27 @@ const SPECIES = RAW.map((r, i) => {
   };
 });
 
+/* A row is not the same thing as a species. Silkie, Cochin and Sebright are
+   three breeds of one domestic chicken, the Indian runner duck is a domestic
+   form of the mallard and the society finch of the white-rumped munia, and an
+   atlas-only row can share a species with a guide row. Calling 241 rows "241
+   species" is padding, so the app counts both and derives them from the
+   scientific name instead of a hand-maintained number that drifts. */
+const DOM_RE = /\s*\((?:domestic|domestica|domesticus)\)\s*|\s(?:domestic|domestica|domesticus)$/i;
+const sciBase = sci => String(sci).replace(DOM_RE, "").replace(/\s+/g, " ").trim();
+const isDomesticForm = b => DOM_RE.test(String(b.sci));
+const SPECIES_UNITS = new Set(SPECIES.map(b => sciBase(b.sci))).size;
+const BREED_ROWS = SPECIES.filter(isDomesticForm).length;
+/* the guide row this row is a breed or domestic form of, when the guide lists it */
+const breedOf = b => isDomesticForm(b) ? SPECIES.find(x => x.sci === sciBase(b.sci)) || null : null;
+/* what a breed row says it descends from: the guide name when we list it, the
+   wild binomial otherwise (a domestic canary has no wild row here) */
+const breedNote = b => { const p = breedOf(b); return p ? speciesName(p) : sciBase(b.sci); };
+
 function validateData() {
   const problems = [];
   const seen = new Set();
+  const seenSci = new Map();
   SPECIES.forEach(b => {
     if (!b.id) problems.push("species with empty id");
     if (seen.has(b.id)) problems.push("duplicate id: " + b.id);
@@ -1063,6 +1083,15 @@ function validateData() {
       if (k !== "longevity" && (!Number.isInteger(v) || v < lo || v > hi)) problems.push(b.id + ": " + k + " out of range");
     });
     if (!(b.sizeMin >= 0 && b.sizeMax >= b.sizeMin)) problems.push(b.id + ": bad size range");
+    /* Two rows may carry the same scientific name only when both are domestic
+       forms of it — four chicken breeds are four real birds, but a finch and a
+       munia sharing one binomial is a copy error, which is how a silverbill's
+       name ended up on a munia row. */
+    const k = b.sci.toLowerCase();
+    const prev = seenSci.get(k);
+    if (prev && !(isDomesticForm(prev) && isDomesticForm(b)))
+      problems.push("same scientific name on unrelated rows: " + prev.id + " / " + b.id);
+    if (!prev) seenSci.set(k, b);
   });
   return problems;
 }
@@ -2721,6 +2750,7 @@ const AI = {
     "Cacatua galerita": ["كوكاتو", "الكوكاتو", "cockatoo"],
     "Trichoglossus moluccanus": ["لوري", "الببغاء اللوري", "lorikeet", "lorrie"],
     "Serinus canaria domestica": ["كناري", "الكناري", "canary"],
+    "Lonchura malacca": ["منياك ثلاثي الألوان", "tricolored munia"],
     "Taeniopygia guttata": ["زيبرا", "الزيبرا", "دوري مخطط", "zebra finch", "zebra"],
     "Chloebia gouldiae": ["جولديان", "الفنش الملون", "gouldian"],
     "Lonchura striata domestica": ["بنت الجافا", "سوسايتي", "bengalese", "society finch"],
@@ -4311,7 +4341,7 @@ const setCompN = () => { $("#compN").textContent = store.compare.length; };
 
 function statCards() {
   return statBlock([
-    [SPECIES.length, tr("stat_species")], [Atlas.count(), tr("stat_atlas"), "stAtlas"], [Object.keys(GROUPS).length, tr("stat_groups")],
+    [SPECIES_UNITS, tr("stat_species")], [Atlas.count(), tr("stat_atlas"), "stAtlas"], [Object.keys(GROUPS).length, tr("stat_groups")],
     [store.favs.size, tr("stat_fav")], [store.visits.size + "/" + SPECIES.length, tr("stat_seen")],
     [store.birds.all().length, tr("stat_mine")], [store.sightings.all().length, tr("stat_sights")],
   ]);
@@ -4320,6 +4350,10 @@ const birdOfDay = () => SPECIES[Math.floor(Date.now() / 864e5) % SPECIES.length]
 
 function cardHTML(b) {
   const g = GROUPS[b.g];
+  /* built outside the card template: a nested template literal holding an
+     object literal inside ${} does not parse */
+  const breedPill = isDomesticForm(b)
+    ? `<span class="pill" title="${esc(tr("breed_of", { n: breedNote(b) }))}">${esc(tr("breed_chip"))}</span>` : "";
   return `<article class="card spec" data-id="${b.id}">
     <button class="star" data-fav="${b.id}" aria-pressed="${isFav(b.id)}" aria-label="${esc(tr("stat_fav"))}">${isFav(b.id) ? "♥" : "♡"}</button>
     <a class="thumb" href="#/bird/${b.id}" data-zoom="${b.id}" aria-label="${esc(speciesName(b))}">
@@ -4329,6 +4363,7 @@ function cardHTML(b) {
       <h3><a href="#/bird/${b.id}">${esc(speciesName(b))}</a></h3>
       <div class="sci">${esc(b.sci)}</div>
       <div class="meta"><span class="pill">${g.e} ${esc(I18N.lang === "ar" && g.ar ? g.ar : g.en)}</span>
+        ${breedPill}
         <span class="pill">📏 ${esc(AI.locVal(b.size))}</span><span class="pill">⏳ ${esc(AI.locVal(b.life))}</span></div>
       <div class="foot">
         <label class="inline"><input type="checkbox" class="cmp" data-cmp="${b.id}" ${store.compare.includes(b.id) ? "checked" : ""}> ${esc(tr("compare"))}</label>
@@ -4473,7 +4508,7 @@ function viewBrowse() {
   const f = filters, q = f.q || "";
   app.innerHTML = `
   <section class="panel">
-    <h2>${esc(tr("nav_birds"))} <span class="hint" style="display:inline" id="srcCount">(${SPECIES.length})</span></h2>
+    <h2>${esc(tr("nav_birds"))} <span class="hint" style="display:inline" id="srcCount">· ${esc(tr("units_note", { r: SPECIES.length, u: SPECIES_UNITS }))}</span></h2>
     <div class="row" id="srcRow"></div>
     <div class="row" style="margin:var(--s-3) 0">
       <input id="q" type="search" placeholder="${esc(tr("search_ph"))}" value="${esc(q)}" aria-label="${esc(tr("search"))}">
@@ -4550,7 +4585,7 @@ function viewBrowse() {
     $("#careFilters").hidden = isAtlas();
     $("#atlasFilters").hidden = !isAtlas();
     $("#savedRow").hidden = isAtlas();
-    $("#srcCount").textContent = "(" + (isAtlas() ? Atlas.rows.length : SPECIES.length) + ")";
+    $("#srcCount").textContent = isAtlas() ? "(" + Atlas.rows.length + ")" : "· " + tr("units_note", { r: SPECIES.length, u: SPECIES_UNITS });
     if (isAtlas()) return drawAtlas();
     const items = searchSpecies(f.q, f);
     $("#grid").innerHTML = items.length ? items.map(cardHTML).join("")
@@ -4734,6 +4769,10 @@ function viewDetail(id) {
   document.title = speciesName(b) + " — Birds World";
   markVisited(id);
   const g = GROUPS[b.g], base = g.foodWeight, inc = g.incDays, today = dayKey();
+  /* hoisted out of the template below: an object literal inside ${} inside a
+     nested template literal does not parse */
+  const breedRow = isDomesticForm(b)
+    ? `<div class="kv"><span>${esc(tr("breed_chip"))}</span>${esc(tr("breed_of", { n: breedNote(b) }))}</div>` : "";
 
   app.innerHTML = `
   <div class="row"><a class="btn ghost sm" href="#/birds">← ${esc(tr("back"))}</a>
@@ -4747,6 +4786,7 @@ function viewDetail(id) {
         <p class="hint"><i>${esc(b.sci)}</i> · ${g.e} ${esc(I18N.lang === "ar" && g.ar ? g.ar : g.en)}</p>
         <div class="kb" style="margin-top:var(--s-3)">
           <div class="kv"><span>${esc(tr("origin"))}</span>${esc(AI.locVal(b.origin))}</div>
+          ${breedRow}
           <div class="kv"><span>${esc(tr("size"))}</span>${esc(AI.locVal(b.size))}</div>
           <div class="kv"><span>${esc(tr("life"))}</span>${esc(AI.locVal(b.life))}</div>
           <div class="kv"><span>${esc(tr("diet_tip"))}</span>${esc(b.tip)}</div>

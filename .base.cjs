@@ -1,0 +1,12 @@
+const fs = require("fs");
+const html = fs.readFileSync("index.html", "utf8");
+const start = html.indexOf("const RAW = [");
+const end = html.indexOf("\n];", start);
+const rows = new Function("return " + html.slice(start + "const RAW = ".length, end + 2))();
+const base = s => String(s).replace(/\s*\((domestic|domestica|domesticus)\)\s*/ig, " ").replace(/\s+(domestica|domesticus|domestic)$/i, "").replace(/\s+/g, " ").trim();
+const m = {};
+rows.forEach((r, i) => { const b = base(r.sci); (m[b] = m[b] || []).push((i + 1) + ":" + r.en + " [" + r.sci + "]"); });
+const dup = Object.entries(m).filter(([, v]) => v.length > 1);
+console.log("rows:", rows.length, "| unique sci:", new Set(rows.map(r => r.sci)).size, "| unique base species:", Object.keys(m).length);
+console.log("same base species across rows:", dup.length);
+for (const [b, v] of dup) console.log("  " + b + "\n      " + v.join("\n      "));
