@@ -2282,7 +2282,19 @@ const AI = {
     "Aptenodytes forsteri": ["بطريق", "البطريق", "penguin"],
     "Struthio camelus": ["نعامة", "النعامة", "ostrich"],
     "Casuarius casuarius": ["كازوار", "كاسواري", "cassowary"],
-    "Nestor notabilis": ["كيا", "kea"]
+    "Nestor notabilis": ["كيا", "kea"],
+    /* Short forms keepers actually use for the species added past the original 45.
+       Only unambiguous words go here — "صقر" or "بومة" alone name a whole group, so
+       they stay out and the written-out name (Falco cherrug below) does the work. */
+    "Psittacus timneh": ["تيمني", "ببغاء تيمني", "timneh", "timneh parrot"],
+    "Falco cherrug": ["أشقر", "الصقر الأشقر", "صقر أشقر", "saker", "saker falcon"],
+    "Goura victoria": ["حمامة فيكتوريا", "حمامة متوجة", "victoria crowned", "crowned pigeon"],
+    "Luscinia megarhynchos": ["عندليب", "nightingale"],
+    "Turdus merula": ["شحرور", "blackbird"],
+    "Sturnus vulgaris": ["زرزور", "starling"],
+    "Upupa epops": ["هدهد", "hudhud", "hoopoe"],
+    "Colinus virginianus": ["ببوايت", "bobwhite", "bobwhite quail"],
+    "Excalfactoria chinensis": ["سمان ملك", "king quail", "sun quail"]
   },
   /* Longest alias wins per species: "ببغاء استرالي" must beat a stray "ببغاء", and
      words are compared whole (clitics folded) so "البدجي" finds "بدجي". Every
@@ -2883,7 +2895,7 @@ const AI = {
     ["breed", /(تفريخ|تكاثر|حضانه|حضين|فقس|بيض|تعشيش|تضع البيض|هج|eegg|eggs|hatch|incubat|breed|nest|clutch|fledg|wean)/],
     ["cost", /(تكلفه|تكلف|استهلاك|شهري|شهريا|مصروف|مصاريف|monthly|per month|running cost|consumption|كم يكفي|كم كيلو|كم كيس)/],
     ["escape", /(طالع من|طلع من|خرج من|خارج القفص|القفص فتح|يهرب|هروب|السقف|يطير في الغرفة|يطير في البيت|رجع للقفص|ادخله القفص|امسكه|مسك الطائر|قص الريش|قص الريشة|تقليم|مشذب|الجناحات|شذب|flew out|flying out|escape|got out|won't come back|will not come back|wing clip|clipped|flight training|come back to me|lure)/],
-    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|\u062a\u0646\u062a\u0642\u0644|\u0627\u0646\u062a\u0642\u0627\u0644|\u0644\u0644\u0627\u0646\u0633\u0627\u0646|\u0628\u0634\u0631|\u0646\u0627\u0642\u0644|contagi|quarantin|infect|spread|flock|together|other birds|new bird|human|zoonotic|to people|يعيش.{0,40} مع |يسكن.{0,40} مع |يتعايش.{0,40} مع |هل يضر|ضار ب|تصيب|يصيب|بمرض|mix with|house with|live with|safe with)/]
+    ["group", /(معدي|عزل|حجر|عدوى|ينتقل|نقل المرض|مجموعه|قطيع|سرب|تجمع|بلاط|اختلاط|\u062a\u0646\u062a\u0642\u0644|\u0627\u0646\u062a\u0642\u0627\u0644|\u0644\u0644\u0627\u0646\u0633\u0627\u0646|\u0628\u0634\u0631|\u0646\u0627\u0642\u0644|contagi|quarantin|infect|spread|flock|together|other birds|new bird|human|zoonotic|to people|يعيش.{0,40} مع |يسكن.{0,40} مع |يتعايش.{0,40} مع |تربية.{0,40} مع |تربيه.{0,40} مع |اجمع.{0,30} مع |يدمج.{0,30} مع |ادخال.{0,30} مع |هل يضر|ضار ب|تصيب|يصيب|بمرض|mix with|house with|live with|safe with|keep with|keeping together)/]
   ],
   PRACNAME: {
     food: ["Food and water", "الطعام والماء"], cage: ["Cage and space", "القفص والمساحة"],
@@ -3762,7 +3774,7 @@ function cardHTML(b) {
       <h3><a href="#/bird/${b.id}">${esc(speciesName(b))}</a></h3>
       <div class="sci">${esc(b.sci)}</div>
       <div class="meta"><span class="pill">${g.e} ${esc(I18N.lang === "ar" && g.ar ? g.ar : g.en)}</span>
-        <span class="pill">📏 ${esc(b.size)}</span><span class="pill">⏳ ${esc(b.life)}</span></div>
+        <span class="pill">📏 ${esc(AI.locVal(b.size))}</span><span class="pill">⏳ ${esc(AI.locVal(b.life))}</span></div>
       <div class="foot">
         <label class="inline"><input type="checkbox" class="cmp" data-cmp="${b.id}" ${store.compare.includes(b.id) ? "checked" : ""}> ${esc(tr("compare"))}</label>
         <a class="btn sm ghost" href="#/bird/${b.id}">${esc(tr("open"))}</a>
@@ -3830,7 +3842,7 @@ function viewHome() {
       <div style="flex:1;min-width:200px">
         <h2>🌟 ${esc(tr("bird_of_day"))}</h2>
         <h3 style="margin-bottom:2px"><a href="#/bird/${b.id}">${esc(speciesName(b))}</a></h3>
-        <p class="hint"><i>${esc(b.sci)}</i> · ${esc(b.origin)}</p>
+        <p class="hint"><i>${esc(b.sci)}</i> · ${esc(AI.locVal(b.origin))}</p>
         <p id="dodText" class="hint">…</p>
         <div class="row"><a class="btn sm" href="#/bird/${b.id}">${esc(tr("open"))}</a>
           <button class="btn sm ghost" data-fav="${b.id}" aria-pressed="${isFav(b.id)}">${isFav(b.id) ? "♥" : "♡"} ${esc(tr("stat_fav"))}</button>
@@ -3922,8 +3934,8 @@ function viewBrowse() {
         <div><label>${esc(tr("sort"))}</label><select id="f-sort">
           ${[["name", "Name"], ["small", "Smallest first"], ["big", "Largest first"], ["long", "Longest lived"], ["easy", "Easiest care"], ["quiet", "Quietest"], ["social", "Most social"]]
             .map(([k, l]) => `<option value="${k}"${f.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
-        <div><label>📏 ${esc(tr("size"))} (cm)</label><div class="rng"><input type="range" id="f-size" min="0" max="300" step="5" value="${f.size[1]}"><output id="o-size">–</output></div></div>
-        <div><label>⏳ ${esc(tr("life"))} (yr)</label><div class="rng"><input type="range" id="f-life" min="0" max="80" step="1" value="${f.life[1]}"><output id="o-life">–</output></div></div>
+        <div><label>📏 ${esc(tr("size"))} (${AI.bi("cm", "سم")})</label><div class="rng"><input type="range" id="f-size" min="0" max="300" step="5" value="${f.size[1]}"><output id="o-size">–</output></div></div>
+        <div><label>⏳ ${esc(tr("life"))} (${AI.bi("yr", "سنة")})</label><div class="rng"><input type="range" id="f-life" min="0" max="80" step="1" value="${f.life[1]}"><output id="o-life">–</output></div></div>
         <div><label>🔊 ${esc(traitLabel("noise"))}</label><div class="rng"><input type="range" id="f-noise" min="1" max="5" value="${f.noise[1]}"><output id="o-noise">≤5</output></div></div>
         <div><label>🎯 ${esc(traitLabel("difficulty"))}</label><div class="rng"><input type="range" id="f-diff" min="1" max="5" value="${f.difficulty[1]}"><output id="o-diff">≤5</output></div></div>
         <div><label>💰 ${esc(traitLabel("cost"))}</label><div class="rng"><input type="range" id="f-cost" min="1" max="5" value="${f.cost[1]}"><output id="o-cost">≤5</output></div></div>
@@ -3996,7 +4008,7 @@ function viewBrowse() {
     $("#atPool").innerHTML = (store.settings.includeAtlas && f.q.trim() && Atlas.rows.length)
       ? atlasList(Atlas.match(f.q.trim(), 24), tr("atlas_include")) : "";
     hydrateCards($("#grid"));
-    $("#o-size").textContent = f.size[1] + " cm"; $("#o-life").textContent = f.life[1] + " yr";
+    $("#o-size").textContent = f.size[1] + " " + AI.bi("cm", "سم"); $("#o-life").textContent = f.life[1] + " " + AI.bi("yr", "سنة");
     $("#o-noise").textContent = "≤" + f.noise[1]; $("#o-diff").textContent = "≤" + f.difficulty[1]; $("#o-cost").textContent = "≤" + f.cost[1];
   };
   const drawSaved = () => {
@@ -4136,11 +4148,17 @@ let auditionAudio = null;
 /* --------------------------------------------------------------- COMPARE */
 function openCompare() {
   if (!store.compare.length) { toast(tr("compare_hint"), "warn"); return; }
-  const rows = [["Scientific name", b => "<i>" + esc(b.sci) + "</i>"], ["Origin", b => esc(b.origin)],
-    ["Size", b => esc(b.size)], ["Lifespan", b => esc(b.life)],
-    ["Family", b => GROUPS[b.g].e + " " + esc(GROUPS[b.g].en)], ["Diet", b => esc(b.tip)],
-    ["Care difficulty", b => rateBar(b.difficulty)], ["Noise", b => rateBar(b.noise)],
-    ["Space", b => rateBar(b.space)], ["Cost", b => rateBar(b.cost)], ["Social", b => rateBar(b.sociability)]];
+  /* Labels go through AI.bi because this dialog is one of the few places that
+     builds its own row headings instead of an i18n key, and the values go
+     through AI.locVal so origin/size/lifespan read in Arabic, not "28–32 cm". */
+  const rows = [[AI.bi("Scientific name", "الاسم العلمي"), b => "<i>" + esc(b.sci) + "</i>"],
+    [AI.bi("Origin", "الموطن"), b => esc(AI.locVal(b.origin))],
+    [AI.bi("Size", "الحجم"), b => esc(AI.locVal(b.size))], [AI.bi("Lifespan", "العمر في الأسر"), b => esc(AI.locVal(b.life))],
+    [AI.bi("Family", "الفصيلة"), b => GROUPS[b.g].e + " " + esc(I18N.lang === "ar" && GROUPS[b.g].ar ? GROUPS[b.g].ar : GROUPS[b.g].en)],
+    [AI.bi("Diet", "الغذاء"), b => esc(b.tip)],
+    [AI.bi("Care difficulty", "صعوبة العناية"), b => rateBar(b.difficulty)], [AI.bi("Noise", "مستوى الضجيج"), b => rateBar(b.noise)],
+    [AI.bi("Space", "المساحة المطلوبة"), b => rateBar(b.space)], [AI.bi("Cost", "تكلفة التشغيل"), b => rateBar(b.cost)],
+    [AI.bi("Social", "الحاجة للصحبة"), b => rateBar(b.sociability)]];
   const birds = store.compare.map(byId).filter(Boolean);
   openDlg(tr("compare") + " — " + birds.length, `
     <div class="table-wrap"><table><thead><tr><th>${esc(tr("traits"))}</th>
@@ -4151,7 +4169,7 @@ function openCompare() {
     <canvas id="radarCv" style="width:100%"></canvas>
     <div class="legend">${birds.map((b, i) => `<span><i style="background:${["var(--ac)", "#f59e0b", "#6366f1"][i]}"></i>${esc(speciesName(b))}</span>`).join("")}</div>`);
   requestAnimationFrame(() => drawRadar($("#radarCv"), birds.map(b => [b.difficulty, b.noise, b.space, b.cost, b.sociability, clamp(b.longevity / 16, 1, 5)]),
-    ["Care", "Noise", "Space", "Cost", "Social", "Years"]));
+    [AI.bi("Care", "العناية"), AI.bi("Noise", "الضجيج"), AI.bi("Space", "المساحة"), AI.bi("Cost", "التكلفة"), AI.bi("Social", "الصحبة"), AI.bi("Years", "العمر")]));
 }
 
 /* ----------------------------------------------------------------- DETAIL */
@@ -4173,9 +4191,9 @@ function viewDetail(id) {
         <h1>${esc(speciesName(b))}</h1>
         <p class="hint"><i>${esc(b.sci)}</i> · ${g.e} ${esc(I18N.lang === "ar" && g.ar ? g.ar : g.en)}</p>
         <div class="kb" style="margin-top:var(--s-3)">
-          <div class="kv"><span>${esc(tr("origin"))}</span>${esc(b.origin)}</div>
-          <div class="kv"><span>${esc(tr("size"))}</span>${esc(b.size)}</div>
-          <div class="kv"><span>${esc(tr("life"))}</span>${esc(b.life)}</div>
+          <div class="kv"><span>${esc(tr("origin"))}</span>${esc(AI.locVal(b.origin))}</div>
+          <div class="kv"><span>${esc(tr("size"))}</span>${esc(AI.locVal(b.size))}</div>
+          <div class="kv"><span>${esc(tr("life"))}</span>${esc(AI.locVal(b.life))}</div>
           <div class="kv"><span>${esc(tr("diet_tip"))}</span>${esc(b.tip)}</div>
         </div>
         <div class="row" style="margin-top:var(--s-3)">
@@ -4262,7 +4280,7 @@ function viewDetail(id) {
   }).catch(() => { $("#about").textContent = tr("offline"); });
 
   requestAnimationFrame(() => drawRadar($("#traitRadar"), [[b.difficulty, b.noise, b.space, b.cost, b.sociability, clamp(b.longevity / 16, 1, 5)]],
-    ["Care", "Noise", "Space", "Cost", "Social", "Years"]));
+    [AI.bi("Care", "العناية"), AI.bi("Noise", "الضجيج"), AI.bi("Space", "المساحة"), AI.bi("Cost", "التكلفة"), AI.bi("Social", "الصحبة"), AI.bi("Years", "العمر")]));
 
   /* feeding calc */
   const calc = () => {
@@ -4363,9 +4381,11 @@ function viewDetail(id) {
 let wiz = { step: 0, answers: {} };
 function wizHint(w) {
   const bits = [];
+  /* The hint under each wizard choice names groups, so it has to follow the UI
+     language the same way the cards do. */
   Object.entries(w).forEach(([k, v]) => {
-    if (k === "g") bits.push(v.map(g => GROUPS[g].en).join("/"));
-    else if (k === "talk") bits.push("talking");
+    if (k === "g") bits.push(v.map(g => GROUPS[g].e + " " + (I18N.lang === "ar" && GROUPS[g].ar ? GROUPS[g].ar : GROUPS[g].en)).join("/"));
+    else if (k === "talk") bits.push(AI.bi("talking", "يقلّد الصوت"));
     else bits.push(traitLabel(k) + " " + (Array.isArray(v) ? v[0] + "–" + v[1] : v));
   });
   return bits.join(" · ");
@@ -4741,8 +4761,8 @@ function viewLearn() {
     const wrong = shuffle(SPECIES.filter(x => x.id !== target.id)).slice(0, 3);
     quiz = { mode, target, opts: shuffle([target, ...wrong]) };
     if (mode === "name") ask(`<i>${esc(target.sci)}</i>`, quiz.opts, o => speciesName(o));
-    else if (mode === "origin") ask(`🌍 ${esc(target.origin)}`, quiz.opts, o => speciesName(o));
-    else if (mode === "size") ask(`📏 ${esc(target.size)} — ${esc(tr("which_bird"))}`, quiz.opts, o => speciesName(o));
+    else if (mode === "origin") ask(`🌍 ${esc(AI.locVal(target.origin))}`, quiz.opts, o => speciesName(o));
+    else if (mode === "size") ask(`📏 ${esc(AI.locVal(target.size))} — ${esc(tr("which_bird"))}`, quiz.opts, o => speciesName(o));
     else if (mode === "sound") {
       $("#quizArea").innerHTML = `<p class="wiz-q">🎧 ${esc(tr("t_sounds"))}</p><div class="row">
         <button class="btn sm" id="playQ">▶ ${esc(tr("synth"))}</button><span class="hint" id="qState">…</span></div>
@@ -4770,7 +4790,7 @@ function viewLearn() {
         <div class="row" id="grades" hidden><button class="btn danger" data-q="0">${esc(tr("again"))}</button>
           <button class="btn ghost" data-q="1">${esc(tr("good"))}</button>
           <button class="btn" data-q="2">${esc(tr("easy"))}</button></div>`;
-      $("#card").onclick = () => { $("#card").innerHTML = `<div><b>${esc(speciesName(b))}</b><br><span class="hint">${esc(b.origin)} · ${esc(b.size)} · ${esc(b.life)}</span></div>`; $("#grades").hidden = false; };
+      $("#card").onclick = () => { $("#card").innerHTML = `<div><b>${esc(speciesName(b))}</b><br><span class="hint">${esc(AI.locVal(b.origin))} · ${esc(AI.locVal(b.size))} · ${esc(AI.locVal(b.life))}</span></div>`; $("#grades").hidden = false; };
       on($("#grades"), "click", "[data-q]", (e, n) => { SRS.apply(queue[i].id, +n.dataset.q); i++; show(); });
     };
     show();
