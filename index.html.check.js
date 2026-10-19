@@ -141,7 +141,7 @@ const T = {
     ai_off:"No cloud model configured — answering from the local guide and your records.", ai_fail:"The model call failed, so this answer came from local data.",
     ai_src:"Grounded in", ai_sug:"Try asking", ai_strip:"Model keys are never written to a backup.", ai_empty:"Ask a question to start.",
     ai_triage:"Health triage", ai_recommend:"Recommendation", ai_facts:"Species facts", ai_search:"Semantic search", ai_compare:"Comparison",
-    ai_practice:"Practical numbers",
+    ai_practice:"Practical numbers", ai_count:"Guide contents",
     ai_speak:"Read aloud", ai_speak_stop:"Stop reading", ai_auto_speak:"Speak answers", ai_speak_no:"This browser has no speech engine.",
     ai_ctx:"Context", ai_ctx_clear:"Clear context", ai_ctx_hint:"Follow-up questions reuse this species and bird until you clear it.",
     ai_preset:"Presets fill the address and model; press Save to keep them.", ai_test:"Test connection",
@@ -256,7 +256,7 @@ const T = {
     ai_off:"لا يوجد نموذج سحابي — تجيب عنك قاعدة البيانات المحلية وسجلاتك.", ai_fail:"فشل الاتصال بالنموذج، لذا جاء هذا الرد من البيانات المحلية.",
     ai_src:"مبني على", ai_sug:"جرّب أن تسأل", ai_strip:"مفاتيح النموذج لا تُكتب أبداً في النسخة الاحتياطية.", ai_empty:"اطرح سؤالاً لتبدأ.",
     ai_triage:"فرز صحي", ai_recommend:"توصية", ai_facts:"بطاقة نوع", ai_search:"بحث دلالي", ai_compare:"مقارنة",
-    ai_practice:"أرقام عملية",
+    ai_practice:"أرقام عملية", ai_count:"محتوى الدليل",
     ai_speak:"استمع", ai_speak_stop:"أوقف القراءة", ai_auto_speak:"اقرأ الرد بصوت", ai_speak_no:"لا محرك نطق في هذا المتصفح.",
     ai_ctx:"السياق", ai_ctx_clear:"امسح السياق", ai_ctx_hint:"الأسئلة التالية تستخدم هذا النوع وهذا الطائر حتى تمسح السياق.",
     ai_preset:"الأزرار الجاهزة تملأ العنوان واسم النموذج؛ اضغط حفظ للإبقاء عليها.", ai_test:"اختبار الاتصال",
@@ -558,13 +558,13 @@ const RAW = [
   { en:"Masked Finch", ar:"", sci:"Poephila personata", g:"fi", origin:"Northern Australia", size:"14–16 cm", life:"6–10 years", tip:"Finch mix and seeding grasses; warm dry housing", file:"", t:[3,2,2,2,4] },
   { en:"Diamond Firetail", ar:"", sci:"Stagonopleura guttata", g:"fi", origin:"South-eastern Australia", size:"10–12 cm", life:"6–10 years", tip:"Finch mix plus live food; very stress-sensitive", file:"", t:[3,2,2,2,4] },
   { en:"Red-billed Firefinch", ar:"", sci:"Lagonosticta senegala", g:"fi", origin:"Sub-Saharan Africa", size:"9–10 cm", life:"5–8 years", tip:"Fine seed, greens and live food for rearing", file:"", t:[2,2,1,1,4] },
-  { en:"Orange-cheeked Waxbill", ar:"", sci:"Estrilda muleta", g:"fi", origin:"Angola and Zambia", size:"10–11 cm", life:"5–8 years", tip:"Seed with plenty of sprouting feed and live food; damp-sensitive", file:"", t:[3,2,2,2,4] },
+  { en:"Orange-cheeked Waxbill", ar:"", sci:"Estrilda melpoda", g:"fi", origin:"West Africa", size:"10–11 cm", life:"5–8 years", tip:"Seed with plenty of sprouting feed and live food; damp-sensitive", file:"", t:[3,2,2,2,4] },
   { en:"Common Waxbill", ar:"", sci:"Estrilda astrild", g:"fi", origin:"Sub-Saharan Africa", size:"10–12 cm", life:"5–8 years", tip:"Finch mix, sprouted seed and egg food", file:"", t:[2,2,1,1,5] },
   { en:"Black-rumped Waxbill", ar:"", sci:"Estrilda troglodytes", g:"fi", origin:"West and central Africa", size:"9–10 cm", life:"5–8 years", tip:"Fine seed and live food; quiet and easily startled", file:"", t:[2,1,1,1,4] },
   { en:"Red-cheeked Cordon-bleu", ar:"", sci:"Uraeginthus bengalus", g:"fi", origin:"Sub-Saharan Africa", size:"12–15 cm", life:"5–8 years", tip:"Seed, greens and live food; needs warmth", file:"", t:[2,2,2,1,4] },
   { en:"Blue-breasted Cordon-bleu", ar:"", sci:"Uraeginthus angolensis", g:"fi", origin:"Eastern and southern Africa", size:"12–15 cm", life:"5–8 years", tip:"Finch mix plus constant live food or egg food", file:"", t:[2,2,2,1,4] },
   { en:"Purple Grenadier", ar:"", sci:"Granatina ianthinogaster", g:"fi", origin:"East Africa", size:"12–14 cm", life:"5–8 years", tip:"Seed, sprouting mix and insects in a calm aviary", file:"", t:[3,2,2,2,4] },
-  { en:"African Quailfinch", ar:"", sci:"Ortalis galeata", g:"fi", origin:"Sub-Saharan Africa", size:"10–12 cm", life:"5–8 years", tip:"Fine seed and grit; a floor-nester needing dense cover", file:"", t:[3,2,2,1,5] },
+  { en:"African Quailfinch", ar:"", sci:"Ortyxelos meiffrenii", g:"fi", origin:"West and Central Africa", size:"10–12 cm", life:"5–8 years", tip:"Fine seed and grit; a floor-nester needing dense cover", file:"", t:[3,2,2,1,5] },
   { en:"Cut-throat Finch", ar:"", sci:"Amadina fasciata", g:"fi", origin:"Africa south of the Sahara", size:"10–12 cm", life:"5–8 years", tip:"Finch mix and seeding grasses; quarantine new birds", file:"", t:[3,2,2,1,5] },
   { en:"Star Finch", ar:"", sci:"Neochmia ruficauda", g:"fi", origin:"Northern Australia", size:"10–12 cm", life:"5–8 years", tip:"Small seed and live food; gentle planted aviary", file:"", t:[3,2,2,2,4] },
   { en:"Red-faced Crimsonwing", ar:"", sci:"Cryptospiza reichenovii", g:"fi", origin:"Angolan and Zambian highlands", size:"12–15 cm", life:"5–8 years", tip:"Sprouting seed, fine greens and live food", file:"", t:[3,2,2,2,3] },
@@ -765,9 +765,20 @@ const SPECIES = RAW.map((r, i) => {
    atlas-only row can share a species with a guide row. Calling 241 rows "241
    species" is padding, so the app counts both and derives them from the
    scientific name instead of a hand-maintained number that drifts. */
-const DOM_RE = /\s*\((?:domestic|domestica|domesticus)\)\s*|\s(?:domestic|domestica|domesticus)$/i;
-const sciBase = sci => String(sci).replace(DOM_RE, "").replace(/\s+/g, " ").trim();
-const isDomesticForm = b => DOM_RE.test(String(b.sci));
+const DOM_WORD = /^(?:domestic|domestica|domesticus)$/i;
+const DOM_PAREN = /\s*\((?:domestic|domestica|domesticus)\)/i;
+const sciWords = sci => String(sci).replace(/\s+/g, " ").trim().split(" ");
+/* A domestic form is written as a trinomial (Gallus gallus domesticus) or with
+   a parenthetical (Anas platyrhynchos (domestic)). Testing only the last word
+   made the House Sparrow, Passer domesticus, read as a breed — here domesticus
+   is the species epithet, not a subspecies. */
+const isDomesticForm = b => DOM_PAREN.test(String(b.sci)) ||
+  (sciWords(b.sci).length >= 3 && DOM_WORD.test(sciWords(b.sci).slice(-1)[0]));
+const sciBase = sci => {
+  const s = String(sci).replace(DOM_PAREN, "").replace(/\s+/g, " ").trim();
+  const w = s.split(" ");
+  return w.length >= 3 && DOM_WORD.test(w[w.length - 1]) ? w.slice(0, -1).join(" ") : s;
+};
 const SPECIES_UNITS = new Set(SPECIES.map(b => sciBase(b.sci))).size;
 const BREED_ROWS = SPECIES.filter(isDomesticForm).length;
 /* the guide row this row is a breed or domestic form of, when the guide lists it */
@@ -1338,8 +1349,8 @@ const Atlas = {
   families() { return (this.meta.fams || []).slice().sort((a, b) => String(a.name).localeCompare(String(b.name))); },
 
   /* One shared read promise: a second caller that arrives while IndexedDB is
-     still answering must wait for the same result, not get an empty array. */
-  _p: null,
+     still answering must wait for the same result, not get an empty array.
+     The promise itself is declared once, next to `rows` above. */
   load() {
     if (this._p) return this._p;
     this._p = (async () => {
@@ -2457,6 +2468,7 @@ const AI = {
     "Cacatua galerita": ["كوكاتو", "الكوكاتو", "cockatoo"],
     "Trichoglossus moluccanus": ["لوري", "الببغاء اللوري", "lorikeet", "lorrie"],
     "Serinus canaria domestica": ["كناري", "الكناري", "canary"],
+    "Lonchura malacca": ["منياك ثلاثي الألوان", "tricolored munia"],
     "Taeniopygia guttata": ["زيبرا", "الزيبرا", "دوري مخطط", "zebra finch", "zebra"],
     "Chloebia gouldiae": ["جولديان", "الفنش الملون", "gouldian"],
     "Lonchura striata domestica": ["بنت الجافا", "سوسايتي", "bengalese", "society finch"],
@@ -3175,6 +3187,13 @@ const AI = {
      the two can never disagree. Prices are deliberately absent: they differ by
      country, and this app will not invent one. */
   PRAC: [
+    /* A question about the guide itself, not about a bird. Patterns are written in
+       AI.norm's spelling (أإآ→ا, ة→ه, ى→ي, diacritics dropped), which is why
+       "انواع" and "طاير" appear without their hamza. Adjacency is required:
+       "كم يطعم ٤ طيور" puts a verb between the count word and the birds and stays
+       a food question, and a bare "كم طيور" is a flock size unless the keeper names
+       the guide, the atlas or the app. */
+    ["count", /((?:كم|عدد)\s+(?:في\s+)?(?:ال)?(?:نوع|انواع|صنف|اصناف)\w*|(?:how\s+many|number\s+of)\s+(?:species|types|kinds)\b|(?:كم|عدد)\s+(?:ال)?(?:طائر|طاير|طيور)\w*\W{0,8}(?:في|بال|ب)?\W{0,4}(?:الدليل|المرشد|الاطلس|التطبيق|القائمه|guide|atlas|app|list))/],
     /* the gap between the question word and the subject is usually a number
        ("كم يطعم ٤ طيور"), so it is matched with . not \\D */
     ["food", /((كم|how much|how many|quantity|amount|grams?|kilos?).{0,24}(طعام|اكل|علف|بذر|حبيبات|ياكل|يطعم|اطعم|تطعم|يحتاج|تحتاج|يكفي|feed|food|pellet|seed|eat)|(طعام|اكل|علف|feed|food)\D{0,12}(اليوم|يوم|شهر|اسبوع|daily|month|week))/],
@@ -3188,7 +3207,8 @@ const AI = {
     food: ["Food and water", "الطعام والماء"], cage: ["Cage and space", "القفص والمساحة"],
     breed: ["Breeding calendar", "تقويم التفريخ"], cost: ["Monthly consumption", "الاستهلاك الشهري"],
     escape: ["Out of the cage", "خارج القفص"],
-    group: ["Keeping them together", "التجمّع والعدوى"]
+    group: ["Keeping them together", "التجمّع والعدوى"],
+    count: ["What this guide holds", "ما يحويه هذا الدليل"]
   },
   /* Transmission route per disease name as authored in GROUPS/D, with a level:
      3 spreads fast through the collection, 2 needs contact or shared water,
@@ -3344,6 +3364,32 @@ const AI = {
     const t = this.norm(q);
     const hits = this.PRAC.filter(([, re]) => re.test(t)).map(x => x[0]);
     if (!hits.length) return null;
+    /* "how many species does the guide hold?" asks about this file, not about a
+       bird; it used to fall through to the species guesser and answer with a
+       random hawk. Rows and species are quoted apart, because four chicken breeds,
+       a runner duck and a bengalese finch are six rows sitting on three species. */
+    if (hits.length === 1 && hits[0] === "count") {
+      const nA = Atlas.count();
+      const res = { kind: "count", sci: null, id: null, birdId: null, engine: "local",
+        html: `<h4>📚 ${esc(this.bi("What this guide holds", "ما يحويه هذا الدليل"))}</h4>` + this.kv([
+          [this.bi("Care rows", "صفوف العناية"), SPECIES.length + " " + this.bi("rows", "صفاً")],
+          [this.bi("Distinct species", "الأنواع المستقلة"), SPECIES_UNITS + " " + this.bi("species", "نوعاً")],
+          [this.bi("Domestic breeds among them", "الأصناف المستأنسة منها"), BREED_ROWS + " " + this.bi("rows", "صفاً")],
+          [this.bi("Families in the guide", "فصائل الدليل"), Object.keys(GROUPS).length],
+          [this.bi("World atlas on this device", "أطلس العالم على هذا الجهاز"),
+            /* IndexedDB has not answered yet when a question is asked straight
+               after boot, so ship what is known and patch the cell when it does */
+            `<span id="aiAtlasN">${nA ? nA + " " + this.bi("species", "نوعاً") : this.bi("counting…", "جارٍ العدّ…")}</span>`]]) +
+          `<p class="hint">${esc(this.bi(
+            "Silkie, Cochin and Sebright are three rows of one domestic chicken; the runner duck is a domestic mallard and the bengalese finch a domestic white-rumped munia. Rows will always outnumber species here.",
+            "السلكي والكوشن والسبريت ثلاثة صفوف لنوع واحد هو الدجاج المستأنس؛ والبط الرانر بط أخضر الرأس مستأنسًا، وعصفور بنت الجافا منياك أبيض الظهر مستأنسًا. لذا يبقى عدد الصفوف أكبر من عدد الأنواع دائمًا."))}</p>` };
+      Atlas.load().then(rows => {
+        const el = document.getElementById("aiAtlasN");
+        if (el) el.textContent = rows.length ? rows.length + " " + this.bi("species", "نوعاً")
+          : this.bi("not imported yet", "لم يُستورد بعد");
+      }).catch(() => null);
+      return res;
+    }
     const f = this.figures(q);
     const bird = this.aboutBird(q);
     const spBird = bird ? byId(bird.speciesId) : null;
@@ -5673,7 +5719,7 @@ async function viewIdentify() {
 /* ------------------------------------------------------------- AI VIEW */
 const aiChat = { log: [], cancel: null, plain: [] };
 const AI_KIND_KEY = { triage: "ai_triage", recommend: "ai_recommend", facts: "ai_facts",
-  compare: "ai_compare", search: "ai_search", practice: "ai_practice" };
+  compare: "ai_compare", search: "ai_search", practice: "ai_practice", count: "ai_count" };
 function viewAI() {
   document.title = tr("ai_h") + " — Birds World";
   const cloud = AI.cloudOn();

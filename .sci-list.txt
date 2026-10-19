@@ -1,0 +1,241 @@
+Budgerigar | Melopsittacus undulatus | pa
+Cockatiel | Nymphicus hollandicus | pa
+Blue-fronted Amazon | Amazona aestiva | pa
+Sulphur-crested Cockatoo | Cacatua galerita | pa
+Rose-ringed Parakeet | Psittacula krameri | pa
+Rainbow Lorikeet | Trichoglossus moluccanus | pa
+African Grey Parrot | Psittacus erithacus | pa
+Blue-and-yellow Macaw | Ara ararauna | pa
+Domestic Canary | Serinus canaria domestica | fi
+Zebra Finch | Taeniopygia guttata | fi
+Gouldian Finch | Chloebia gouldiae | fi
+Society Finch | Lonchura striata domestica | fi
+Long-tailed Finch | Poephila acuticauda | fi
+Red Avadavat | Amandava amandava | fi
+Rock Pigeon | Columba livia | do
+Ring-necked Dove | Streptopelia capicola | do
+Barbary Dove | Streptopelia risoria | do
+Diamond Dove | Geopelia cuneata | do
+Chicken | Gallus gallus domesticus | po
+Japanese Quail | Coturnix japonica | po
+Common Pheasant | Phasianus colchicus | po
+Indian Peafowl | Pavo cristatus | po
+Helmeted Guineafowl | Numida meleagris | po
+Barbary Partridge | Alectoris barbara | po
+Mallard | Anas platyrhynchos | wa
+Muscovy Duck | Cairina moschata | wa
+Indian Runner Duck | Anas platyrhynchos (domestic) | wa
+Greylag Goose | Anser anser | wa
+Canada Goose | Branta canadensis | wa
+Mute Swan | Cygnus olor | wa
+Common Kestrel | Falco tinnunculus | ra
+Peregrine Falcon | Falco peregrinus | ra
+Harris's Hawk | Parabuteo unicinctus | ra
+Barn Owl | Tyto alba | ra
+Eurasian Eagle-Owl | Bubo bubo | ra
+Common Myna | Acridotheres tristis | so
+Red-billed Leiothrix | Leiothrix lutea | so
+Japanese White-eye | Zosterops japonicus | so
+Common Chaffinch | Fringilla coelebs | so
+European Goldfinch | Carduelis carduelis | so
+Greater Flamingo | Phoenicopterus roseus | wi
+Emperor Penguin | Aptenodytes forsteri | wi
+Common Ostrich | Struthio camelus | wi
+Southern Cassowary | Casuarius casuarius | wi
+Kea | Nestor notabilis | wi
+Rosy-faced Lovebird | Agapornis roseicollis | pa
+Yellow-collared Lovebird | Agapornis personatus | pa
+Fischer's Lovebird | Agapornis fischeri | pa
+Black-headed Lovebird | Agapornis nigrigenis | pa
+Quaker Parrot | Myiopsitta monachus | pa
+Senegal Parrot | Poicephalus senegalus | pa
+Meyer's Parrot | Poicephalus meyeri | pa
+Timneh Grey Parrot | Psittacus timneh | pa
+Eclectus Parrot | Eclectus roratus | pa
+Goffin's Cockatoo | Cacatua goffiniana | pa
+Major Mitchell's Cockatoo | Cacatua leadbeateri | pa
+Green-cheeked Conure | Pyrrhura molinae | pa
+Sun Conure | Aratinga solstitialis | pa
+Nanday Conure | Aratinga nenday | pa
+Scarlet Macaw | Ara macao | pa
+Hahn's Macaw | Diopsittaca nobilis | pa
+Bourke's Parrot | Neophema bourkii | pa
+Eastern Rosella | Platycercus eximius | pa
+Crimson Rosella | Platycercus elegans | pa
+Alexandrine Parakeet | Psittacula eupatria | pa
+Blue-crowned Hanging Parrot | Loriculus galgulus | pa
+Spectacled Parrotlet | Forpus conspicillatus | pa
+Pacific Parrotlet | Forpus coelestis | pa
+Java Sparrow | Padda oryzivora | fi
+Indian Silverbill | Lonchura malabarica | fi
+Chestnut Munia | Lonchura atricapilla | fi
+White-rumped Munia | Lonchura striata | fi
+Scaly-breasted Munia | Lonchura punctulata | fi
+Masked Finch | Poephila personata | fi
+Diamond Firetail | Stagonopleura guttata | fi
+Red-billed Firefinch | Lagonosticta senegala | fi
+Orange-cheeked Waxbill | Estrilda muleta | fi
+Common Waxbill | Estrilda astrild | fi
+Black-rumped Waxbill | Estrilda troglodytes | fi
+Red-cheeked Cordon-bleu | Uraeginthus bengalus | fi
+Blue-breasted Cordon-bleu | Uraeginthus angolensis | fi
+Purple Grenadier | Granatina ianthinogaster | fi
+African Quailfinch | Ortalis galeata | fi
+Cut-throat Finch | Amadina fasciata | fi
+Star Finch | Neochmia ruficauda | fi
+Red-faced Crimsonwing | Cryptospiza reichenovii | fi
+Pin-tailed Whydah | Vidua macroura | fi
+Emerald Dove | Chalcophaps indica | do
+Spotted Dove | Streptopelia chinensis | do
+Laughing Dove | Streptopelia senensis | do
+Peaceful Dove | Geopelia strenua | do
+Nicobar Pigeon | Caloenas nicobarica | do
+Victoria Crowned Pigeon | Goura victoria | do
+Turkey | Meleagris gallopavo | po
+Red Junglefowl | Gallus gallus | po
+Grey Junglefowl | Gallus sonneratii | po
+Silkie | Gallus gallus domesticus | po
+Cochin Chicken | Gallus gallus domesticus | po
+Bobwhite Quail | Colinus virginianus | po
+California Quail | Callipepla californica | po
+Gambel's Quail | Callipepla gambelii | po
+King Quail | Excalfactoria chinensis | po
+Chukar | Alectoris chukar | po
+Red-legged Partridge | Alectoris rufa | po
+Grey Partridge | Perdix perdix | po
+Green Peafowl | Pavo muticus | po
+Kalij Pheasant | Lophura leucomelanos | po
+Golden Pheasant | Chrysolophus pictus | po
+Lady Amherst's Pheasant | Chrysolophus amherstiae | po
+Egyptian Goose | Alopochen aegyptiaca | wa
+Black Swan | Cygnus atratus | wa
+Mandarin Duck | Aix galericulata | wa
+Wood Duck | Aix sponsa | wa
+Northern Shoveler | Anas clypeata | wa
+Eurasian Teal | Anas crecca | wa
+Garganey | Anas querquedula | wa
+Comb Duck | Sarkidiornis melanotos | wa
+Chinese Goose | Anser cygnoides | wa
+Cape Barren Goose | Cereopsis novaehollandiae | wa
+Magpie Goose | Anseranas semipalmata | wa
+Crested Screamer | Anhima cornuta | wa
+Marbled Duck | Marmaronetta angustirostris | wa
+Cotton Pygmy Goose | Nettapus coromandelianus | wa
+Radjah Shelduck | Tadorna radjah | wa
+Saker Falcon | Falco cherrug | ra
+Laggar Falcon | Falco jugger | ra
+Red-footed Falcon | Falco vespertinus | ra
+Merlin | Falco columbarius | ra
+Eurasian Sparrowhawk | Accipiter nisus | ra
+Red-tailed Hawk | Buteo jamaicensis | ra
+Common Buzzard | Buteo buteo | ra
+Black-winged Kite | Elanus caeruleus | ra
+Osprey | Pandion haliaetus | ra
+Booted Eagle | Hieraaetus pennatus | ra
+Tawny Eagle | Aquila rapax | ra
+Pharaoh Eagle-Owl | Bubo ascalaphus | ra
+Little Owl | Athene noctua | ra
+Burrowing Owl | Athene cunicularia | ra
+Snowy Owl | Bubo scandiacus | ra
+White-eared Bulbul | Pycnonotus leucotis | so
+Red-vented Bulbul | Pycnonotus cafer | so
+Black Bulbul | Hypsipetes leucocephalus | so
+Common Hill Myna | Gracula religiosa | so
+Bali Myna | Leucopsar rothschildi | so
+Rosy Starling | Pastor roseus | so
+Common Starling | Sturnus vulgaris | so
+Common Nightingale | Luscinia megarhynchos | so
+Song Thrush | Turdus philomelos | so
+Common Blackbird | Turdus merula | so
+Eurasian Skylark | Alauda arvensis | so
+Oriental Magpie-Robin | Copsychus saularis | so
+Greater Coucal | Centropus sinensis | so
+Eurasian Hoopoe | Upupa epops | so
+Emu | Dromaius novaehollandiae | wi
+Greater Rhea | Rhea americana | wi
+Lesser Rhea | Rhea pennata | wi
+Sarus Crane | Grus antigone | wi
+Demoiselle Crane | Anthropoides virgo | wi
+Brolga | Grus rubicunda | wi
+Indian Grey Hornbill | Ocyceros birostris | wi
+Southern Ground Hornbill | Bucorvus leadbeateri | wi
+Great Bustard | Otis tarda | wi
+Little Bustard | Tetrax tetrax | wi
+Northern Bald Ibis | Geronticus eremita | wi
+Sacred Ibis | Threskiornis aethiopicus | wi
+Glossy Ibis | Plegadis falcinellus | wi
+Eurasian Spoonbill | Platalea leucorodia | wi
+Andean Condor | Vultur gryphus | wi
+Red-lored Amazon | Amazona autumnalis | pa
+White-fronted Amazon | Amazona albifrons | pa
+Yellow-headed Amazon | Amazona oratrix | pa
+Red-crowned Amazon | Amazona viridigenalis | pa
+Cape Parrot | Poicephalus robustus | pa
+Australian King Parrot | Alisterus scapularis | pa
+Red-rumped Parrot | Psephotus haematonotus | pa
+Moustached Parakeet | Psittacula alexandri | pa
+Derbyan Parakeet | Psittacula derbiana | pa
+Red-masked Parakeet | Psittacara erythrogenys | pa
+Mitred Parakeet | Psittacara mitrata | pa
+Abyssinian Lovebird | Agapornis taranta | pa
+Grey-headed Lovebird | Agapornis canus | pa
+Long-billed Corella | Cacatua tenuirostris | pa
+Hawk-headed Parrot | Deroptyus accipitrinus | pa
+Red-browed Finch | Neochmia temporalis | fi
+Double-barred Finch | Taeniopygia bichenovii | fi
+Tricolored Munia | Lonchura malacca | fi
+White-headed Munia | Lonchura maja | fi
+Parrot Finch | Erythrura prasina | fi
+Eurasian Siskin | Spinus spinus | fi
+Lesser Redpoll | Acanthis cabaret | fi
+Cineraria Bunting | Emberiza cineracea | fi
+Red-headed Finch | Amadina erythrocephala | fi
+Black-faced Waxbill | Estrilda erythronotos | fi
+African Silverbill | Euodice cantans | fi
+Red-eared Firetail | Stagonopleura oculata | fi
+European Serin | Serinus serinus | fi
+Rock Bunting | Emberiza cia | fi
+Common Rosefinch | Carpodacus erythrinus | fi
+European Robin | Erithacus rubecula | so
+Great Tit | Parus major | so
+Eurasian Blue Tit | Cyanistes caeruleus | so
+Red-whiskered Bulbul | Pycnonotus jocosus | so
+Northern Cardinal | Cardinalis cardinalis | so
+House Sparrow | Passer domesticus | so
+Common Cuckoo | Cuculus canorus | so
+Eurasian Wren | Troglodytes troglodytes | so
+Mistle Thrush | Turdus viscivorus | so
+Bluethroat | Luscinia svecica | so
+Violet Turaco | Musophaga violacea | so
+Barn Swallow | Hirundo rustica | so
+Common Wood Pigeon | Columba palumbus | do
+Stock Dove | Columba oenas | do
+European Turtle Dove | Streptopelia turtur | do
+Speckled Pigeon | Columba guinea | do
+Inca Dove | Columba inca | do
+Thick-billed Green Pigeon | Treron curvirostra | do
+Vulturine Guineafowl | Acryllium vulturinum | po
+Silver Pheasant | Lophura nycthemera | po
+Green Pheasant | Phasianus versicolor | po
+Ocellated Turkey | Meleagris ocellata | po
+Sebright Bantam | Gallus gallus domesticus | po
+Eurasian Wigeon | Mareca penelope | wa
+Common Pochard | Aythya ferina | wa
+Ferruginous Duck | Aythya nyroca | wa
+Paradise Shelduck | Tadorna tadornoides | wa
+Pink-eared Duck | Malacorhynchus membranaceus | wa
+Coscoroba Swan | Coscoroba coscoroba | wa
+Black-bellied Whistling Duck | Dendrocygna autumnalis | wa
+Gyrfalcon | Falco rusticolus | ra
+Golden Eagle | Aquila chrysaetos | ra
+Lanner Falcon | Falco biarmicus | ra
+Hen Harrier | Circus cyaneus | ra
+White-tailed Eagle | Haliaeetus albicilla | ra
+Secretarybird | Sagittarius serpentarius | ra
+Grey Heron | Ardea cinerea | wi
+Cattle Egret | Bubulcus ibis | wi
+White Stork | Ciconia ciconia | wi
+Grey Crowned Crane | Balearica regulorum | wi
+Blue Crane | Anthropoides paradiseus | wi
+Lesser Flamingo | Phoeniconaias minor | wi
+Great Cormorant | Phalacrocorax carbo | wi

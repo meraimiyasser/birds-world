@@ -29,8 +29,23 @@ const rowsAfter = marker > 0 ? new Function("return [" +
 if (rowsBefore.length + rowsAfter.length !== rows.length)
   throw new Error("wave split lost rows: " + rowsBefore.length + " + " + rowsAfter.length + " != " + rows.length);
 const newNamed = rowsAfter.filter(r => r.ar);
+/* Same rule the app uses: a row is not a species. Chicken breeds, the Indian
+   runner and the society finch are separate rows over one wild species each. */
+const DOM = /^(?:domestic|domestica|domesticus)$/i;
+const base = s => {
+  const w = String(s).replace(/\s*\([^)]*\)/, "").trim().split(/\s+/);
+  return w.length >= 3 && DOM.test(w[w.length - 1]) ? w.slice(0, -1).join(" ") : w.join(" ");
+};
+const units = new Set(rows.map(r => base(r.sci))).size;
+const breeds = rows.filter(r => {
+  const w = String(r.sci).trim().split(/\s+/);
+  return /\((?:domestic|domestica|domesticus)\)/i.test(r.sci) || (w.length >= 3 && DOM.test(w[w.length - 1]));
+});
 const L = [];
-L.push("# مراجعة بيانات الدليل — " + rows.length + " نوعاً", "");
+L.push("# مراجعة بيانات الدليل — " + rows.length + " صفاً (" + units + " نوعاً)", "");
+L.push("العددان مقصودان: **" + rows.length + " صفاً** للعناية (سطر في `RAW`) مقابل **" + units +
+  " نوعاً** مستقلاً، لأن " + breeds.length + "اً من الصفوف أصناف مستأنسة لا أنواع — " +
+  breeds.map(b => b.en).join("، ") + ". لا تحذفها؛ صحّح اسمها فقط.", "");
 L.push("الملف مُولَّد من `index.html` مباشرة. **لا تغيّر السطور الإنجليزية ولا الأسماء العلمية** — اكتب فقط بعد علامة `اسمي:` و`عربي:`، ثم أرسل الملف لي (أو الصقه في المحادثة) وسأُدخله في `RAW` وأعيد الفحص والتجميع.", "");
 L.push("الترشيح المكتوب بين قوسين مسحوب من تسمية ويكيبيديا العربية للنوع نفسه؛ مقبول فقط إن وافق ما يسمّيه المربّون في منطقتك، وإلا فاكتب اسمه الصحيح.", "");
 L.push("", "## ١) أنواع بلا اسم عربي (" + unnamed.length + ")", "");
@@ -43,7 +58,7 @@ L.push("هذه الأسماء مبنية على وصف النوع بعربية �
 newNamed.forEach((r, i) => {
   L.push((i + 1) + ". " + r.en + " — *" + r.sci + "* — الاسم في التطبيق: " + r.ar + " — **اسمي:** ____");
 });
-L.push("", "## ٣) نصائح التغذية (" + rows.length + "، كلها إنجليزية حتى الآن)", "");
+L.push("", "## ٣) نصائح التغذية (" + rows.length + " صفاً، كلها إنجليزية حتى الآن)", "");
 rows.forEach((r, i) => {
   L.push((i + 1) + ". " + r.en + (r.ar ? " (" + r.ar + ")" : "") + " — EN: " + r.tip + " — **عربي:** ____");
 });
@@ -54,5 +69,6 @@ L.push("- أسعار التشغيل لا تُكتب في التطبيق إطلا
 L.push("");
 
 fs.writeFileSync("مراجعة-الأسماء-والنصائح.md", L.join("\n"), "utf8");
-console.log("species:", rows.length, "| unnamed:", unnamed.length, "| unnamed with a Wikidata suggestion:",
+console.log("rows:", rows.length, "| species:", units, "| breed rows:", breeds.length,
+  "| unnamed:", unnamed.length, "| unnamed with a Wikidata suggestion:",
   unnamed.filter(r => cand[r.sci]).length, "| lines:", L.length);

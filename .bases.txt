@@ -1,0 +1,9 @@
+rows: 241
+unique sci strings: 238
+distinct bases: 235
+domestic-form rows: 7
+
+bases with more than one row:
+  lonchura striata  <-  Society Finch [Lonchura striata domestica] / White-rumped Munia [Lonchura striata]
+  gallus gallus  <-  Chicken [Gallus gallus domesticus] / Red Junglefowl [Gallus gallus] / Silkie [Gallus gallus domesticus] / Cochin Chicken [Gallus gallus domesticus] / Sebright Bantam [Gallus gallus domesticus]
+  anas platyrhynchos  <-  Mallard [Anas platyrhynchos] / Indian Runner Duck [Anas platyrhynchos (domestic)]
