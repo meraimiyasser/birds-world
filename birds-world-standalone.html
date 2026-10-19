@@ -337,7 +337,7 @@ const CFG = Object.freeze({
 const KEYS = { fav: "favorites", note: "notes", visits: "visits", birds: "birds",
   sightings: "sightings", cards: "srs", score: "progress", saved: "savedSearches",
   settings: "settings", outbox: "outbox", wiki: "cache:wiki", credit: "cache:credit",
-  atlas: "atlas:meta", ai: "ai_chat", songs: "savedSongs", ctx: "ai_ctx" };
+  atlas: "atlas:meta", ai: "ai_chat", songs: "savedSongs", ctx: "ai_ctx", feeds: "feedSched" };
 
 const TRAITS = [
   ["difficulty", 1, 5, "Care difficulty"], ["noise", 1, 5, "Noise level"],
@@ -364,6 +364,14 @@ const T = {
     import_fail:"Import failed:", sw_update:"Update ready — reload to apply.",
     foot_html:'Species summaries and photos from <a href="https://en.wikipedia.org/wiki/" target="_blank" rel="noopener noreferrer">Wikipedia</a> / <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> under their licenses. Recordings from <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>, <a href="https://xeno-canto.org/" target="_blank" rel="noopener noreferrer">Xeno-canto</a> and, with a token, <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a> — each entry keeps its own credit.',
     feed_rule:"Rules of thumb: 10–15 % of body weight in dry food, greens at roughly 40 % of that, water at about 2× dry weight. Small, fast-metabolising birds need proportionally more.",
+    sched_h:"Daily feeding schedule", sched_sub:"The calculator above says how much; this table is the routine you actually keep, saved per species on this device.",
+    sched_time:"Time", sched_food:"Food", sched_amt:"Amount", sched_note_col:"Note", sched_add:"Add meal",
+    sched_build:"Build from the calculator", sched_clear:"Delete schedule", sched_del:"Remove this meal",
+    sched_new:"New meal", sched_built:"Schedule rebuilt from the calculator's figures.", sched_cleared:"Schedule deleted.",
+    sched_saved:"Saved on this device", sched_empty:"No schedule yet — build one from the calculator or add your own meals.",
+    sched_gap:"The schedule is more than 15 % away from the calculator for that column — adjust the amounts or the number of meals.",
+    sched_rule:"A routine, not a ration: seed-eaters pick at their bowl through the day, and a ring or cage bird kept alone should never have its food withheld to hit a table figure.",
+    sched_mine_h:"Feeding routine (from the guide)", sched_edit:"Edit in the guide",
     net_on:"online", net_off:"offline", body_g:"Body weight",
     clear:"Clear", saved_searches:"Saved searches", save_search:"Save this search", no_results:"No species match these filters.", try_wide:"Try widening the ranges or clearing the search.",
     g_all:"All", g_fav:"Favorites",
@@ -372,7 +380,8 @@ const T = {
     back:"All species", print:"Print sheet", share:"Share", add_sighting:"Log a sighting", add_bird:"Add to my birds",
     calc_h:"Daily feed & water calculator", birds_count:"Number of birds", dry:"Dry food", greens:"Fresh greens", water:"Drinking water",
     breed_h:"Breeding & hatching tracker", inc_start:"Incubation start date", hatch:"Expected hatch", inc_days:"Incubation length", day_of:"Day",
-    synth:"Modelled call (not a recording)", real:"Load real recording", search_rec:"Search recordings…", more_sounds:"More sounds", rate:"Speed",
+    synth:"Modelled call (not a recording)", real:"Load real recording", hear:"Hear this bird",
+    aud_real:"Field recording · {s}", aud_synth:"No freely licensed recording for this species — what you heard was the modelled call, not its voice", search_rec:"Search recordings…", more_sounds:"More sounds", rate:"Speed",
     synth_note:"The modelled call is generated from this bird's size and group so you can train your ear — it is not its voice. Use “Load real recording” for actual field audio.",
     xeno_need_key:"Add a free Xeno-canto key for the deepest catalogue — but real recordings are searched on Wikimedia Commons first, with no key.",
     xeno_key:"Xeno-canto API key", xeno_key_hint:"Get one at xeno-canto.org/explore/api. The API v2 was retired, so a key is now mandatory for that source. A key typed here is sent from this browser only; with a community backend set, requests go through it instead so the key stays private.",
@@ -423,6 +432,8 @@ const T = {
     atlas_ord:"Order", atlas_all_orders:"All orders", atlas_only_img:"With a photo", atlas_only_ar:"With an Arabic name",
     atlas_no_care:"Atlas species \u2014 no care figures", atlas_pick_src:"Switch source above to browse every world species on this device.",
     units_note:"{r} rows · {u} species", breed_chip:"breed", breed_of:"A domestic breed of {n}",
+    home_more:"Showing {a} of {t} — the preview keeps the home page light", home_more_link:"Open the full list",
+    home_all_shown:"All {t} rows of this family are shown here",
     pg_prev:"Previous", pg_next:"Next", atlas_page:"Page",
     photo:"Photos", yes:"Yes", tax_order:"Order", tax_family:"Family", tax_genus:"Genus",
     caps_h:"What is new",
@@ -480,6 +491,14 @@ const T = {
     import_fail:"فشل الاستيراد:", sw_update:"يوجد تحديث — أعد التحميل للتطبيق.",
     foot_html:'ملخصات الأنواع والصور من <a href="https://en.wikipedia.org/wiki/" target="_blank" rel="noopener noreferrer">ويكيبيديا</a> / <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">ويكيميديا كومنز</a> وفق رخصها. التسجيلات من <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">ويكيميديا كومنز</a> و<a href="https://xeno-canto.org/" target="_blank" rel="noopener noreferrer">Xeno-canto</a> ومن <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a> عند وجود رمز — وكل تسجيل يحتفظ باسم مسجِّله ورخصته.',
     feed_rule:"قواعد عامة: ١٠–١٥٪ من وزن الجسم طعامًا جافًّا، والخضروات نحو ٤٠٪ من ذلك، والماء ضعف وزن الطعام الجاف تقريبًا. الطيور الصغيرة سريعة الأيض تحتاج نسبًا أكبر.",
+    sched_h:"جدول التغذية اليومي", sched_sub:"الحاسبة أعلاه تحدد الكمية، وهذا الجدول هو روتين الإطعام الذي تلتزم به فعليًا، ويُحفظ لكل نوع على هذا الجهاز.",
+    sched_time:"الوقت", sched_food:"الطعام", sched_amt:"الكمية", sched_note_col:"ملاحظة", sched_add:"إضافة وجبة",
+    sched_build:"ابنِه من الحاسبة", sched_clear:"حذف الجدول", sched_del:"حذف هذه الوجبة",
+    sched_new:"وجبة جديدة", sched_built:"أُعيد بناء الجدول من أرقام الحاسبة.", sched_cleared:"حُذف الجدول.",
+    sched_saved:"محفوظ على هذا الجهاز", sched_empty:"لا جدول بعد — ابنِه من الحاسبة أو أضِف وجباتك بنفسك.",
+    sched_gap:"الجدول يبتعد عن الحاسبة بأكثر من ١٥٪ في هذا العمود — راجع الكميات أو عدد الوجبات.",
+    sched_rule:"هذا روتين وليس حِصّة: آكل البذور ينقر وعاءه طوال النهار، ولا يجوز منع الطعام عن طائر ليطابق الجدول أرقامه.",
+    sched_mine_h:"روتين التغذية (من الدليل)", sched_edit:"تعديل في الدليل",
     net_on:"متصل", net_off:"غير متصل", body_g:"وزن الجسم",
     clear:"مسح", saved_searches:"بحوث محفوظة", save_search:"احفظ هذا البحث", no_results:"لا يوجد نوع يطابق هذه المرشحات.", try_wide:"جرّب توسيع المدى أو مسح البحث.",
     g_all:"الكل", g_fav:"المفضلة",
@@ -489,6 +508,7 @@ const T = {
     calc_h:"حاسبة الغذاء والماء اليومية", birds_count:"عدد الطيور", dry:"غذاء جاف", greens:"خضار طازجة", water:"ماء شرب",
     breed_h:"متابعة التفريخ والفقس", inc_start:"بداية الحضانة", hatch:"تاريخ الفقس المتوقع", inc_days:"مدة الحضانة", day_of:"اليوم",
     synth:"نداء مُحاكى (ليس تسجيلاً)", real:"تحميل تسجيل حقيقي", search_rec:"جارٍ البحث عن تسجيلات…", more_sounds:"مزيد من الأصوات", rate:"السرعة",
+    hear:"استمع إلى هذا الطائر", aud_real:"تسجيل حقيقي · {s}", aud_synth:"لا تسجيل حرّ لهذا النوع — ما سمعته نداءً مُحاكى مُولَّدًا من حجمه وفصيلته، وليس صوته.",
     synth_note:"النداء المُحاكى مُولَّد من حجم هذا الطائر وفصيلته لتمييز مداه الصوتي، وليس غناءه. للتصحيح اضغط «تحميل تسجيل حقيقي».",
     xeno_need_key:"أضِف مفتاح Xeno-canto المجاني للحصول على أعمق فهرس — لكن البحث عن التسجيلات الحقيقية يبدأ من ويكيميديا كومنز بدون أي مفتاح.",
     xeno_key:"مفتاح Xeno-canto", xeno_key_hint:"احصل عليه من xeno-canto.org/explore/api. أُلغيت الواجهة v2 فأصبح المفتاح إلزامياً لهذا المصدر. المفتاح هنا يُرسل من هذا المتصفح فقط؛ وعند ضبط خلفية مجتمعية تمر الطلبات عبرها فيبقى المفتاح خاصاً.",
@@ -538,6 +558,8 @@ const T = {
     atlas_ord:"الرتبة", atlas_all_orders:"كل الرتب", atlas_only_img:"بصورة", atlas_only_ar:"باسم عربي",
     atlas_no_care:"نوع أطلسي — بلا أرقام رعاية", atlas_pick_src:"اختر مصدراً بالأعلى لتصفح أنواع العالم المخزّنة على الجهاز.",
     units_note:"{r} صفاً · {u} نوعاً", breed_chip:"صنف", breed_of:"صنف مستأنس من {n}",
+    home_more:"معروض {a} من {t} — معاينة تُبقي الصفحة الرئيسية خفيفة", home_more_link:"افتح القائمة كاملة",
+    home_all_shown:"كل {t} صفاً في هذه الفصيلة معروضة هنا",
     pg_prev:"السابق", pg_next:"التالي", atlas_page:"صفحة",
     photo:"الصور", yes:"نعم", tax_order:"الرتبة", tax_family:"الفصيلة", tax_genus:"الجنس",
     caps_h:"ما الجديد",
@@ -1036,6 +1058,93 @@ const RAW = [
   { en:"Blue Crane", ar:"كركي أزرق", sci:"Anthropoides paradiseus", g:"wi", origin:"Grasslands of South Africa", size:"85–100 cm", life:"20–30 years", tip:"Crane pellets, grain and insects; a protected species", file:"", t:[5,2,5,4,3] },
   { en:"Lesser Flamingo", ar:"نحام أصغر", sci:"Phoeniconaias minor", g:"wi", origin:"Africa and north-west India", size:"80–90 cm", life:"25–40 years", tip:"Alkaline water and specialised filter food; a licensed collection bird", file:"", t:[5,2,5,5,5] },
   { en:"Great Cormorant", ar:"الغاق", sci:"Phalacrocorax carbo", g:"wi", origin:"Coasts worldwide", size:"80–100 cm", life:"15–25 years", tip:"Whole fish only; needs deep water and a licensed facility", file:"", t:[5,2,5,4,3] },
+  /* Wave four — aviary, game, water and raptor species, added on request.
+     ar is left blank on purpose: the keeper reviews each Arabic name in
+     the review sheet rather than the app shipping a machine translation. */
+  { en:"Pale-headed Rosella", ar:"", sci:"Platycercus adscitus", g:"pa", origin:"Eastern Australia", size:"26–29 cm", life:"15–20 years", tip:"Seeds, berries and leafy greens; needs horizontal flight room", file:"", t:[3,3,4,3,3] },
+  { en:"Red-winged Parrot", ar:"", sci:"Aprosmictus erythropterus", g:"pa", origin:"Eastern Australia", size:"28–32 cm", life:"20–25 years", tip:"Seeds, figs and seeding grasses; seeded pellets as the base", file:"", t:[4,3,4,4,3] },
+  { en:"Blue-headed Parrot", ar:"", sci:"Pionus menstruus", g:"pa", origin:"South America", size:"24–28 cm", life:"20–30 years", tip:"Pellets, seeds and fruit; calm for a parrot and notably quieter", file:"", t:[3,2,4,3,3] },
+  { en:"Red-fronted Parrot", ar:"", sci:"Poicephalus gulielmi", g:"pa", origin:"West African forests", size:"27–28 cm", life:"25–30 years", tip:"Figs, seeds and pellets; quiet for a parrot, still needs chewing wood", file:"", t:[4,2,4,4,3] },
+  { en:"Lilith's Lovebird", ar:"", sci:"Agapornis lilianae", g:"pa", origin:"Southern and eastern Africa", size:"13–14 cm", life:"10–15 years", tip:"Millet and sunflower with cuttlebone; always kept as a pair", file:"", t:[3,3,2,2,5] },
+  { en:"Varied Lorikeet", ar:"", sci:"Eos versicolor", g:"pa", origin:"New Guinea and northeast Australia", size:"28–31 cm", life:"12–15 years", tip:"Nectar, soft fruit and pollen only; a seed diet is wrong for it", file:"", t:[5,3,4,4,4] },
+  { en:"Moluccan Cockatoo", ar:"", sci:"Cacatua moluccensis", g:"pa", origin:"Tanimbar Islands", size:"46–52 cm", life:"40–60 years", tip:"Pellets, nuts and vegetables; needs hours of contact every day", file:"", t:[5,5,5,5,5] },
+  { en:"Little Corella", ar:"", sci:"Cacatua sanguinea", g:"pa", origin:"Australia and New Guinea", size:"35–42 cm", life:"20–40 years", tip:"Seed, nuts and sprouted grain; its flock call carries very far", file:"", t:[4,5,5,4,4] },
+  { en:"Palm Cockatoo", ar:"", sci:"Probosciger aterrimus", g:"pa", origin:"New Guinea and the Solomon Islands", size:"50–60 cm", life:"35–50 years", tip:"In-shell nuts, seeds and large quantities of wood to chew", file:"", t:[5,4,5,5,2] },
+  { en:"Kaka", ar:"", sci:"Nestor meridionalis", g:"pa", origin:"New Zealand", size:"38–48 cm", life:"15–20 years", tip:"Seeds, pollen, bark and fungi; protected - licensed captive source only", file:"", t:[5,4,5,5,4] },
+  { en:"Vernal Hanging Parrot", ar:"", sci:"Loriculus vernalis", g:"pa", origin:"Indian subcontinent and Southeast Asia", size:"14–15 cm", life:"12–15 years", tip:"Fruit, berries and nectar; needs warmth and humidity, not a cold room", file:"", t:[4,2,3,3,3] },
+  { en:"Great Rose-Ringed Parakeet", ar:"", sci:"Psittacula kramersianus", g:"pa", origin:"The Himalayas and south-east Asia", size:"40–43 cm", life:"20–30 years", tip:"Seeds, nuts and fruit; a strong flier that needs an outdoor aviary", file:"", t:[4,3,5,4,4] },
+  { en:"Blue-faced Parrot Finch", ar:"", sci:"Erythrura trichroa", g:"fi", origin:"South-east Asia and northern Australia", size:"12–13 cm", life:"6–8 years", tip:"Fine seed, seeding grasses and live food in breeding; warmth is critical", file:"", t:[4,2,3,3,3] },
+  { en:"Grassland Yellow-Finch", ar:"", sci:"Sicalis luteola", g:"fi", origin:"South America", size:"11–12 cm", life:"5–8 years", tip:"Fine seed, greens and live food; sings a thin descending trill", file:"", t:[3,3,2,2,4] },
+  { en:"Javanese Munia", ar:"", sci:"Lonchura leucogastroides", g:"fi", origin:"Java, Bali and Borneo", size:"13–14 cm", life:"5–8 years", tip:"Millet and panicle millet sprays; hardy when kept dry and warm", file:"", t:[3,2,3,2,4] },
+  { en:"Orange-spotted Waxbill", ar:"", sci:"Amandava subflava", g:"fi", origin:"West and central Africa", size:"10–11 cm", life:"4–6 years", tip:"Small seeds and green seeding grasses; needs winter warmth", file:"", t:[3,2,2,2,4] },
+  { en:"Green-winged Pytilia", ar:"", sci:"Pytilia melba", g:"fi", origin:"West African forests", size:"12–13 cm", life:"5–8 years", tip:"Finch mix plus live food; pairs need humidity and a planted cage", file:"", t:[4,2,3,3,3] },
+  { en:"Chestnut-bellied Seedcracker", ar:"", sci:"Sporophila angolensis", g:"fi", origin:"South America", size:"15–17 cm", life:"6–8 years", tip:"Large grass seeds, rice and greens; its song is surprisingly loud", file:"", t:[3,3,3,3,3] },
+  { en:"Double-coloured Seedeater", ar:"", sci:"Sporophila caerulescens", g:"fi", origin:"South America", size:"10–11 cm", life:"5–7 years", tip:"Grass seed with live food for the chicks; keep pairs quiet", file:"", t:[3,2,2,2,4] },
+  { en:"Saffron Finch", ar:"", sci:"Sicalis flaveola", g:"fi", origin:"Northern South America", size:"14–15 cm", life:"6–10 years", tip:"Safflower mix, greens and fruit; sings through most of the year", file:"", t:[2,3,3,2,4] },
+  { en:"Red-crested Cardinal", ar:"", sci:"Paroaria coronata", g:"fi", origin:"South America", size:"17–19 cm", life:"6–10 years", tip:"Seed, fruit and insects; a robust aviary bird that tames easily", file:"", t:[3,3,3,3,4] },
+  { en:"Yellow-fronted Canary", ar:"", sci:"Crithagra mozambica", g:"fi", origin:"Africa south of the Sahara", size:"12–13 cm", life:"6–10 years", tip:"Fine seed and greens; hybridises freely with domestic canaries", file:"", t:[3,3,2,2,4] },
+  { en:"Black-throated Canary", ar:"", sci:"Crithagra atrogularis", g:"fi", origin:"South and central Africa", size:"11–12 cm", life:"6–8 years", tip:"Seed mix and seeding grasses; needs a warm, dry winter room", file:"", t:[3,3,2,2,4] },
+  { en:"European Greenfinch", ar:"", sci:"Chloris chloris", g:"fi", origin:"Europe and western Asia", size:"15–17 cm", life:"5–10 years", tip:"Seed, greens and grit; crowded aviaries spread mycoplasma quickly", file:"", t:[3,3,3,2,3] },
+  { en:"Linnet", ar:"", sci:"Linaria cannabina", g:"fi", origin:"Europe, north Africa and western Asia", size:"11–13 cm", life:"5–8 years", tip:"Seed and greens; the male sings from a high perch in spring", file:"", t:[2,3,2,2,3] },
+  { en:"Cape Canary", ar:"", sci:"Crithagra canicollis", g:"fi", origin:"Southern Africa", size:"12–13 cm", life:"6–10 years", tip:"Fine seed and seeding grasses; hardy but keep the room dry", file:"", t:[3,2,2,2,4] },
+  { en:"Red Bishop", ar:"", sci:"Euplectes orix", g:"fi", origin:"Grasslands of South Africa", size:"10–12 cm", life:"4–6 years", tip:"Seed plus live food; males need long daylight to colour up", file:"", t:[3,2,3,2,4] },
+  { en:"Yellow-crowned Bishop", ar:"", sci:"Euplectes afer", g:"fi", origin:"Sub-Saharan Africa", size:"10–11 cm", life:"4–6 years", tip:"Fine seed and insects; breeds readily and hybridises with other bishops", file:"", t:[3,2,2,2,4] },
+  { en:"Rufous-collared Sparrow", ar:"", sci:"Zonotrichia capensis", g:"fi", origin:"Central and South America", size:"14–17 cm", life:"4–8 years", tip:"Seed, grain and insects; hardy and it tames quickly", file:"", t:[2,2,3,2,4] },
+  { en:"Abyssinian Longclaw", ar:"", sci:"Cecropis abyssinica", g:"fi", origin:"Ethiopian highlands", size:"20–25 cm", life:"6–8 years", tip:"Seed mix with live food in breeding; needs floor space to run", file:"", t:[3,3,3,2,4] },
+  { en:"Yellow-throated Longclaw", ar:"", sci:"Macronyx croceus", g:"fi", origin:"East African dry thornveld", size:"20–23 cm", life:"6–8 years", tip:"Grass seed, insects and greens; a ground feeder, not a percher", file:"", t:[3,3,3,2,4] },
+  { en:"Band-tailed Pigeon", ar:"", sci:"Patagioenas fasciata", g:"do", origin:"Western North America", size:"38–43 cm", life:"8–12 years", tip:"Acorns, maize and grit; needs a large planted aviary", file:"", t:[4,2,5,4,3] },
+  { en:"Pied Imperial Pigeon", ar:"", sci:"Ducula bicolor", g:"do", origin:"South-east Asia and northern Australia", size:"43–48 cm", life:"15–20 years", tip:"Soft fruit and ripe berries with grit; a big clean aviary bird", file:"", t:[4,2,5,4,3] },
+  { en:"Green Imperial Pigeon", ar:"", sci:"Ducula aenea", g:"do", origin:"Indian subcontinent and Southeast Asia", size:"41–46 cm", life:"12–15 years", tip:"Figs and soft fruit; a messy feeder, so plan for daily cleaning", file:"", t:[4,2,5,3,3] },
+  { en:"Jambu Fruit Dove", ar:"", sci:"Ptilinopus jambigena", g:"do", origin:"Malay Peninsula and Sumatra", size:"22–24 cm", life:"10–15 years", tip:"Ripe fruit and berries only; very sensitive to cold and drafts", file:"", t:[4,1,4,4,3] },
+  { en:"African Green Pigeon", ar:"", sci:"Treron calvus", g:"do", origin:"Africa south of the Sahara", size:"24–26 cm", life:"8–12 years", tip:"Small seeds, fruit and greens; keep it warm through winter", file:"", t:[4,2,4,3,3] },
+  { en:"Common Ground Dove", ar:"", sci:"Columbina passerina", g:"do", origin:"Southern United States and Mexico", size:"15–17 cm", life:"5–8 years", tip:"Millet and fine seed fed on a flat floor; the quietest dove to keep", file:"", t:[3,1,2,2,4] },
+  { en:"Ruddy Ground Dove", ar:"", sci:"Columbina talpacoti", g:"do", origin:"Central and South America", size:"16–17 cm", life:"5–8 years", tip:"Fine seed and seeding grasses; breeds readily in a planted aviary", file:"", t:[3,1,2,2,4] },
+  { en:"Bar-shouldered Dove", ar:"", sci:"Geopelia hummeri", g:"do", origin:"Eastern Australia", size:"29–31 cm", life:"10–15 years", tip:"Small seeds and greens; calm, large and easy to pair", file:"", t:[3,1,4,3,3] },
+  { en:"Chestnut-bellied Partridge", ar:"", sci:"Arborophila javanica", g:"po", origin:"Java and Bali", size:"26–29 cm", life:"5–8 years", tip:"Game crumb, seeds and leafy greens; a floor bird that shies upward", file:"", t:[4,2,3,3,3] },
+  { en:"Sparrow's Pheasant", ar:"", sci:"Polyplectron bicalcaratum", g:"po", origin:"Indian subcontinent and Southeast Asia", size:"55–65 cm", life:"8–10 years", tip:"Insectivore crumb, seeds and greens; shy and needs planted cover", file:"", t:[4,2,4,4,2] },
+  { en:"Edward's Pheasant", ar:"", sci:"Lophura edwardsi", g:"po", origin:"Southeast Asia", size:"55–65 cm", life:"6–10 years", tip:"Game crumb, seeds and live food; wild population critical - captive stock only", file:"", t:[5,2,5,5,2] },
+  { en:"Mrs. Hume's Pheasant", ar:"", sci:"Syrmaticus humiae", g:"po", origin:"Myanmar and south-west China", size:"70–90 cm", life:"6–10 years", tip:"Game crumb, greens and grit; the tail needs room to clear a perch", file:"", t:[4,2,5,4,2] },
+  { en:"Plain Chachalaca", ar:"", sci:"Ortalis vetula", g:"po", origin:"Mexico and Central America", size:"48–61 cm", life:"8–12 years", tip:"Leaves, fruit and crumb; the flock calls loudly at dawn", file:"", t:[4,5,5,4,4] },
+  { en:"Black Guineafowl", ar:"", sci:"Agelastes niger", g:"po", origin:"West African forests", size:"40–43 cm", life:"8–12 years", tip:"Insects, seeds and greens; needs warmth, humidity and leaf litter", file:"", t:[4,3,4,4,3] },
+  { en:"Blue-billed Curassow", ar:"", sci:"Crax alberti", g:"po", origin:"Northern South America", size:"80–90 cm", life:"12–15 years", tip:"Fruit, flowers and invertebrate crumb; endangered, papers required", file:"", t:[5,2,5,5,2] },
+  { en:"Horned Guan", ar:"", sci:"Oreophasis derbianus", g:"po", origin:"Mexico and Central America", size:"80–90 cm", life:"12–15 years", tip:"Fruit and soft greens; needs high humidity and cool, stable nights", file:"", t:[5,2,5,5,2] },
+  { en:"Common Shelduck", ar:"", sci:"Tadorna tadorna", g:"wa", origin:"Europe, north Africa and western Asia", size:"58–63 cm", life:"15–20 years", tip:"Grass, grain and water plants; must be able to dunk its head", file:"", t:[3,3,4,3,3] },
+  { en:"Ruddy Shelduck", ar:"", sci:"Tadorna ferruginea", g:"wa", origin:"Europe, Asia and Africa", size:"62–72 cm", life:"12–20 years", tip:"Pasture, pellets and greens; hardy but extremely noisy", file:"", t:[3,4,4,3,4] },
+  { en:"Red-crested Pochard", ar:"", sci:"Netta rufina", g:"wa", origin:"Europe and western Asia", size:"53–57 cm", life:"10–15 years", tip:"Aquatic plants and grain; needs open deep water to feed properly", file:"", t:[3,2,4,3,3] },
+  { en:"Fulvous Whistling Duck", ar:"", sci:"Dendrocygna bicolor", g:"wa", origin:"Tropical Africa, Asia and the Americas", size:"45–53 cm", life:"10–15 years", tip:"Grain, stems and aquatic plants; loud at dusk, warm housing in winter", file:"", t:[3,5,4,3,4] },
+  { en:"White-headed Duck", ar:"", sci:"Oxyura leucocephala", g:"wa", origin:"Europe, north Africa and western Asia", size:"43–48 cm", life:"8–12 years", tip:"Aquatic invertebrates and plant matter; endangered - licensed stock only", file:"", t:[4,2,4,4,3] },
+  { en:"Greater White-fronted Goose", ar:"", sci:"Anser albifrons", g:"wa", origin:"Northern Hemisphere", size:"64–79 cm", life:"15–20 years", tip:"Grass and waterfowl pellets; it will strip any lawn it can reach", file:"", t:[3,4,4,3,4] },
+  { en:"Musk Duck", ar:"", sci:"Biziura lobata", g:"wa", origin:"Southern Australia and nearby islands", size:"50–62 cm", life:"10–15 years", tip:"Aquatic invertebrates and small fish only; a specialist's bird", file:"", t:[5,2,5,5,2] },
+  { en:"Northern Goshawk", ar:"", sci:"Accipiter gentilis", g:"ra", origin:"Eurasia and North America", size:"46–63 cm", life:"12–20 years", tip:"Whole prey; needs a mews, daily flying and a licence", file:"", t:[5,3,5,5,1] },
+  { en:"Black Kite", ar:"", sci:"Milvus migrans", g:"ra", origin:"Eurasia and Africa", size:"55–65 cm", life:"15–25 years", tip:"Fish, meat and offal as a scavenger; a wild bird, never a house pet", file:"", t:[5,2,5,4,2] },
+  { en:"Western Marsh Harrier", ar:"", sci:"Circus aeruginosus", g:"ra", origin:"Europe and Asia", size:"43–54 cm", life:"12–18 years", tip:"Rodents, small birds and frogs; requires long open flying space", file:"", t:[5,3,5,5,1] },
+  { en:"Great Horned Owl", ar:"", sci:"Bubo virginianus", g:"ra", origin:"North America", size:"43–64 cm", life:"15–25 years", tip:"Whole prey only; silent flight and a grip that will break a wrist", file:"", t:[5,2,4,5,1] },
+  { en:"Yellow-headed Caracara", ar:"", sci:"Milvago chimachima", g:"ra", origin:"South America", size:"45–52 cm", life:"10–15 years", tip:"Meat scraps, insects and ticks; bold and tame but very messy", file:"", t:[4,4,4,3,3] },
+  { en:"King Vulture", ar:"", sci:"Sarcoramphus papa", g:"ra", origin:"Northern South America", size:"65–85 cm", life:"20–30 years", tip:"Fresh carcass meat only, never processed food; licensed facility", file:"", t:[5,2,5,5,2] },
+  { en:"African Harrier-Hawk", ar:"", sci:"Polyboroides typus", g:"ra", origin:"Africa south of the Sahara", size:"60–78 cm", life:"15–25 years", tip:"Large prey plus palm fruit; its hinged feet are unique among raptors", file:"", t:[5,2,5,5,1] },
+  { en:"Southern Hill Myna", ar:"", sci:"Gracula indica", g:"so", origin:"Indian subcontinent", size:"28–31 cm", life:"15–25 years", tip:"Low-iron softbill crumb, fruit and insects; protected across much of its range", file:"", t:[4,4,4,4,4] },
+  { en:"Yellow-faced Myna", ar:"", sci:"Mino dumontii", g:"so", origin:"New Guinea and northern Australia", size:"28–30 cm", life:"15–20 years", tip:"Low-iron pellets, fruit and live food; bold and noisier than it looks", file:"", t:[4,4,4,4,4] },
+  { en:"Great Myna", ar:"", sci:"Acridotheres fuscus", g:"so", origin:"Indian subcontinent", size:"22–23 cm", life:"10–15 years", tip:"Invertebrates, fruit and low-iron crumb; extremely bold with people", file:"", t:[3,4,4,3,4] },
+  { en:"White-rumped Shama", ar:"", sci:"Copsychus malabaricus", g:"so", origin:"Indian subcontinent and Southeast Asia", size:"21–24 cm", life:"8–12 years", tip:"Live food and low-iron softbill mix; the song carries through the night", file:"", t:[4,4,3,3,2] },
+  { en:"Common Green Magpie", ar:"", sci:"Cissa chinensis", g:"so", origin:"South and south-east Asia", size:"36–41 cm", life:"10–15 years", tip:"Insects, fruit and small prey; needs a planted walk-in with cover", file:"", t:[5,3,5,4,2] },
+  { en:"Golden-fronted Leafbird", ar:"", sci:"Chloropsis aurifrons", g:"so", origin:"Indian subcontinent", size:"17–19 cm", life:"8–12 years", tip:"Fruit, nectar and insects; a low-iron diet is essential, not optional", file:"", t:[4,2,4,3,3] },
+  { en:"Village Weaver", ar:"", sci:"Ploceus cucullatus", g:"so", origin:"Sub-Saharan Africa", size:"15–22 cm", life:"5–8 years", tip:"Seed mix plus live food; the male builds a complete woven nest", file:"", t:[3,4,3,2,4] },
+  { en:"European Roller", ar:"", sci:"Coracias garrulus", g:"so", origin:"Europe, Africa and Asia", size:"29–32 cm", life:"8–15 years", tip:"Large insects and small mice; needs a long exposed perch and open flight", file:"", t:[5,3,5,4,2] },
+  { en:"White-cheeked Turaco", ar:"", sci:"Tauraco leucotis", g:"so", origin:"East Africa", size:"41–43 cm", life:"10–15 years", tip:"Fruit, buds and greens; iron-sensitive, so no copper bowls or citrus", file:"", t:[4,2,4,4,3] },
+  { en:"Great Blue Turaco", ar:"", sci:"Corythaeola cristata", g:"so", origin:"West African forests", size:"66–76 cm", life:"15–20 years", tip:"Fruit, flowers and buds; the largest turaco needs a tall aviary house", file:"", t:[5,2,5,5,3] },
+  { en:"Great Egret", ar:"", sci:"Ardea alba", g:"wi", origin:"Warm regions worldwide", size:"80–104 cm", life:"10–15 years", tip:"Whole fish; minced meat alone causes vitamin and bone problems", file:"", t:[4,2,5,4,2] },
+  { en:"Little Egret", ar:"", sci:"Egretta garzetta", g:"wi", origin:"Warm regions worldwide", size:"55–65 cm", life:"8–15 years", tip:"Small fish and aquatic insects; a wet, messy enclosure is unavoidable", file:"", t:[4,2,4,3,2] },
+  { en:"Hadada Ibis", ar:"", sci:"Bostrychia hagedash", g:"wi", origin:"Africa south of the Sahara", size:"65–78 cm", life:"10–20 years", tip:"Invertebrates, small prey and fruit; the flock calls are very loud", file:"", t:[4,4,4,3,4] },
+  { en:"Yellow-billed Stork", ar:"", sci:"Mycteria ibis", g:"wi", origin:"Africa south of the Sahara", size:"85–95 cm", life:"20–30 years", tip:"Fish and frogs; needs a large ponded aviary to stay sound", file:"", t:[5,2,5,5,2] },
+  { en:"Shoebill", ar:"", sci:"Balaeniceps rex", g:"wi", origin:"East Africa", size:"100–140 cm", life:"20–30 years", tip:"Whole fish only; a licensed breeding facility, not an enclosure pet", file:"", t:[5,2,5,5,1] },
+  { en:"Australian Pelican", ar:"", sci:"Pelecanus conspicillatus", g:"wi", origin:"Australia and New Guinea", size:"160–190 cm", life:"20–25 years", tip:"Fish by the kilogram; requires a large deep pond and clean water", file:"", t:[5,3,5,5,3] },
+  { en:"Purple Swamphen", ar:"", sci:"Porphyrio porphyrio", g:"wi", origin:"Europe, Africa and Asia", size:"45–50 cm", life:"8–15 years", tip:"Reed shoots, pellets and greens; bold and destructive in planted marshes", file:"", t:[4,4,4,3,3] },
+  { en:"Eurasian Coot", ar:"", sci:"Fulica atra", g:"wi", origin:"Eurasia and Africa", size:"36–42 cm", life:"8–15 years", tip:"Grain, greens and aquatic plants; fiercely territorial in spring", file:"", t:[3,3,3,2,3] },
+  { en:"Black-winged Stilt", ar:"", sci:"Himantopus himantopus", g:"wi", origin:"Europe, Africa and Asia", size:"80–95 cm", life:"8–15 years", tip:"Insects and small aquatic prey taken from shallow flooded margins", file:"", t:[4,2,4,3,3] },
+  { en:"Little Penguin", ar:"", sci:"Eudyptula minor", g:"wi", origin:"Southern Australia and nearby islands", size:"33–40 cm", life:"15–20 years", tip:"Small whole fish; needs chilled salt water, shade and a cool burrow", file:"", t:[4,2,4,5,3] },
+  { en:"Black Crowned Crane", ar:"", sci:"Balearica pavonina", g:"wi", origin:"Africa north of the Limpopo", size:"70–95 cm", life:"20–30 years", tip:"Grain, seeds and insects; declining in the wild, papers required", file:"", t:[5,3,5,5,3] },
+  { en:"Wattled Crane", ar:"", sci:"Bugeranus carunculatus", g:"wi", origin:"Africa south of the Sahara", size:"155–175 cm", life:"25–40 years", tip:"Grain, greens and invertebrates; a very large licensed aviary", file:"", t:[5,3,5,5,2] }
+
 ];
 
 const SPECIES = RAW.map((r, i) => {
@@ -1136,6 +1245,8 @@ const store = {
     inatToken: "", songSource: "auto", aiSpeak: false, speakRate: 1, songMaxMb: 220, atlasOrder: "" }, lsGet(KEYS.settings, {})),
   favs: new Set(lsGet(KEYS.fav, [])),
   notes: lsGet(KEYS.note, {}),
+  /* Per-species feeding routine: { [speciesId]: [{t,f,g,k,n}] }. Device-only, like notes. */
+  feeds: lsGet(KEYS.feeds, {}),
   visits: new Set(lsGet(KEYS.visits, [])),
   compare: [],
   saved: new Collection(KEYS.saved),
@@ -1150,6 +1261,7 @@ const store = {
   persist() {
     lsSet(KEYS.settings, this.settings); lsSet(KEYS.fav, Array.from(this.favs));
     lsSet(KEYS.note, this.notes); lsSet(KEYS.visits, Array.from(this.visits));
+    lsSet(KEYS.feeds, this.feeds);
     lsSet(KEYS.cards, this.cards); lsSet(KEYS.score, this.progress);
   },
 };
@@ -1422,9 +1534,19 @@ const Song = {
        "no recording exists" — the opposite error from the one that used to
        hand over a spoken German word. */
     const names = [b.sci, b.en].filter(Boolean);
+    const bin = String(b.sci || "").trim().split(/\s+/).slice(0, 2).join(" ");
     const qs = uniq([].concat(
       names.map(n => "filetype:audio " + n),
-      names.filter(n => n.split(" ").length > 1).map(n => 'filetype:audio "' + n + '"')
+      names.filter(n => n.split(" ").length > 1).map(n => 'filetype:audio "' + n + '"'),
+      /* Commons titles a clip four different ways for one bird: "Turdus merula
+         song", "Blackbird (Common).ogg", the binomial alone, or the common name
+         with the qualifier it uses for disambiguation. Asking only the two
+         literal names left whole families silent, so the phrase form gets three
+         more shapes — the scoring bar still decides what counts as this bird. */
+      bin ? ['filetype:audio "' + bin + '"'] : [],
+      bin ? ["filetype:audio " + bin + " call"] : [],
+      b.en ? ['filetype:audio "' + b.en + '" bird'] : [],
+      b.en ? ["filetype:audio " + b.en.replace(/\s*\([^)]*\)/, "") + " song"] : []
     )).filter(q => q.length > 18);
     const out = [];
     for (const q of qs) {
@@ -2837,14 +2959,101 @@ const AI = {
     "Euodice cantans": ["فضي", "silverbill", "african silverbill"],
     "Lophura nycthemera": ["تدرج فضي", "silver pheasant"],
     "Acryllium vulturinum": ["غينية", "دجاج غيني", "vulturine guineafowl"],
-    "Columba inca": ["انكا", "inca dove"]
+    "Columba inca": ["انكا", "inca dove"],
+    "Platycercus adscitus": ["روسالا شاحب", "pale headed", "pale headed rosella"],
+    "Aprosmictus erythropterus": ["احمر الجناح", "red winged parrot", "aprosmictus"],
+    "Pionus menstruus": ["بيونوس", "pionus", "ازرق الراس"],
+    "Poicephalus gulielmi": ["احمر الجبهة", "red fronted parrot", "gulielmi"],
+    "Agapornis lilianae": ["ليليث", "lilith lovebird", "lilianae"],
+    "Eos versicolor": ["لوري متنوع", "varied lorikeet", "eos versicolor"],
+    "Cacatua moluccensis": ["مولوك", "المولوك", "moluccan", "moluccan cockatoo"],
+    "Cacatua sanguinea": ["كوريلا صغير", "little corella", "sanguinea"],
+    "Probosciger aterrimus": ["كوكاتو نخيل", "palm cockatoo", "aterrimus"],
+    "Nestor meridionalis": ["كاكا", "kaka", "meridionalis"],
+    "Loriculus vernalis": ["ببغاء متدلي", "hanging parrot", "vernalis"],
+    "Psittacula kramersianus": ["روز رينغ كبير", "great rose ring", "kramersianus"],
+    "Erythrura trichroa": ["باروت فنش", "blue faced parrot finch", "trichroa"],
+    "Sicalis luteola": ["اصفر العشب", "grassland yellow finch", "luteola"],
+    "Lonchura leucogastroides": ["منيا جافا", "javanese munia", "leucogastroides"],
+    "Amandava subflava": ["امانداوا", "orange spotted waxbill", "subflava"],
+    "Pytilia melba": ["بيتيليا", "melba", "green winged pytilia"],
+    "Sporophila angolensis": ["سيكركر", "seedcracker", "angolensis"],
+    "Sporophila caerulescens": ["كايروليسينس", "double coloured seedeater", "peruvian seedeater"],
+    "Sicalis flaveola": ["زعفراني", "saffron finch", "flaveola"],
+    "Paroaria coronata": ["بارواريا", "red crested cardinal", "coronata"],
+    "Crithagra mozambica": ["كناري موزمبيقي", "yellow fronted canary", "mozambica"],
+    "Crithagra atrogularis": ["كناري اسود الحلق", "black throated canary", "atrogularis"],
+    "Chloris chloris": ["حسون اخضر", "greenfinch", "chloris chloris"],
+    "Linaria cannabina": ["لينيت", "linnet", "cannabina"],
+    "Crithagra canicollis": ["كناري كيب", "cape canary", "canicollis"],
+    "Euplectes orix": ["بيشوب احمر", "red bishop", "orix"],
+    "Euplectes afer": ["بيشوب اصفر", "yellow bishop", "afer"],
+    "Zonotrichia capensis": ["عصفور امريكي", "rufous collared sparrow", "zonotrichia"],
+    "Cecropis abyssinica": ["لونكلاو ابسيني", "abyssinian longclaw", "cecropis"],
+    "Macronyx croceus": ["لونكلاو اصفر الحلق", "yellow throated longclaw", "macronyx"],
+    "Patagioenas fasciata": ["حمام مخطط الذيل", "band tailed pigeon", "fasciata"],
+    "Ducula bicolor": ["امبراطوري مرقط", "pied imperial pigeon", "pied imperial"],
+    "Ducula aenea": ["امبراطوري اخضر", "green imperial", "aenea"],
+    "Ptilinopus jambigena": ["يمام جامبو", "jambu dove", "jambigena"],
+    "Treron calvus": ["يمام اخضر افريقي", "green pigeon", "treron calvus"],
+    "Columbina passerina": ["حمام ارضي", "ground dove", "passerina"],
+    "Columbina talpacoti": ["ارضي احمر", "ruddy ground dove", "talpacoti"],
+    "Geopelia hummeri": ["يمام الكتف المخطط", "bar shouldered dove", "hummeri"],
+    "Arborophila javanica": ["حجل جافا", "chestnut bellied partridge", "arborophila"],
+    "Polyplectron bicalcaratum": ["تدرج سبارو", "sparrows pheasant", "polyplectron"],
+    "Lophura edwardsi": ["تدرج ادوارد", "edwards pheasant", "edwardsi"],
+    "Syrmaticus humiae": ["تدرج هيوم", "humes pheasant", "humiae"],
+    "Ortalis vetula": ["تشاكالكا", "chachalaca", "vetula"],
+    "Agelastes niger": ["غينية سوداء", "black guineafowl", "agelastes"],
+    "Crax alberti": ["كراكس ازرق المنقار", "blue billed curassow", "alberti"],
+    "Oreophasis derbianus": ["غوان قرناء", "horned guan", "derbianus"],
+    "Tadorna tadorna": ["شيلدك اوروبي", "common shelduck", "tadorna"],
+    "Tadorna ferruginea": ["شيلدك احمر", "ruddy shelduck", "ferruginea"],
+    "Netta rufina": ["بوشارد احمر", "red crested pochard", "rufina"],
+    "Dendrocygna bicolor": ["بط صافر", "fulvous whistling duck", "dendrocygna"],
+    "Oxyura leucocephala": ["بط ابيض الراس", "white headed duck", "oxyura"],
+    "Anser albifrons": ["وز ابيض الجبهة", "white fronted goose", "albifrons"],
+    "Biziura lobata": ["بيزيورا", "musk duck", "lobata"],
+    "Accipiter gentilis": ["جوش هوك", "goshawk", "gentilis"],
+    "Milvus migrans": ["حدأة", "black kite", "milvus"],
+    "Circus aeruginosus": ["باسنق المستنقع", "marsh harrier", "aeruginosus"],
+    "Bubo virginianus": ["بومة قرناء", "great horned owl", "virginianus"],
+    "Milvago chimachima": ["كاراكارا", "caracara", "chimachima"],
+    "Sarcoramphus papa": ["نسر البابا", "king vulture", "sarcoramphus"],
+    "Polyboroides typus": ["باسنق افريقي", "harrier hawk", "polyboroides"],
+    "Gracula indica": ["غراكولا", "hill myna", "gracula"],
+    "Mino dumontii": ["مينو", "yellow faced myna", "dumontii"],
+    "Acridotheres fuscus": ["مينا كبيرة", "great myna", "fuscus"],
+    "Copsychus malabaricus": ["شاما", "shama", "malabaricus"],
+    "Cissa chinensis": ["عقعق اخضر", "green magpie", "cissa"],
+    "Chloropsis aurifrons": ["وريقات", "leafbird", "aurifrons"],
+    "Ploceus cucullatus": ["ناسج", "weaver", "cucullatus"],
+    "Coracias garrulus": ["ابله", "european roller", "coracias"],
+    "Tauraco leucotis": ["توراكو ابيض الخد", "white cheeked turaco", "leucotis"],
+    "Corythaeola cristata": ["توراكو ازرق كبير", "great blue turaco", "corythaeola"],
+    "Ardea alba": ["بلشون ابيض", "great egret", "ardea alba"],
+    "Egretta garzetta": ["بلشون صغير", "little egret", "garzetta"],
+    "Bostrychia hagedash": ["هادادا", "hadada", "hagedash"],
+    "Mycteria ibis": ["لقلق اصفر المنقار", "yellow billed stork", "mycteria"],
+    "Balaeniceps rex": ["شوبل", "shoebill", "balaeniceps"],
+    "Pelecanus conspicillatus": ["بجع استرالي", "australian pelican", "conspicillatus"],
+    "Porphyrio porphyrio": ["غريفاء بنفسجية", "purple swamphen", "porphyrio"],
+    "Fulica atra": ["غريفاء", "coot", "fulica"],
+    "Himantopus himantopus": ["ستلت", "black winged stilt", "himantopus"],
+    "Eudyptula minor": ["بطريق صغير", "little penguin", "eudyptula"],
+    "Balearica pavonina": ["كركي اسود", "black crowned crane", "pavonina"],
+    "Bugeranus carunculatus": ["كركي وذني", "wattled crane", "carunculatus"]
   },
   /* Longest alias wins per species: "ببغاء استرالي" must beat a stray "ببغاء", and
-     words are compared whole (clitics folded) so "البدجي" finds "بدجي". Every
-     species named in the sentence comes back in the order it appeared, which is
-     what makes "قارن بين الكناري والزيبرا" find two birds instead of one. */
+     words are compared whole (clitics folded) so "البدجي" finds "بدجي". The query
+     goes through the same normalisation as the list, so "غريفاء" finds an entry
+     written with an alef and hamza and the other way round. Every species named in
+     the sentence comes back in the order it appeared, which is what makes "قارن بين
+     الكناري والزيبرا" find two birds instead of one; when two names begin at the same
+     word the longer one leads, so "كناري موزمبيقي" is not stolen by the domestic
+     canary and "حسون اخضر" is not answered with the goldfinch. */
   aliasAll(t) {
-    const toks = String(t).split(" ").map(x => this.stripAr(x));
+    const toks = this.norm(String(t)).split(" ").map(x => this.stripAr(x));
     const found = [];
     for (const [sci, list] of Object.entries(this.ALIAS)) {
       let best = null, bestPos = -1;
@@ -2857,9 +3066,9 @@ const AI = {
           if (ok && (!best || at.length > best || (at.length === best && bestPos > i))) { best = at.length; bestPos = i; }
         }
       }
-      if (best) found.push([sci, bestPos]);
+      if (best) found.push([sci, bestPos, best]);
     }
-    return found.sort((a, b) => a[1] - b[1]).map(x => x[0]);
+    return found.sort((a, b) => a[1] - b[1] || b[2] - a[2]).map(x => x[0]);
   },
   aliasHit(t) { return this.aliasAll(t)[0] || null; },
   aliasOf(sci) { return this.ALIAS[sci] || []; },
@@ -3143,6 +3352,7 @@ const AI = {
      swaps the unit words and any place names inside the phrase. Unmatched text
      is passed through: nothing here invents a fact. */
   ORIGIN_AR: {
+    "New Zealand": "نيوزيلندا",
     /* wave three origins — every new RAW row's origin string belongs here,
        otherwise Arabic mode falls through to the English phrase */
     "Mexico and Central America": "المكسيك وأمريكا الوسطى",
@@ -3439,6 +3649,12 @@ const AI = {
        keeper actually named means the compare table below answers it better. */
     if (/(compare|versus|\bvs\b|vs\.|مقابل|فرق|قارن|مقارن|ايهم)/.test(this.norm(q)) &&
         this.aliasAll(this.norm(q)).length >= 2) return null;
+    /* A keeper who names a bird and asks about it wants an answer about that
+       bird, not a wish-matching shopping list: "هل الكناري الموزمبيقي هادئ" is
+       answered by the facts and arithmetic entries below. The list still comes
+       out when the sentence asks for a choice instead of describing one bird. */
+    if (!/(اختر|اختار|انصح|نصيحة|اقترح|توصي|ما الافضل|ايها|اي نوع|اي طائر|recommend|suggest|which|best|choose)/i.test(this.norm(q)) &&
+        this.aliasAll(this.norm(q)).length) return null;
     const ws = this.wants(q);
     if (!ws.length) return null;
     const scored = SPECIES.map(b => {
@@ -3684,12 +3900,22 @@ const AI = {
       return res;
     }
     const f = this.figures(q);
-    const bird = this.aboutBird(q);
-    const spBird = bird ? byId(bird.speciesId) : null;
     const cand = this.findSpecies(q);
     /* a weighted guess is not a species the keeper named. It may still lend a
        body weight to the food maths, but it must not set a cage size, an
        incubation date or a disease list, and it must not enter the context. */
+    const named = this._guessed ? null : (cand[0] || null);
+    let bird = this.aboutBird(q);
+    /* one bird in the records makes it the default subject of every arithmetic
+       answer, which is right for "كم يأكل؟" and wrong for "ما سرعة تكاثر تدرج
+       ادوارد": a bird the sentence neither names nor carries on from steps aside
+       when a species is named, and the arithmetic follows that species instead. */
+    if (bird && named) {
+      const spB = byId(bird.speciesId);
+      if (spB && spB.sci !== named.sci &&
+          !(bird.nick && this.norm(q).includes(this.norm(bird.nick)))) bird = null;
+    }
+    const spBird = bird ? byId(bird.speciesId) : null;
     const guessed = !spBird && this._guessed;
     const r = spBird || (!guessed ? cand[0] : null) || null;
     const dk = hits.includes("group") ? this.diseaseIn(q) : null;
@@ -3943,6 +4169,16 @@ const AI = {
         const nt = this.norm(n), ws = this.toks(n);
         if (!ws.length || ws.length > 3) continue;
         if (nt.length > 3 && ws.length > 1 && t.includes(nt)) best = Math.min(best, -1e6 + t.indexOf(nt));
+        const at = ws.map(w => qtoks.findIndex(x => near(w, x)));
+        if (at.every(i => i >= 0)) best = Math.min(best, Math.min.apply(null, at) + (ws.length > 1 ? -1e3 : 0));
+      }
+      /* A market name counts as a name and is scored the same way: "تدرج ادوارد"
+         is two words, so it beats the pheasant whose one stored word "تدرج" sits
+         at the same place in the sentence. Without this the new rows, whose Arabic
+         name column is still empty, lose every generic word to an older bird. */
+      for (const a of this.aliasOf(b.sci)) {
+        const ws = this.toks(a);
+        if (!ws.length || ws.length > 4) continue;
         const at = ws.map(w => qtoks.findIndex(x => near(w, x)));
         if (at.every(i => i >= 0)) best = Math.min(best, Math.min.apply(null, at) + (ws.length > 1 ? -1e3 : 0));
       }
@@ -4376,9 +4612,11 @@ function renderNav() {
     return `<a href="${href}"${cur ? ' aria-current="page"' : ""}>${esc(tr(k))}</a>`;
   }).join("");
   $("#btnLang").textContent = I18N.lang === "ar" ? "EN" : "ع";
-  $("#btnTheme").textContent = store.settings.theme === "dark" ? "☀️" : store.settings.theme === "light" ? "🌙" : "🌗";
-  /* An icon-only toggle in a foreign language is invisible: name what it does
-     and which mode is active, in the language the user is reading. */
+  const tIcon = store.settings.theme === "dark" ? "☀️" : store.settings.theme === "light" ? "🌙" : "🌗";
+  /* An icon-only toggle is not a feature the user can find: name the mode in
+     the language they are reading, so the day/night switch is a labelled
+     control rather than a mystery glyph in the corner. */
+  $("#btnTheme").innerHTML = tIcon + " " + esc(tr("theme")) + " · " + esc(themeLabel(store.settings.theme));
   $("#btnTheme").title = tr("theme_switch") + " — " + themeLabel(store.settings.theme);
   $("#btnTheme").setAttribute("aria-label", tr("theme_switch"));
 }
@@ -4392,6 +4630,7 @@ function statCards() {
   ]);
 }
 const birdOfDay = () => SPECIES[Math.floor(Date.now() / 864e5) % SPECIES.length];
+const HOME_TEASER = 12;
 
 function cardHTML(b) {
   const g = GROUPS[b.g];
@@ -4412,7 +4651,9 @@ function cardHTML(b) {
         <span class="pill">📏 ${esc(AI.locVal(b.size))}</span><span class="pill">⏳ ${esc(AI.locVal(b.life))}</span></div>
       <div class="foot">
         <label class="inline"><input type="checkbox" class="cmp" data-cmp="${b.id}" ${store.compare.includes(b.id) ? "checked" : ""}> ${esc(tr("compare"))}</label>
-        <a class="btn sm ghost" href="#/bird/${b.id}">${esc(tr("open"))}</a>
+        <span class="row">
+        <button class="btn sm ghost" data-audition="${b.id}" aria-label="${esc(tr("hear"))}" title="${esc(tr("hear"))}">🔊</button>
+        <a class="btn sm ghost" href="#/bird/${b.id}">${esc(tr("open"))}</a></span>
       </div>
     </div></article>`;
 }
@@ -4493,11 +4734,21 @@ function viewHome() {
       ${Object.entries(GROUPS).map(([k, v]) => `<button class="chip" aria-pressed="${filters.g === k}" data-g="${k}">${v.e} ${esc(I18N.lang === "ar" && v.ar ? v.ar : v.en)}</button>`).join("")}
     </div>
     <div class="grid" id="grid" style="margin-top:var(--s-3)"></div>
+    <div class="row" id="homeMore" style="margin-top:var(--s-3)"></div>
   </section>`;
   const drawHome = () => {
-    const items = searchSpecies("", filters).slice(0, 12);
+    const all = searchSpecies("", filters);
+    /* A family chip that shows twelve of its forty members reads as "this
+       family only has twelve birds". Whole families fit the grid comfortably,
+       so the cap stays on the two preview chips and says so out loud. */
+    const preview = filters.g === "all" || filters.g === "fav";
+    const items = preview ? all.slice(0, HOME_TEASER) : all;
     $("#grid").innerHTML = items.map(cardHTML).join("");
     hydrateCards($("#grid"));
+    $("#homeMore").innerHTML = items.length < all.length
+      ? `<span class="hint">${esc(tr("home_more", { a: items.length, t: all.length }))}</span>
+         <a class="btn sm ghost" href="#/birds">${esc(tr("home_more_link"))}</a>`
+      : `<span class="hint">${esc(tr("home_all_shown", { t: all.length }))}</span>`;
     $$("#gchips .chip").forEach(c => c.setAttribute("aria-pressed", String(filters.g === c.dataset.g)));
   };
   on($("#gchips"), "click", ".chip", (e, c) => { filters.g = c.dataset.g; drawHome(); });
@@ -4543,7 +4794,8 @@ function atlasCardHTML(r) {
       <div class="sci">${esc(r.sci)}</div>
       <div class="meta"><span class="pill">🧬 ${esc(r.family || "—")}</span>${r.order ? `<span class="pill">${esc(r.order)}</span>` : ""}${r.ar ? '<span class="pill">🗣</span>' : ""}</div>
       <div class="foot"><span class="hint">${esc(tr("atlas_no_care"))}</span>
-        <span class="row"><button class="btn sm ghost" data-asight="${esc(r.sci)}" aria-label="${esc(tr("atlas_promote"))}">📍</button>
+        <span class="row"><button class="btn sm ghost" data-audition="${esc(r.sci)}" aria-label="${esc(tr("hear"))}" title="${esc(tr("hear"))}">🔊</button>
+        <button class="btn sm ghost" data-asight="${esc(r.sci)}" aria-label="${esc(tr("atlas_promote"))}">📍</button>
         <a class="btn sm ghost" href="${u}">${esc(tr("open"))}</a></span></div>
     </div></article>`;
 }
@@ -4766,15 +5018,31 @@ function wireCatalogueClicks(root) {
   if (!root._audWired) {
     root._audWired = true;
     on(root, "click", "[data-audition]", async (e, n) => {
-      const b = byId(n.dataset.audition); if (!b) return;
-      /* the list button plays a real voice when the session already found one
-         for this species, and the synthesized pitch only as the fallback */
-      const known = Song.mem.get(slug(b.sci)) || [];
+      const b = byId(n.dataset.audition) || Atlas.get(n.dataset.audition);
+      if (!b || !b.sci) return;
+      const label = n.textContent;
+      /* A card in the search list has to be able to speak: the button used to
+         work only for a species the session had already looked up, which made
+         most of the guide read as "no sound". Now it asks the sources once and
+         keeps the answer in the cache the species page also uses. */
+      let known = Song.mem.get(slug(b.sci)) || [];
+      if (!known.length) {
+        n.textContent = "…"; n.disabled = true;
+        try { known = await Song.for(b); } catch { known = []; }
+        n.disabled = false; n.textContent = label;
+      }
       if (known.length) {
         if (!auditionAudio) auditionAudio = new Audio();
-        if (await Song.play(known[0], auditionAudio, null, null)) return;
+        const srcName = (Song.SRC[known[0].src] || [known[0].src])[0];
+        if (await Song.play(known[0], auditionAudio, null, null)) {
+          toast(tr("aud_real", { s: srcName }), "ok"); return;
+        }
       }
+      /* An atlas row has no measured body size or family, so a synthesised
+         chirp for it would be a made-up voice — say there is none instead. */
+      if (b.atlas) { toast(tr("song_none"), "warn", 5200); return; }
       playCall(b);
+      toast(tr("aud_synth"), "warn", 4200);
     });
   }
 }
@@ -4806,6 +5074,121 @@ function openCompare() {
   requestAnimationFrame(() => drawRadar($("#radarCv"), birds.map(b => [b.difficulty, b.noise, b.space, b.cost, b.sociability, clamp(b.longevity / 16, 1, 5)]),
     [AI.bi("Care", "العناية"), AI.bi("Noise", "الضجيج"), AI.bi("Space", "المساحة"), AI.bi("Cost", "التكلفة"), AI.bi("Social", "الصحبة"), AI.bi("Years", "العمر")]));
 }
+
+/* ------------------------------------------------- FEEDING SCHEDULE (FEED)
+   The calculator says how much; this is the routine the keeper actually keeps.
+   Stored per species in localStorage only — same privacy line as personal
+   notes. The default plan is generated from the exact three formulas calc()
+   uses, so a built schedule cannot disagree with the figures on the page.
+   Row shape: { t:"07:30", f:"label", g:number, k:"dry"|"green"|"water", n:"" }.
+   Meal labels are literal EN/AR pairs chosen by language, like G_AR does. */
+const FEED = {
+  routine: {
+    pa: [["07:30", "Pellets or dry mix", "علف أو خلطة جافة", "dry", .5],
+         ["12:00", "Fresh vegetables", "خضروات طازجة", "green", 1],
+         ["17:00", "Pellets or dry mix", "علف أو خلطة جافة", "dry", .5],
+         ["07:30", "Fresh water", "ماء طازج", "water", .5],
+         ["17:00", "Fresh water", "ماء طازج", "water", .5]],
+    fi: [["07:00", "Seed mix", "خلطة بذور", "dry", .6],
+         ["12:00", "Greens and grated vegetables", "خضروات ومبشور", "green", 1],
+         ["16:30", "Seed mix", "خلطة بذور", "dry", .4],
+         ["07:00", "Fresh water", "ماء طازج", "water", .5],
+         ["16:30", "Fresh water", "ماء طازج", "water", .5]],
+    do: [["08:00", "Grain mix", "خلطة حبوب", "dry", .5],
+         ["15:00", "Grain mix", "خلطة حبوب", "dry", .5],
+         ["08:00", "Fresh water", "ماء طازج", "water", .5],
+         ["15:00", "Fresh water", "ماء طازج", "water", .5]],
+    po: [["07:00", "Complete feed, available all day", "علف كامل متاح طوال اليوم", "dry", 1],
+         ["12:00", "Greens and scratch", "خضروات وحبّ مطبوخ", "green", 1],
+         ["07:00", "Fresh water", "ماء طازج", "water", .5],
+         ["16:00", "Fresh water", "ماء طازج", "water", .5]],
+    wa: [["07:00", "Waterfowl pellets or grain", "علف بط أو حبوب", "dry", .5],
+         ["12:00", "Greens and plants", "خضروات ونباتات", "green", 1],
+         ["16:00", "Waterfowl pellets or grain", "علف بط أو حبوب", "dry", .5],
+         ["07:00", "Fresh water", "ماء طازج", "water", .5],
+         ["16:00", "Fresh water", "ماء طازج", "water", .5]],
+    ra: [["17:00", "Whole prey", "فرائس كاملة", "dry", 1],
+         ["17:00", "Fresh water, and a bath", "ماء طازج وحمام", "water", 1]],
+    so: [["07:00", "Insectivore or softbill mix", "علف حشرات أو فواكه", "dry", .5],
+         ["12:00", "Fruit, vegetables or live food", "فاكهة أو طعام حي", "green", 1],
+         ["16:30", "Insectivore or softbill mix", "علف حشرات أو فواكه", "dry", .5],
+         ["07:00", "Fresh water", "ماء طازج", "water", .5],
+         ["16:30", "Fresh water", "ماء طازج", "water", .5]],
+    wi: [["08:00", "Species-appropriate food", "طعام مناسب للنوع", "dry", .5],
+         ["16:00", "Species-appropriate food", "طعام مناسب للنوع", "dry", .5],
+         ["08:00", "Fresh water", "ماء طازج", "water", .5],
+         ["16:00", "Fresh water", "ماء طازج", "water", .5]]
+  },
+  unit: k => (k === "water" ? "ml" : "g"),
+  get(id) { const r = store.feeds[id]; return Array.isArray(r) && r.length ? r : null; },
+  save(id, rows) {
+    if (!rows || !rows.length) delete store.feeds[id]; else store.feeds[id] = rows;
+    lsSet(KEYS.feeds, store.feeds);
+  },
+  figures(n, body) {
+    const dry = round(n * Math.max(2, body * 0.12), 1);
+    return { dry, green: round(dry * 0.4, 1), water: n * Math.round(body * 0.25) };
+  },
+  plan(b, n, body) {
+    const tot = this.figures(n, body), ar = I18N.lang === "ar";
+    const shape = this.routine[b.g] || this.routine.fi;
+    return shape.map(([t, en, arLbl, k, share]) => ({
+      t, f: ar ? arLbl : en, g: round(tot[k] * share, k === "water" ? 0 : 1), k, n: ""
+    }));
+  },
+  totals(rows) {
+    const s = { dry: 0, green: 0, water: 0 };
+    for (const r of rows) if (s[r.k] != null) s[r.k] += Number(r.g) || 0;
+    return { dry: round(s.dry, 1), green: round(s.green, 1), water: Math.round(s.water) };
+  },
+  rowHTML(r, i) {
+    return `<tr data-k="${esc(r.k || "dry")}">
+      <td><input type="time" value="${esc(r.t)}" data-f="t" aria-label="${esc(tr("sched_time"))}"></td>
+      <td><input value="${esc(r.f)}" data-f="f" aria-label="${esc(tr("sched_food"))}"></td>
+      <td><input type="number" min="0" step="0.1" value="${esc(String(r.g))}" data-f="g" aria-label="${esc(tr("sched_amt"))}"> <span class="hint">${this.unit(r.k)}</span></td>
+      <td><input value="${esc(r.n || "")}" data-f="n" aria-label="${esc(tr("sched_note_col"))}"></td>
+      <td style="width:1%"><button class="btn sm ghost" data-sched-del="${i}" aria-label="${esc(tr("sched_del"))}">✕</button></td>
+    </tr>`;
+  },
+  rowsHTML(rows) {
+    if (!rows.length) return `<div class="empty">🍽️ ${esc(tr("sched_empty"))}</div>`;
+    return `<div class="table-wrap"><table><thead><tr>
+      <th>${esc(tr("sched_time"))}</th><th>${esc(tr("sched_food"))}</th><th>${esc(tr("sched_amt"))}</th>
+      <th>${esc(tr("sched_note_col"))}</th><th></th></tr></thead>
+      <tbody>${rows.map((r, i) => this.rowHTML(r, i)).join("")}</tbody></table></div>`;
+  },
+  /* Read the live DOM back into rows so an edit is the saved value. */
+  read(root) {
+    return $$("tbody tr", root).map(row => {
+      const k = row.dataset.k || "dry";
+      const val = f => { const el = $('[data-f="' + f + '"]', row); return el ? el.value : ""; };
+      return { t: val("t"), f: val("f"), g: round(Number(val("g")) || 0, 1), k, n: val("n") };
+    }).filter(r => r.f || r.g);
+  },
+  totalLine(rows, fig) {
+    if (!rows.length) return "";
+    const t = this.totals(rows);
+    const one = (k, label) => {
+      if (!t[k]) return "";
+      const want = fig ? fig[k] : null;
+      const near = want == null || Math.abs(t[k] - want) <= Math.max(0.6, Math.abs(want) * 0.15);
+      return `<span class="chip" title="${esc(near ? label + " ✓" : tr("sched_gap"))}" style="color:var(${near ? "--ok-fg" : "--warn-fg"})">${esc(label)}: ${t[k]} ${this.unit(k)}${want != null ? " / " + want : ""} ${near ? "✓" : "⚠"}</span>`;
+    };
+    return one("dry", tr("dry")) + one("green", tr("greens")) + one("water", tr("water"));
+  },
+  /* Read-only digest for an individual bird's record page. */
+  digest(id) {
+    const rows = this.get(id);
+    if (!rows) return "";
+    const b = byId(id);
+    return `<section class="panel"><h2>🍽️ ${esc(tr("sched_mine_h"))}</h2>
+      ${b ? `<p class="hint">${esc(speciesName(b))} · <a href="#/bird/${b.id}">${esc(tr("sched_edit"))} ↗</a></p>` : ""}
+      <div class="table-wrap"><table><tbody>${rows.map(r =>
+        `<tr><th>${esc(r.t)}</th><td>${esc(r.f)}</td><td>${esc(String(r.g))} ${this.unit(r.k)}</td>${r.n ? `<td class="hint">${esc(r.n)}</td>` : ""}</tr>`).join("")}
+      </tbody></table></div>
+      <p class="hint">${esc(tr("sched_rule"))}</p></section>`;
+  }
+};
 
 /* ----------------------------------------------------------------- DETAIL */
 function viewDetail(id) {
@@ -4867,7 +5250,17 @@ function viewDetail(id) {
         <div><label>${esc(tr("greens"))}</label><div class="kv"><b id="rGreen">–</b> g/day</div></div>
         <div><label>${esc(tr("water"))}</label><div class="kv"><b id="rWater">–</b> ml/day</div></div>
         <div><label>7 ${esc(tr("day_of"))}</label><div class="kv"><b id="rWeek">–</b> g dry food</div></div>
-      </div><p class="hint">${esc(tr("feed_rule"))}</p></div>`],
+      </div><p class="hint">${esc(tr("feed_rule"))}</p>
+      <h2 style="margin-top:var(--s-4)">🍽️ ${esc(tr("sched_h"))}</h2>
+      <p class="hint">${esc(tr("sched_sub"))}</p>
+      <div id="schedWrap" style="margin-top:var(--s-3)"></div>
+      <div class="row" style="margin-top:var(--s-3)">
+        <button class="btn sm" id="schedAdd">＋ ${esc(tr("sched_add"))}</button>
+        <button class="btn sm ghost" id="schedBuild">🧮 ${esc(tr("sched_build"))}</button>
+        <button class="btn sm ghost" id="schedClear">✕ ${esc(tr("sched_clear"))}</button>
+        <span class="spacer"></span><span id="schedTot" class="row" style="gap:var(--s-2)"></span></div>
+      <p class="hint" id="schedState"></p>
+      <p class="hint">${esc(tr("sched_rule"))}</p></div>`],
     ["au", `<div class="panel"><h2>${esc(tr("t_sounds"))}</h2>
       <div class="row"><button class="btn sm" id="loadRec">🎧 ${esc(tr("real"))}</button>
         <button class="btn sm ghost" id="synth">🔊 ${esc(tr("synth"))}</button>
@@ -4934,8 +5327,49 @@ function viewDetail(id) {
     const body = clamp(parseInt($("#body").value, 10) || base * 6, 1, 20000);
     const dry = round(n * Math.max(2, body * 0.12), 1), green = round(dry * 0.4, 1), water = n * Math.round(body * 0.25);
     $("#rDry").textContent = dry; $("#rGreen").textContent = green; $("#rWater").textContent = water; $("#rWeek").textContent = round(dry * 7, 0);
+    /* the schedule compares itself against the same figures every time they move */
+    const st = $("#schedTot"); if (st) st.innerHTML = FEED.totalLine(FEED.get(b.id) || [], { dry, green, water });
   };
   ["cnt", "body"].forEach(i => $("#" + i).addEventListener("input", debounce(calc, 120))); calc();
+
+  /* feeding schedule: editable, saved per species, never leaves the device */
+  const schedFig = () => {
+    const n = clamp(parseInt($("#cnt").value, 10) || 1, 1, 5000);
+    const body = clamp(parseInt($("#body").value, 10) || base * 6, 1, 20000);
+    return { n, body, fig: FEED.figures(n, body) };
+  };
+  const paintSched = state => {
+    const rows = FEED.get(b.id) || [], wrap = $("#schedWrap");
+    wrap.innerHTML = FEED.rowsHTML(rows);
+    $("#schedTot").innerHTML = FEED.totalLine(rows, schedFig().fig);
+    $("#schedState").textContent = state ? "✓ " + state : "";
+  };
+  const saveSched = () => {
+    const rows = FEED.read($("#schedWrap"));
+    FEED.save(b.id, rows);
+    $("#schedTot").innerHTML = FEED.totalLine(rows, schedFig().fig);
+    $("#schedState").textContent = "✓ " + tr("sched_saved");
+  };
+  paintSched("");
+  on($("#schedWrap"), "input", "[data-f]", debounce(saveSched, 500));
+  on($("#schedWrap"), "click", "[data-sched-del]", (e, btn) => {
+    const rows = FEED.read($("#schedWrap")); rows.splice(Number(btn.dataset.schedDel), 1);
+    FEED.save(b.id, rows); paintSched(tr("sched_saved"));
+  });
+  $("#schedAdd").onclick = () => {
+    const rows = (FEED.get(b.id) || []).concat([{ t: "12:00", f: tr("sched_new"), g: 0, k: "dry", n: "" }]);
+    FEED.save(b.id, rows); paintSched(tr("sched_saved"));
+    const last = $$("#schedWrap [data-f=\"f\"]").pop(); if (last) last.focus();
+  };
+  $("#schedBuild").onclick = () => {
+    const f = schedFig();
+    FEED.save(b.id, FEED.plan(b, f.n, f.body)); paintSched(tr("sched_built"));
+  };
+  $("#schedClear").onclick = () => {
+    if (!FEED.get(b.id)) return;
+    if (!confirmDlg(tr("confirm_clear"))) return;
+    FEED.save(b.id, []); paintSched(tr("sched_cleared"));
+  };
 
   /* breeding tracker */
   const breed = () => {
@@ -5180,6 +5614,7 @@ function viewBird(uidv) {
       <button class="btn sm ghost" data-deltask="${t.id}">✕</button></div>`).join("")
       : `<p class="hint">${esc(tr("no_data"))}</p>`}</section>
 
+  ${rec.speciesId ? FEED.digest(rec.speciesId) : ""}
   <section class="panel"><h2>🩺 ${esc(tr("symtom"))}</h2>
     <div class="row"><textarea id="sympText" placeholder="${esc(tr("symtom"))}" style="flex:1;min-width:220px"></textarea>
       <button class="btn" id="addSymp">${esc(tr("save"))}</button></div>
@@ -5470,7 +5905,7 @@ function exportBackup() {
      Xeno-canto key, the model key and the iNaturalist token are stripped. */
   const settings = { ...store.settings, xenoKey: "", aiKey: "", inatToken: "" };
   return JSON.stringify({ app: "birds-world", version: CFG.VERSION, at: new Date().toISOString(),
-    settings, favorites: Array.from(store.favs), notes: store.notes,
+    settings, favorites: Array.from(store.favs), notes: store.notes, feeds: store.feeds,
     visits: Array.from(store.visits), birds: store.birds.all(), sightings: store.sightings.all(),
     tasks: store.tasks.all(), weights: store.weights.all(), symptoms: store.symptoms.all(),
     cards: store.cards, progress: store.progress, saved: store.saved.all() }, null, 2);
@@ -5485,6 +5920,7 @@ function importBackup(text) {
   store.settings.inatToken = d.settings && d.settings.inatToken ? d.settings.inatToken : keepInat;
   AI.invalidate();
   store.favs = new Set(d.favorites || []); store.notes = d.notes || {}; store.visits = new Set(d.visits || []);
+  store.feeds = d.feeds || {};
   store.birds.items = d.birds || []; store.sightings.items = d.sightings || [];
   store.tasks.items = d.tasks || []; store.weights.items = d.weights || []; store.symptoms.items = d.symptoms || [];
   store.cards = d.cards || {}; store.progress = Object.assign(store.progress, d.progress || {});
@@ -5502,6 +5938,10 @@ function viewSettings() {
       <div><label>${esc(tr("language"))}</label><select id="setLang">
         ${CFG.LANGS.map(v => `<option value="${v}"${I18N.lang === v ? " selected" : ""}>${v === "ar" ? "العربية" : "English"}</option>`).join("")}</select></div>
       <div><label>${esc(tr("accent"))}</label><div class="rng"><input type="range" id="setHue" min="0" max="360" value="${s.accent}"><output id="hueOut">${s.accent}°</output></div></div>
+    </div>
+    <div class="chips row" id="themeSeg" role="group" aria-label="${esc(tr("theme_switch"))}" style="margin-top:var(--s-3)">
+      ${[["light", "☀️"], ["dark", "🌙"], ["auto", "🌗"]].map(([v, ic]) =>
+        `<button class="chip" data-theme-set="${v}" aria-pressed="${s.theme === v}">${ic} ${esc(themeLabel(v))}</button>`).join("")}
     </div>
     <p class="hint" id="themeState" style="margin-top:var(--s-2)">${esc(tr("theme_now", { m: themeLabel(s.theme) }))} · ${esc(tr("theme_hint"))}</p>
     <div id="installRow" class="row" style="margin-top:var(--s-3)"></div></section>
@@ -5568,7 +6008,16 @@ function viewSettings() {
   <section class="panel no-print"><h2>⌨️ ${esc(tr("traits"))}</h2>
     <p class="hint">/ ${esc(tr("search"))} · g+h/g/b/f/m/s/l · t ${esc(tr("theme"))} · y ${esc(tr("language"))} · Esc ${esc(tr("clear"))}</p></section>`;
 
-  $("#setTheme").onchange = e => { s.theme = e.target.value; store.persist(); applyTheme(); };
+  $("#setTheme").onchange = e => { s.theme = e.target.value; store.persist(); applyTheme(); paintThemeSeg(); };
+  /* the same choice as three one-tap buttons: a select tucked under "Theme" is
+     how the night mode got reported as missing */
+  const paintThemeSeg = () => $$("#themeSeg .chip").forEach(c =>
+    c.setAttribute("aria-pressed", String(c.dataset.themeSet === store.settings.theme)));
+  on($("#themeSeg"), "click", "[data-theme-set]", (e, n) => {
+    s.theme = n.dataset.themeSet; store.persist(); applyTheme();
+    const sel = $("#setTheme"); if (sel) sel.value = s.theme;
+    paintThemeSeg();
+  });
   $("#setLang").onchange = e => { I18N.apply(e.target.value); route(); };
   $("#setHue").oninput = e => { s.accent = +e.target.value; $("#hueOut").textContent = s.accent + "°"; applyTheme(); };
   $("#setHue").onchange = () => store.persist();

@@ -1,6 +1,6 @@
-rows: 241
-unique sci strings: 238
-distinct bases: 235
+rows: 324
+unique sci strings: 321
+distinct bases: 318
 domestic-form rows: 7
 
 bases with more than one row:

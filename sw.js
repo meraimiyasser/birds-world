@@ -3,7 +3,7 @@
 /* Bump SHELL whenever index.html changes in a way an offline copy must not miss
    (a new species wave, a rebuilt Sound ID screen). Activation deletes every
    other bw-shell-* cache, so installed copies re-fetch the shell once online. */
-const SHELL = "bw-shell-v7";
+const SHELL = "bw-shell-v8";
 const RUNTIME = "bw-runtime-v1";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
